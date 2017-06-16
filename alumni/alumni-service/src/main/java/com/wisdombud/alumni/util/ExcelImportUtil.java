@@ -1,0 +1,332 @@
+package com.wisdombud.alumni.util;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import com.google.common.collect.Maps;
+
+public class ExcelImportUtil {
+
+	/**
+	 * 对外提供读取excel 的方法
+	 */
+	public static List<List<Object>> readExcel(File file) throws IOException {
+		String fileName = file.getName();
+		String extension = fileName.lastIndexOf(".") == -1 ? "" : fileName.substring(fileName.lastIndexOf(".") + 1);
+		if ("xls".equals(extension)) {
+			return read2003Excel(file);
+		} else if ("xlsx".equals(extension)) {
+			return read2007Excel(file);
+		} else {
+			throw new IOException("不支持的文件类型");
+		}
+	}
+
+	/**
+	 * 读取 office 2003 excel
+	 *
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	private static List<List<Object>> read2003Excel(File file) throws IOException {
+		List<List<Object>> list = new LinkedList<List<Object>>();
+		FileInputStream fis = new FileInputStream(file);
+		HSSFWorkbook hwb = new HSSFWorkbook(fis);
+		HSSFSheet sheet = hwb.getSheetAt(0);
+		Object value = null;
+		HSSFRow row = null;
+		HSSFCell cell = null;
+		int counter = 0;
+		for (int i = sheet.getFirstRowNum(); counter < sheet.getPhysicalNumberOfRows(); i++) {
+			row = sheet.getRow(i);
+			if (row == null) {
+				continue;
+			} else {
+				counter++;
+			}
+			List<Object> linked = new LinkedList<Object>();
+			for (int j = row.getFirstCellNum(); j <= row.getLastCellNum(); j++) {
+				cell = row.getCell(j);
+				if (cell == null) {
+					continue;
+				}
+				DecimalFormat df = new DecimalFormat("0");// 格式化 number String
+															// 字符
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");// 格式化日期字符串
+				DecimalFormat nf = new DecimalFormat("0");// 格式化数字
+				switch (cell.getCellType()) {
+				case XSSFCell.CELL_TYPE_STRING:
+					System.out.println(i + "行" + j + " 列 is String type");
+					value = cell.getStringCellValue();
+					break;
+				case XSSFCell.CELL_TYPE_NUMERIC:
+					System.out.println(
+							i + "行" + j + " 列 is Number type ; DateFormt:" + cell.getCellStyle().getDataFormatString());
+					if ("@".equals(cell.getCellStyle().getDataFormatString())) {
+						value = df.format(cell.getNumericCellValue());
+					} else if ("General".equals(cell.getCellStyle().getDataFormatString())) {
+						value = nf.format(cell.getNumericCellValue());
+					} else {
+						value = sdf.format(HSSFDateUtil.getJavaDate(cell.getNumericCellValue()));
+					}
+					break;
+				case XSSFCell.CELL_TYPE_BOOLEAN:
+					System.out.println(i + "行" + j + " 列 is Boolean type");
+					value = cell.getBooleanCellValue();
+					break;
+				case XSSFCell.CELL_TYPE_BLANK:
+					System.out.println(i + "行" + j + " 列 is Blank type");
+					value = "";
+					break;
+				default:
+					System.out.println(i + "行" + j + " 列 is default type");
+					value = cell.toString();
+				}
+				linked.add(value);
+			}
+			list.add(linked);
+		}
+		fis.close();
+		return list;
+	}
+
+	/**
+	 * 读取Office 2007 excel
+	 */
+	private static List<List<Object>> read2007Excel(File file) throws IOException {
+		List<List<Object>> list = new LinkedList<List<Object>>();
+		// 构造 XSSFWorkbook 对象，strPath 传入文件路径
+		FileInputStream fis = new FileInputStream(file);
+		XSSFWorkbook xwb = new XSSFWorkbook(fis);
+		// 读取第一张表格内容
+		XSSFSheet sheet = xwb.getSheetAt(0);
+		Object value = null;
+		XSSFRow row = null;
+		XSSFCell cell = null;
+		int counter = 0;
+		int cellNumber = 50;
+		for (int i = sheet.getFirstRowNum(); counter < sheet.getPhysicalNumberOfRows(); i++) {
+			row = sheet.getRow(i);
+			if (row == null) {
+				continue;
+			} else {
+				counter++;
+			}
+			List<Object> linked = new LinkedList<Object>();
+			for (int j = row.getFirstCellNum(); j <= cellNumber; j++) {
+				cell = row.getCell(j);
+				if (cell == null) {
+					value = "";
+				} else {
+					value = cell.toString();
+				}
+				if (value == null || "".equals(value)) {
+					value = "";
+				}
+				linked.add(value);
+			}
+			list.add(linked);
+		}
+		fis.close();
+		return list;
+	}
+
+	/**
+	 * 功能：读取EXCEL中的数据到List<Map<String, Object>>中
+	 *
+	 * xlsx
+	 *
+	 */
+	public static List<Map<String, Object>> read2007Excel(HSSFWorkbook workbook) {
+		List<Map<String, Object>> excelData = new LinkedList<Map<String, Object>>();
+		int columnLength = workbook.getSheetAt(0).getRow(0).getPhysicalNumberOfCells();
+		HSSFSheet sheet = workbook.getSheetAt(0);
+		String[] columnNames = createColumnNameArray(sheet.getRow(0), columnLength);
+		for (int rowIndex = 1; rowIndex < sheet.getPhysicalNumberOfRows(); rowIndex++) {
+			Map<String, Object> cellMap = Maps.newHashMap();
+			HSSFRow row = sheet.getRow(rowIndex);
+			for (int cellIndex = 0; cellIndex < row.getPhysicalNumberOfCells(); cellIndex++) {
+				cellMap.put(columnNames[cellIndex], getCellValue(row.getCell(cellIndex)));
+			}
+			excelData.add(cellMap);
+		}
+		return excelData;
+	}
+
+	/**
+	 * 功能：读取EXCEL中的数据到List<Map<String, Object>>中
+	 *
+	 * xls
+	 *
+	 */
+	public static List<Map<String, Object>> readExcel(XSSFWorkbook workbook) {
+		List<Map<String, Object>> excelData = new LinkedList<Map<String, Object>>();
+		int columnLength = workbook.getSheetAt(0).getRow(0).getPhysicalNumberOfCells();
+		XSSFSheet sheet = workbook.getSheetAt(0);
+		String[] columnNames = createColumnNameArray(sheet.getRow(0), columnLength);
+		for (int rowIndex = 1; rowIndex < sheet.getPhysicalNumberOfRows(); rowIndex++) {
+			Map<String, Object> cellMap = Maps.newHashMap();
+			XSSFRow row = sheet.getRow(rowIndex);
+			for (int cellIndex = 0; cellIndex < row.getPhysicalNumberOfCells(); cellIndex++) {
+				cellMap.put(columnNames[cellIndex], getCellValue(row.getCell(cellIndex)));
+			}
+			excelData.add(cellMap);
+		}
+		return excelData;
+	}
+
+	/**
+	 * 功能：创建EXCEL列名数组
+	 *
+	 */
+	private static String[] createColumnNameArray(HSSFRow row, int length) {
+		String[] columnName = new String[length];
+		for (int cellIndex = 0; cellIndex < row.getPhysicalNumberOfCells(); cellIndex++) {
+			columnName[cellIndex] = getCellValue(row.getCell(cellIndex));
+		}
+		return columnName;
+	}
+
+	/**
+	 * 功能：创建EXCEL列名数组
+	 *
+	 * xls
+	 *
+	 */
+	private static String[] createColumnNameArray(XSSFRow row, int length) {
+		String[] columnName = new String[length];
+		for (int cellIndex = 0; cellIndex < row.getPhysicalNumberOfCells(); cellIndex++) {
+			columnName[cellIndex] = getCellValue(row.getCell(cellIndex));
+		}
+		return columnName;
+	}
+
+	/**
+	 * 功能：创建EXCEL当前单元格内容
+	 *
+	 */
+	private static String getCellValue(HSSFCell cell) {
+		String value = null;
+		if (cell != null) {
+			switch (cell.getCellType()) {
+			case HSSFCell.CELL_TYPE_NUMERIC:
+				if (HSSFDateUtil.isCellDateFormatted(cell)) {
+					Date date = HSSFDateUtil.getJavaDate(cell.getNumericCellValue());
+					value = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+				} else {
+					value = String.valueOf(cell.getNumericCellValue());
+				}
+				break;
+			case HSSFCell.CELL_TYPE_STRING:
+				value = cell.getStringCellValue();
+				break;
+			case HSSFCell.CELL_TYPE_BOOLEAN:
+				value = String.valueOf(cell.getBooleanCellValue());
+				break;
+			case HSSFCell.CELL_TYPE_ERROR:// 错误
+				break;
+			case HSSFCell.CELL_TYPE_FORMULA:
+				String val = String.valueOf(cell.getNumericCellValue());
+				value = val.equals("NaN") ? String.valueOf(cell.getStringCellValue()) : val;// 如果获取的数据值非法,就将其装换为对应的字符串
+				break;
+			case HSSFCell.CELL_TYPE_BLANK:// 空值
+				break;
+			default:
+				value = cell.getStringCellValue();
+				break;
+			}
+		}
+		return value;
+	}
+
+	/**
+	 * 功能：创建EXCEL当前单元格内容
+	 *
+	 */
+	private static String getCellValue(XSSFCell cell) {
+		String value = null;
+		if (cell != null) {
+			switch (cell.getCellType()) {
+			case HSSFCell.CELL_TYPE_NUMERIC:
+				if (HSSFDateUtil.isCellDateFormatted(cell)) {
+					Date date = HSSFDateUtil.getJavaDate(cell.getNumericCellValue());
+					value = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
+				} else {
+					value = String.valueOf(cell.getNumericCellValue());
+				}
+				break;
+			case HSSFCell.CELL_TYPE_STRING:
+				value = cell.getStringCellValue();
+				break;
+			case HSSFCell.CELL_TYPE_BOOLEAN:
+				value = String.valueOf(cell.getBooleanCellValue());
+				break;
+			case HSSFCell.CELL_TYPE_ERROR:// 错误
+				break;
+			case HSSFCell.CELL_TYPE_FORMULA:
+				String val = String.valueOf(cell.getNumericCellValue());
+				value = val.equals("NaN") ? String.valueOf(cell.getStringCellValue()) : val;// 如果获取的数据值非法,就将其装换为对应的字符串
+				break;
+			case HSSFCell.CELL_TYPE_BLANK:// 空值
+				break;
+			default:
+				value = cell.getStringCellValue();
+				break;
+			}
+		}
+		return value;
+	}
+
+	/**
+	 * 功能：利用反射将 List<Map<String,Object>>结构 生成相应的List<T>数据
+	 *
+	 */
+	public static <T> List<T> toObjectList(List<Map<String, Object>> list, Class<T> clazz) throws Exception {
+		List<T> objList = new LinkedList<T>();
+		for (int i = 0; i < list.size(); i++) {
+			Set<Map.Entry<String, Object>> set = list.get(i).entrySet();
+			Iterator<Entry<String, Object>> it = set.iterator();
+			T obj = clazz.newInstance();
+			Method[] methods = clazz.getDeclaredMethods();
+			while (it.hasNext()) {
+				Map.Entry<String, Object> entry = (Map.Entry<String, Object>) it.next();
+				for (Method m : methods) {
+					if (m.getName().startsWith("set")) {
+						String methodName = entry.getKey().toString();
+						StringBuffer sb = new StringBuffer(methodName);
+						sb.replace(0, 1, (methodName.charAt(0) + "").toUpperCase());
+						methodName = "set" + sb.toString();
+						if (methodName.equals(m.getName())) {
+							m.invoke(obj, entry.getValue());
+							break;
+						}
+					}
+				}
+			}
+			objList.add(obj);
+		}
+		return objList;
+	}
+}

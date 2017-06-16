@@ -1,0 +1,81 @@
+/**
+ * 校友会管理--分会管理
+ *
+ * zxguan@wisdombud.com
+ * 20170329
+ * */
+
+var actionPath = contextPath + "/alumni-club";
+
+$(function() {
+    loadData();
+
+    $("#btn-search").click(function() {
+        loadData();
+    });
+
+    $("#btn-update").click(function() {
+        if (!judgeCheckedOneId()) {
+            return;
+        }
+        location.href = actionPath + "!hrefAddOrUpdate?type=" + type + "&id=" + getCheckedFirstId();
+    });
+
+    $("#btn-detail").click(function() {
+        if (!judgeCheckedOneId()) {
+            return;
+        }
+        var branchId = $('.child:checked').data("id");
+        location.href = actionPath + "!hrefDetail?id=" + getCheckedFirstId() + "&type=" + type + "&branchId=" + branchId;
+    });
+
+    $("#btn-delete").click(function() {
+        if (!judgeCheckedIds()) {
+            return;
+        }
+        var ids = getCheckedIds();
+        alertify.confirm("确定要删除吗？",  function (e)  {            
+            if  (e)  {                
+                $.post(actionPath  +  "!delete?id="  +  ids.join(',') + "&type=" + type,  function (data)  {                    
+                    if  (data.success)  {
+                        alertify.alert("删除成功");
+                        window.history.back();                  
+                    }                
+                },  "json");
+            } 
+            else  {
+                return;
+            }    
+        });
+    });
+
+    $("#btn-email").click(function() {
+        if (!judgeCheckedIds()) {
+            return;
+        }
+        var ids = getCheckedIds();
+
+    });
+
+    $("#btn-download").click(function() {
+        if (!judgeCheckedOneId()) {
+            return;
+        }
+        location.href = actionPath + "!xxx?id=" + getCheckedFirstId();
+    });
+
+    $("#btn-import").click(function() {
+        if (!judgeCheckedIds()) {
+            return;
+        }
+        var ids = getCheckedIds();
+
+    });
+});
+
+function loadData() {
+    var options = {
+        url: actionPath + "!page?type=" + type
+    };
+    loadPaginationData(options);
+}

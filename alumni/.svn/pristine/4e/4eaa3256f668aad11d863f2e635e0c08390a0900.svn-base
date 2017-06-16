@@ -1,0 +1,156 @@
+<!--
+
+	校友会管理--分会管理
+	zxguan
+	201703028
+-->
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <%@include file="/WEB-INF/jsp/common/header.jsp"%>
+        <title>校友管理及分析系统</title>
+        </head>
+
+        <body class="gray-bg">
+            <div class="wrapper wrapper-content  animated fadeInRight">
+                <div class="row">
+                    <div class="col-lg-10 col-lg-offset-1">
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <h5>${typeStr }管理</h5>
+                                <div class="ibox-tools">
+                                    <a class="btn  btn-default marr  btn-sm" href="javascript:;" onclick="window.history.back();">
+                                        <i class="fa fa-reply"></i>&nbsp;返 回
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+                            <div class="m-t">
+                                <form class="form-horizontal" id="baseInfoForm">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span> 校友会名称
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="name">${entity.name}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span> 会长
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="huizhang">${entity.huizhang}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span> 常务副会长
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="changwufuhuizhang">${entity.changwufuhuizhang}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span> 副会长
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="fuhuizhang">${entity.fuhuizhang}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span> 秘书长
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="mishuzhang">${entity.mishuzhang}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span> 常务副秘书长
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="changwufumishuzhang">${entity.changwufumishuzhang}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span> 副秘书长
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="fumishuzhang">${entity.fumishuzhang}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span> 常务理事
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="changwulishi">${entity.changwulishi}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span> 理事
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="lishi">${entity.lishi}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span> 微信号
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="wechatId">${entity.wechatId}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span> 邮箱
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="email">${entity.email}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span> 所在地
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="address">${entity.address}</span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star"></span>成立时间：
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="establishedTime"><s:date name='entity.establishedTime' format='yyyy-MM-dd HH:mm:ss'/></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                             <span class="star"></span>简介：
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <span id="introduction">${entity.introduction}</span>
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+<%@ include file="/WEB-INF/jsp/common/js-container.jsp"%>
+<script>
+	var id = '${id }';
+    var type = '${type }';
+    var typeStr = '${typeStr }';
+</script>
+</html>

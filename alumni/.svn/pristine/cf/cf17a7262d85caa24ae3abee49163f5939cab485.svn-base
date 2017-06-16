@@ -1,0 +1,33 @@
+package com.wisdombud.alumni.actions.information;
+
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.springframework.context.annotation.Scope;
+
+import com.wisdombud.alumni.enums.YesOrNoEnum;
+
+import common.toolkit.java.struts2.AbstractCommonAction;
+
+@Scope("prototype")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({@Result(name = "home", location = "/WEB-INF/jsp/portal/index2.jsp"),
+		  @Result(name = "list", location = "/WEB-INF/jsp/portal/list.jsp"),
+		  @Result(name = "detail", location = "/WEB-INF/jsp/portal/detail.jsp"),
+	})
+public class HomeAction extends AbstractCommonAction {
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	public String execute() throws Exception {
+		return "home";
+	}
+	public String list() {
+		return "list";
+	}
+	public String detail() {
+		return "detail";
+	}
+}

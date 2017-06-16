@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="false">
+
+    <diskStore path="java.io.tmpdir/ehcache-hibernate" />
+
+    <!-- DefaultCache setting. Modify ehcache-safe.xml for timeToIdleSeconds,timeToLiveSecond,diskExpiryThreadIntervalSeconds Use ehcache-safe.xml default for maxElementsInMemory,maxElementsOnDisk,overflowToDisk,eternal Use ehcache default for memoryStoreEvictionPolicy,diskPersistent,. -->
+    <defaultCache maxElementsInMemory="10000" overflowToDisk="true" eternal="false" memoryStoreEvictionPolicy="LRU" maxElementsOnDisk="10000000" diskExpiryThreadIntervalSeconds="600" timeToIdleSeconds="3600" timeToLiveSeconds="100000" diskPersistent="false" />
+    <!-- query cache设置为true将会创建两个缓存区域 -->
+    <!-- 一个用于保存查询结果集 -->
+    <cache name="org.hibernate.cache.StandardQueryCache" maxElementsInMemory="5" eternal="false" timeToLiveSeconds="120" overflowToDisk="false" />
+    <!-- 另一个用于保存最近查询的一系列表的时间戳 -->
+    <cache name="org.hibernate.cache.UpdateTimestampsCache" maxElementsInMemory="5000" eternal="true" overflowToDisk="true" />
+
+    <!-- base -->
+    <cache name="com.widombud.base" maxElementsInMemory="1000" eternal="true" overflowToDisk="true" maxElementsOnDisk="10000" />
+    <!-- sys -->
+    <cache name="com.widombud.sys" maxElementsInMemory="1000" eternal="true" overflowToDisk="true" maxElementsOnDisk="10000" />
+    <!-- sys -->
+    <cache name="com.widombud.dic" maxElementsInMemory="1000" eternal="true" overflowToDisk="true" maxElementsOnDisk="10000" />
+
+    <cache name="com.widombud.bulletinType" eternal="true"  maxElementsInMemory="30"  overflowToDisk="true" />
+
+	<cache name="com.widombud.dictCollege" eternal="true"  maxElementsInMemory="100"  overflowToDisk="true" />
+
+ 	<cache name="com.widombud.dictDegree" eternal="true"  maxElementsInMemory="20"  overflowToDisk="true" />
+
+ 	<cache name="com.widombud.dictJobCategory" eternal="true"  maxElementsInMemory="50"  overflowToDisk="true" />
+
+ 	<cache name="com.widombud.dictNation" eternal="true"  maxElementsInMemory="100"  overflowToDisk="true" />
+
+ 	<cache name="com.widombud.dictPoverty" eternal="true"  maxElementsInMemory="20"  overflowToDisk="true" />
+
+ 	<cache name="com.widombud.dictSpecialty" eternal="true"  maxElementsInMemory="1000"  overflowToDisk="true" />
+
+ 	<cache name="com.widombud.dictSuperiorUnit" eternal="true"  maxElementsInMemory="1000"  overflowToDisk="true" />
+
+	<cache name="com.widombud.dicScale" eternal="true"  maxElementsInMemory="1000"  overflowToDisk="true" />
+
+	<cache name="com.widombud.dicCompanyProperty" eternal="true"  maxElementsInMemory="1000"  overflowToDisk="true" />
+
+	<cache name="com.widombud.dicCapitalCategory" eternal="true"  maxElementsInMemory="1000"  overflowToDisk="true" />
+
+	<cache name="com.widombud.dicIndustry" eternal="true"  maxElementsInMemory="500"  overflowToDisk="true" />
+
+	<cache name="com.widombud.entityCity" eternal="true"  maxElementsInMemory="500"  overflowToDisk="true" />
+
+	<cache name="com.widombud.entityProvince" eternal="true"  maxElementsInMemory="500"  overflowToDisk="true" />
+
+	<cache name="com.widombud.entityProvinceMap" eternal="true"  maxElementsInMemory="500"  overflowToDisk="true" />
+
+	<cache name="com.widombud.entityCapitalUnitMap" eternal="true"  maxElementsInMemory="500"  overflowToDisk="true" />
+
+	<cache name="com.widombud.entityIndustry" eternal="true"  maxElementsInMemory="500"  overflowToDisk="true" />
+
+	<cache name="com.widombud.entityNature" eternal="true"  maxElementsInMemory="500"  overflowToDisk="true" />
+
+	<cache name="com.widombud.entityCapacityCategory" eternal="true"  maxElementsInMemory="500"  overflowToDisk="true" />
+
+	<cache name="com.widombud.entityScale" eternal="true"  maxElementsInMemory="500"  overflowToDisk="true" />
+
+	<cache name="com.widombud.districtVo" eternal="true"  maxElementsInMemory="500"  overflowToDisk="true" />
+
+    <cache name="longTimeCache" maxElementsInMemory="2000" eternal="false" timeToIdleSeconds="300" timeToLiveSeconds="900" overflowToDisk="true" />
+
+</ehcache>

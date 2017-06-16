@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+    <constant name="struts.i18n.encoding" value="utf-8" />
+    <constant name="struts.custom.i18n.resources" value="appResource" />
+    <constant name="struts.enable.DynamicMethodInvocation" value="true" />
+    <!-- <constant name="struts.devMode" value="true"/> -->
+    <!-- 必须设置不然标签无法调用静态方法 -->
+    <constant name="struts.ognl.allowStaticMethodAccess" value="true"/>
+    <constant name="struts.multipart.maxSize" value="500000000" />
+    <constant name="struts.multipart.saveDir" value="/tmp" />
+    <constant name="struts.convention.package.locators" value="web,actions" />
+    <!-- 默认所有的结果页面都存储在WEB-INF/content下 -->
+    <constant name="struts.convention.result.path" value="/WEB-INF/jsp" />
+    <!-- 去掉类名的Action部分。然后将将每个分部的首字母转为小写，用’-’分割  -->
+    <constant name="struts.convention.action.name.separator" value="-" />
+
+    <!-- 不配置的话，jetty将无法使用welcome-list-file进行跳转 <package name="home" namespace="/" extends="struts-default"> <default-action-ref name="index" /> <action name="index" > <result name="success">/index.jsp</result> </action> </package> -->
+
+    <!-- 定义含权限检查拦截器包，供其他模块引用 -->
+    <package name="struts-default-authority" extends="struts-default">
+        <interceptors>
+            <!-- 定义权限检查拦截器 -->
+            <interceptor name="authority" class="com.wisdombud.alumni.interceptor.AuthorityInterceptor" />
+
+            <!-- 定义含“权限检查的拦截器”的拦截器栈，注意缺省的拦截器栈“defaultStack”要放在前面 -->
+            <interceptor-stack name="mydefault">
+                <!-- 定义拦截器栈包含default-stack拦截器栈 -->
+                <interceptor-ref name="defaultStack">
+                    <param name="exception.logEnabled">true</param>
+                    <param name="exception.logLevel">info</param>
+                </interceptor-ref>
+                <!-- 定义拦截器栈包含authority拦截器 -->
+                <interceptor-ref name="authority" />
+               <!--  <interceptor-ref name="xssCheck" /> -->
+            </interceptor-stack>
+        </interceptors>
+
+        <default-interceptor-ref name="mydefault" />
+
+        <!--定义全局Result -->
+        <global-results>
+        	<result name="404">/404.jsp</result>
+        	<result name="500">/500.jsp</result>
+            <result name="json_data">/WEB-INF/jsp/json_data.jsp</result>
+            <result name="tologin">/WEB-INF/jsp/login.jsp</result>
+        </global-results>
+    </package>
+
+    <package name="portal-default" extends="struts-default">
+		<interceptors>
+			<!-- 定义权限检查拦截器 -->
+			<interceptor name="xssCheck" class="common.toolkit.java.web.struts2.interceptor.XSSCheckInterceptor"/>
+
+			<!-- 定义含“权限检查的拦截器”的拦截器栈，注意缺省的拦截器栈“defaultStack”要放在前面 -->
+			<interceptor-stack name="xssCheckDefault">
+				<!-- 定义拦截器栈包含default-stack拦截器栈 -->
+				<interceptor-ref name="defaultStack">
+					<param name="exception.logEnabled">true</param>
+					<param name="exception.logLevel">error</param>
+				</interceptor-ref>
+				<!-- 定义拦截器栈包含authority拦截器 -->
+				<interceptor-ref name="xssCheck"/>
+			</interceptor-stack>
+		</interceptors>
+
+		<default-interceptor-ref name="xssCheckDefault"/>
+
+		<!--定义全局Result-->
+		<global-results>
+			<result type="redirect" name="to_home">/home.action</result>
+			<result name="error">/500.jsp</result>
+		</global-results>
+
+		<!-- 定义全局异常处理 -->
+		<global-exception-mappings>
+			<exception-mapping result="error" exception="java.lang.Exception"></exception-mapping>
+		</global-exception-mappings>
+	</package>
+
+</struts>

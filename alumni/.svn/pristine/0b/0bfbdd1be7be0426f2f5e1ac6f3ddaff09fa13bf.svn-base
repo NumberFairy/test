@@ -1,0 +1,197 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <div class="nav-close">
+            <i class="fa fa-times-circle"></i>
+        </div>
+        <div class="sidebar-collapse">
+            <ul class="nav" id="side-menu">
+                <li class="nav-header">
+                    <div class="dropdown profile-element" style="color: #fff;font-size: 26px;text-align: center;">
+                        校友管理系统
+                    </div>
+                    <div class="logo-element">
+                        校友
+                    </div>
+                </li>
+
+                <!--我的办公桌-->
+                <li>
+                    <a href="javascript:;">
+                        <i class="fa fa-cutlery"></i>
+                        <span class="nav-label">我的办公桌</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/my-desk!hrefPage">我的办公桌</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!--流程审核-->
+                <li class="menu-line dk"></li>
+                <li>
+                    <a href="javascript:;">
+                        <i class="fa fa-flask"></i>
+                        <span class="nav-label">流程审核</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/jsp/library-tube/my-desk/my-desk.jsp">校友注册审核</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">活动审核</a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">校友入会审核</a>
+                        </li>
+                    </ul>
+                </li>
+                <!--校友管理中心-->
+                <li class="menu-line dk"></li>
+                <li>
+                    <a href="javascript:;">
+                        <i class="fa fa-table"></i>
+                        <span class="nav-label">校友管理中心</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/alumni!hrefPage">校友信息库</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/college-key-alumni!hrefPage">学院重点校友</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/school-key-alumni!hrefPage">学校重点校友</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/alumni-liaison!hrefPage">联络员管理</a>
+                        </li>
+                    </ul>
+                </li>
+                <!--校友分会-->
+                <li class="menu-line dk"></li>
+                <li>
+                    <a href="javascript:;">
+                        <i class="fa fa-trophy"></i>
+                        <span class="nav-label">校友分会</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/alumni-club!hrefPage?type=1">地方分会管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/alumni-club!hrefPage?type=2">院系分会管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/alumni-club!hrefPage?type=3">海外分会管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/alumni-club!hrefPage?type=4">行业分会管理</a>
+                        </li>
+                    </ul>
+                </li>
+                <!--校友服务管理 -->
+                <li class="menu-line dk"></li>
+                <li>
+                    <a href="javascript:;">
+                        <i class="fa fa-recycle"></i>
+                        <span class="nav-label">校友服务管理</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/notice!hrefPage">校友通知</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/notice-template!hrefPage">模板管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/alumni-enroll!hrefPage">校友登记</a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- 校友活动管理 -->
+                <li class="menu-line dk"></li>
+                <li>
+                    <a href="javascript:;">
+                        <i class="fa fa-recycle"></i>
+                        <span class="nav-label">校友活动管理</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/alumni-activity!hrefPage">校友活动</a>
+                        </li>
+                    </ul>
+                </li>
+                
+                <!-- 留言板管理 -->
+                <li class="menu-line dk"></li>
+                <li>
+                    <a href="javascript:;">
+                        <i class="fa fa-recycle"></i>
+                        <span class="nav-label">留言板管理</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/message-board!hrefPage">留言板</a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- 门户菜单管理 -->
+                <li class="menu-line dk"></li>
+                <li>
+                    <a href="javascript:;">
+                        <i class="fa fa-recycle"></i>
+                        <span class="nav-label">门户菜单管理</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/jsp/sale/customer-manage/list.jsp">微信轮播图片管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/home-information-release!hrefPage">信息发布管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="/home-menu-manage">门户菜单管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/jsp/sale/customer-manage/list.jsp">轮播图片管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/jsp/sale/customer-manage/list.jsp">友情链接信息管理</a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- 系统管理 -->
+                <li class="menu-line dk"></li>
+                <li>
+                    <a href="javascript:;">
+                        <i class="fa fa-recycle"></i>
+                        <span class="nav-label">系统管理</span>
+                        <span class="fa arrow"></span>
+                    </a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a class="J_menuItem" href="/user-manage!hrefPage">用户管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/jsp/sale/customer-manage/list.jsp">角色管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/jsp/sale/customer-manage/list.jsp">修改密码</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="${contextPath}/college-manage.action">学院专业字典维护</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>

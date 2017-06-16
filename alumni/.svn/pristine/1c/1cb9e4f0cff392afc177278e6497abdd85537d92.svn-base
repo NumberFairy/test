@@ -1,0 +1,404 @@
+package com.wisdombud.alumni.pojo.manage;
+
+import java.math.BigInteger;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.wisdombud.alumni.pojo.base.UUIDReservePo;
+
+/**
+ * @author xushuai
+ */
+@Entity
+@Table(name = "BASE_ALUMNI_ACTIVITY")
+public class BaseAlumniActivity extends UUIDReservePo {
+    private static final long serialVersionUID = 1L;
+
+    @Column(name = "TITLE")
+    private String            title;
+
+    @Column(name = "PERSON")
+    private String            person;
+
+    @Column(name = "PLACE")
+    private String            place;
+
+    @Column(name = "IS_TOP")
+    private Integer           isTop;
+
+    @Column(name = "IS_SIGN_UP")
+    private Integer           isSignUp;
+
+    @Column(name = "START_TIME")
+    private Date              startTime;
+
+    @Column(name = "END_TIME")
+    private Date              endTime;
+
+    @Column(name = "APPLY_START_TIME")
+    private Date              applyStartTime;
+
+    @Column(name = "APPLY_END_TIME")
+    private Date              applyEndTime;
+
+    @Column(name = "CONTENT")
+    private String            content;
+
+    @Column(name = "APPLICY_PERSON")
+    private String            applicyPerson;
+
+    @Column(name = "IS_QIYONG")
+    private Integer           isQiYong;
+
+    @Column(name = "LAI_YUAN")
+    private String            laiYuan;
+
+    @Transient
+    private String            isTopName;
+    @Transient
+    private String            isSignUpName;
+    @Transient
+    private String            isQiYongName;
+    @Transient
+    private BigInteger        count;
+    @Transient
+    private String            applicyPersonName;
+    @Transient
+    private String            personName;
+
+    /**
+     * 功能:get '是否启用'<br/>
+     * date: <br/>
+     *
+     * @pfhu
+     * @return
+     */
+    public Integer getIsQiYong() {
+        return isQiYong;
+    }
+
+    public void setIsQiYong(Integer isQiYong) {
+        this.isQiYong = isQiYong;
+    }
+
+    /**
+     * 功能:get '来源'<br/>
+     * date: <br/>
+     *
+     * @pfhu
+     * @return
+     */
+    public String getLaiYuan() {
+        return laiYuan;
+    }
+
+    public void setLaiYuan(String laiYuan) {
+        this.laiYuan = laiYuan;
+    }
+
+    /**
+     * 功能:get '发布人'<br/>
+     * date: <br/>
+     *
+     * @pfhu
+     * @return
+     */
+    public String getApplicyPerson() {
+        return applicyPerson;
+    }
+
+    public void setApplicyPerson(String applicyPerson) {
+        this.applicyPerson = applicyPerson;
+    }
+
+    /**
+     * 功能:get '标题'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * 功能:set '标题'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    /**
+     * 功能:get '发布人'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+
+    public String getPerson() {
+        return person;
+    }
+
+    /**
+     * 功能:set '发布人'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+    public void setPerson(String person) {
+        this.person = person;
+    }
+
+    /**
+     * 功能:get '活动地点'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+
+    public String getPlace() {
+        return place;
+    }
+
+    /**
+     * 功能:set '活动地点'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    /**
+     * 功能:get '是否置顶'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+
+    public Integer getIsTop() {
+        return isTop;
+    }
+
+    /**
+     * 功能:set '是否置顶'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+    public void setIsTop(Integer isTop) {
+        this.isTop = isTop;
+    }
+
+    /**
+     * 功能:get '是否允许报名'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+
+    public Integer getIsSignUp() {
+        return isSignUp;
+    }
+
+    /**
+     * 功能:set '是否允许报名'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+    public void setIsSignUp(Integer isSignUp) {
+        this.isSignUp = isSignUp;
+    }
+
+    /**
+     * 功能:get '活动开始时间'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * 功能:set '活动开始时间'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    /**
+     * 功能:get '活动结束时间'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    /**
+     * 功能:set '活动结束时间'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    /**
+     * 功能:get '内容'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+
+    public String getContent() {
+        return content;
+    }
+
+    /**
+     * 功能:set '内容'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getIsTopName() {
+        return isTopName;
+    }
+
+    public void setIsTopName(String isTopName) {
+        this.isTopName = isTopName;
+    }
+
+    public String getIsSignUpName() {
+        return isSignUpName;
+    }
+
+    public void setIsSignUpName(String isSignUpName) {
+        this.isSignUpName = isSignUpName;
+    }
+
+    public String getIsQiYongName() {
+        return isQiYongName;
+    }
+
+    public void setIsQiYongName(String isQiYongName) {
+        this.isQiYongName = isQiYongName;
+    }
+
+    /**
+     * 功能:get '报名人数'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+    public BigInteger getCount() {
+        return count;
+    }
+
+    /**
+     * 功能:set '报名人数'<br/>
+     * date: <br/>
+     *
+     * @author
+     * @return
+     */
+    public void setCount(BigInteger count) {
+        this.count = count;
+    }
+
+    public String getApplicyPersonName() {
+        return applicyPersonName;
+    }
+
+    public void setApplicyPersonName(String applicyPersonName) {
+        this.applicyPersonName = applicyPersonName;
+    }
+
+    public String getPersonName() {
+        return personName;
+    }
+
+    public void setPersonName(String personName) {
+        this.personName = personName;
+    }
+
+    /**
+     * applyStartTime.
+     * 
+     * @return the applyStartTime
+     * @since JDK 1.7
+     */
+    public Date getApplyStartTime() {
+        return applyStartTime;
+    }
+
+    /**
+     * applyStartTime.
+     * 
+     * @param applyStartTime the applyStartTime to set
+     * @since JDK 1.7
+     */
+    public void setApplyStartTime(Date applyStartTime) {
+        this.applyStartTime = applyStartTime;
+    }
+
+    /**
+     * applyEndTime.
+     * 
+     * @return the applyEndTime
+     * @since JDK 1.7
+     */
+    public Date getApplyEndTime() {
+        return applyEndTime;
+    }
+
+    /**
+     * applyEndTime.
+     * 
+     * @param applyEndTime the applyEndTime to set
+     * @since JDK 1.7
+     */
+    public void setApplyEndTime(Date applyEndTime) {
+        this.applyEndTime = applyEndTime;
+    }
+
+}

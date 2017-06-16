@@ -1,0 +1,138 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <%@include file="/WEB-INF/jsp/common/portal-header.jsp"%>
+        <title>地质大学校友管理系统</title>
+        <style>
+            span.star {
+                color: red;
+                padding: 0 10px;
+                vertical-align: middle;
+            }
+            
+            .form-horizontal .control-label {
+                text-align: right;
+                margin-bottom: 0;
+                padding-top: 7px;
+            }
+            
+            .col-sm-3 {
+                width: 25%;
+                float: left;
+            }
+            
+            .col-sm-7 {
+                width: 58.33333333%;
+                float: left;
+            }
+        </style>
+        </head>
+
+        <body>
+            <%@include file="../menu.jsp"%>
+                <!--内容部分-->
+                <div class="main-form clearfix">
+                    <form id="infoForm" class="form-horizontal bv-form" action="/update-info.html" method="post" novalidate="novalidate">
+                        <div class="form-group">
+                            <label class="control-label col-sm-3"><span class="star">*</span>活动主题：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" placeholder="请输入活动主题" name="entity.title" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3"><span class="star">*</span>活动地点：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" placeholder="请输入活动地点" name="entity.place" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">
+                                <span class="star">*</span> 是否允许报名:
+                            </label>
+                            <div class="col-sm-8">
+                                <div class="checkbox checkbox-success checkbox-inline">
+                                    <input type="radio" id="ordinarySignUp" name="entity.isSignUp" value="1" <c:if test="${entity.isSignUp==1}">checked</c:if>
+                                    >
+                                    <label for="ordinarySignUp">是</label>
+                                </div>
+                                <div class="checkbox checkbox-success checkbox-inline">
+                                    <input type="radio" id="specialSignUp" name="entity.isSignUp" value="0" <c:if test="${entity==null||entity.isSignUp==0}">checked</c:if>
+                                    >
+                                    <label for="specialSignUp">否</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="timeIsHidden">
+                            <div class="form-group">
+                                <input type="text" class="hidden" name="entity.person" value="${sessionScope.UserSession.id}">
+                                <label class="control-label col-sm-3"><span class="star">*</span>活动开始时间：</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control form_time" name="entity.startTime" value="" placeholder="请输入活动开始时间">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3"><span class="star">*</span>活动结束时间：</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control form_time" placeholder="请输入活动结束时间" name="entity.endTime" value="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3"><span class="star">*</span>报名开始时间：</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control form_time" placeholder="请输入报名开始时间" name="entity.applyStartTime" value="">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-sm-3"><span class="star">*</span>报名结束时间：</label>
+                                <div class="col-sm-7">
+                                    <input type="text" class="form-control form_time" placeholder="请输入报名结束时间" name="entity.applyEndTime" value="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3"><span class="star"></span>活动内容</label>
+                            <div class="col-sm-7">
+                                <div id="kindeditor-div">
+                                    <textarea id="editor_id" name="entity.content">${entity.content}</textarea>
+                                </div>
+                                <!--<textarea name="entity.content" class="form-control" rows="4" placeholder="请输入">${entity.content}</textarea>-->
+                            </div>
+                        </div>
+                        <div align="center">
+                            <button id="submit" type="button" class="btn btn-primary">发布</button>
+                        </div>
+                    </form>
+                </div>
+                <!--内容部分end-->
+                <%@include file="/WEB-INF/jsp/common/js-portal-container.jsp"%>
+                    <%@include file="/WEB-INF/jsp/common/portal-footer.jsp"%>
+        </body>
+        <script type="text/javascript" src="${contentPath}\resources\js\portal\my-activity.js"></script>
+        <script type="text/javascript" src="${contextPath}/js-lib/kindeditor-4.1.10/kindeditor.js"></script>
+        <script>
+            if ('${entity.isSignUp}' == '1') {
+                $('#timeIsHidden').show();
+            } else {
+                $('#timeIsHidden').hide();
+            }
+        </script>
+        <script type="text/javascript">
+            var kindOptions = {
+                width: '100%',
+                height: '300px',
+                uploadJson: "/kindeditor-upload",
+                allowFileManager: true,
+                formatUploadUrl: false,
+                afterBlur: function() {
+                    this.sync();
+                    //手动重新验证
+                    var bv = $infoForm.data('bootstrapValidator');
+                    bv.revalidateField("entity.content");
+                },
+                afterCreate: function() {
+                    this.sync();
+                }
+            };
+
+            editor = KindEditor.create('#editor_id', kindOptions);
+        </script>
+
+        </html>

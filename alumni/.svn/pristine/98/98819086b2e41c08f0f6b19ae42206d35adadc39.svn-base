@@ -1,0 +1,91 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Lists;
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.manage.BaseAlumniLiaisonSrv;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniLiaison;
+import com.wisdombud.alumni.pojo.manage.BaseIdentityRelation;
+import com.wisdombud.alumni.util.BeanUtils;
+import com.wisdombud.alumni.vo.Param;
+
+import org.apache.log4j.Logger;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 校友联络员表Srv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Service(value = "baseAlumniLiaisonSrv")
+public class BaseAlumniLiaisonSrvImpl extends BaseSrvImpl<BaseAlumniLiaison> implements BaseAlumniLiaisonSrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseAlumniLiaisonSrvImpl.class);
+	@Autowired
+	public BaseAlumniSrv alumniSrv;
+
+	public BaseAlumniLiaisonSrvImpl() {
+	}
+
+	@Autowired
+	public BaseAlumniLiaisonSrvImpl(
+			@Qualifier(value = "baseAlumniLiaisonDao") CommonDao<BaseAlumniLiaison, String> commonDao) {
+		super(commonDao);
+	}
+
+	@Override
+	public void page(PageEntity<BaseAlumniLiaison> pageEntity, Map<String, Param> params, List<Order> orders) {
+		super.page(pageEntity, params, orders);
+		List<BaseAlumniLiaison> list = pageEntity.getResults();
+		for (BaseAlumniLiaison inst : list) {
+			if (StringUtils.isNotBlank(inst.getAlumniId())) {
+				inst.setAlumni(alumniSrv.find(inst.getAlumniId()));
+			}
+		}
+	}
+
+	@Override
+	public BaseAlumniLiaison find(String id) {
+		BaseAlumniLiaison relation = super.find(id);
+		if (StringUtils.isNotBlank(relation.getAlumniId())) {
+			relation.setAlumni(alumniSrv.find(relation.getAlumniId()));
+		}
+		return relation;
+	}
+
+	@Override
+	public void update(BaseAlumniLiaison entity) {
+		if (StringUtils.isNotBlank(entity.getAlumniId())) {
+			BaseAlumni alumniEntity = alumniSrv.find(entity.getAlumniId());
+			alumniEntity.setLastUpdate(new Date());
+			List<String> list = Lists.newArrayList();
+			BeanUtils.copyProperties(entity.getAlumni(), alumniEntity, setStringArray());
+		}
+	}
+
+	private String[] setStringArray() {
+		int length = 10;
+		String[] strs = new String[length];
+		strs[0] = "id";
+		strs[1] = "createTime";
+		for (int i = 3; i <= 10; i++) {
+			strs[i - 1] = "remark" + i;
+		}
+		return strs;
+	}
+}

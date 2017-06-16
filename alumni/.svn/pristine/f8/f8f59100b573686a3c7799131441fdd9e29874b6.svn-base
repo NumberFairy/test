@@ -1,0 +1,158 @@
+package com.wisdombud.alumni.actions.information;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.wisdombud.alumni.constants.Constants;
+import com.wisdombud.alumni.pojo.system.PublicUser;
+import com.wisdombud.alumni.pojo.system.SecOper;
+import com.wisdombud.alumni.pojo.system.SecUser;
+import com.wisdombud.alumni.system.PublicUserSrv;
+import com.wisdombud.alumni.system.SecOperSrv;
+import com.wisdombud.alumni.system.SecUserSrv;
+import com.wisdombud.alumni.threadlocal.UserSession;
+import com.wisdombud.alumni.threadlocal.UserThreadLocal;
+
+import common.toolkit.java.constant.ResultConstant;
+import common.toolkit.java.struts2.AbstractCommonAction;
+import common.toolkit.java.util.StringUtil;
+
+/**
+ * 功能: 登陆<br/>
+ * date: 2017-4-11 9:17:00 <br/>
+ *
+ * @author zxguan
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("prototype")
+@ParentPackage(value = "portal-default")
+@Namespace("/")
+public class LoginAction extends AbstractCommonAction {
+
+	private static final long serialVersionUID = 1L;
+	private static final String ADMIN_LOGIN_URL = "/";
+	private static final String ALUMNI_lOGIN_URL = "/home";
+
+	@Autowired
+	private PublicUserSrv		pSrv;
+	@Autowired
+	private SecUserSrv			sSrv;
+	@Autowired
+	private SecOperSrv			operSrv;
+
+	private String				loginName;
+	private String				password;
+	private String 				type;
+
+	@Override
+	public String execute() throws Exception {
+		return ResultConstant.TOLOGIN;
+	}
+
+	public void login() {
+		if (StringUtils.isBlank(loginName) || StringUtils.isBlank(password)) {
+			sendFailMsg("", "用户名或密码为空");
+			return;
+		}
+		PublicUser user = pSrv.findUniqueBy("loginName", this.loginName.trim());
+		//2、查注册审核表
+		if (user == null) {
+			sendFailMsg("", "用户名不存在");
+			return;
+		}
+		if (!user.getPwdHash().equals(StringUtil.encrypt(this.password.trim() + user.getSalt()))) {
+			sendFailMsg("", "密码错误");
+			return;
+		}
+		String url = this.type.equals(Constants.ADMIN_LOGIN_URL) ? ADMIN_LOGIN_URL : ALUMNI_lOGIN_URL;
+		addSession(user);
+		addCookie();
+		final Map<String, Object> result = new HashMap<String, Object>();
+		result.put("url", url);
+		result.put("success", "success");
+		sendSuccessMsg(result, "");
+	}
+
+	private void addSession(final PublicUser pUser) {
+		ActionContext.getContext().getSession().put("loginName", pUser.getLoginName());
+		final UserSession userSession = new UserSession();
+		SecUser sUser = sSrv.find(pUser.getId());
+		userSession.setId(pUser.getId());
+		userSession.setLoginName(pUser.getLoginName());
+		userSession.setUserName((null != sUser && null != sUser.getName()) ? sUser.getName() : pUser.getLoginName());
+		userSession.setSessionId(ServletActionContext.getRequest().getSession().getId());
+		userSession.setDesignation(pUser.getDesignation());
+		userSession.setIsAdmin(null == sUser ? 0 : sUser.getIsAdmin());
+		if (null != sUser && sUser.getIsAdmin() == 1) {
+			List<SecOper> operList = operSrv.findOperListByUserId(sUser.getId());
+			userSession.setOperList(operList);
+		}
+		ActionContext.getContext().getSession().put("UserSession", userSession);
+	}
+
+	private void addCookie() {
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setCharacterEncoding("UTF-8");
+		Cookie loginNameCookie = new Cookie("loginName", null == this.loginName ? "" : this.loginName);
+		Cookie passwordCookie = new Cookie("password", null == this.password ? "" : password);
+//		if (rememberme.equals(Constants.REMENBER_ME)) {
+//			passwordcookie.setMaxAge(60 * 60 * 24 * 7);
+//			userNamecookie.setMaxAge(60 * 60 * 24 * 7);
+//		} else {
+//			userNamecookie.setMaxAge(0);
+//			passwordcookie.setMaxAge(0);
+//		}
+		ServletActionContext.getResponse().addCookie(loginNameCookie);
+		ServletActionContext.getResponse().addCookie(passwordCookie);
+		response.addCookie(loginNameCookie);
+		response.addCookie(passwordCookie);
+	}
+
+	public String userExit() {
+		final HttpSession session = ServletActionContext.getRequest().getSession();
+		session.removeAttribute("loginName");
+		session.removeAttribute("UserSession");
+		session.invalidate();
+		UserThreadLocal.setUserSession(null);
+		return ResultConstant.TO_HOME;
+	}
+
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+}

@@ -1,0 +1,14 @@
+package com.wisdombud.alumni.dao.manage;
+import com.wisdombud.alumni.pojo.manage.BaseMessageBoard;
+
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+	/**
+     * 留言表 Dao. <br/>
+     * @author Administrator
+     
+     */
+public interface BaseMessageBoardDao extends CommonDao<BaseMessageBoard, String> {
+
+	
+}

@@ -1,0 +1,19 @@
+package com.wisdombud.alumni.manage;
+
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.pojo.manage.BaseBranchRelation;
+import com.wisdombud.alumni.threadlocal.UserSession;
+
+/**
+ * 分会信息关联表 ISrv. <br/>
+ *
+ * @author Administrator
+ *
+ */
+public interface BaseBranchRelationSrv extends IBaseSrv<BaseBranchRelation> {
+
+	void addBranchRelation(String chapterStr, String collegeStr, String overseaStr, String industryStr, UserSession userSession);
+
+	void addJoinInBranchApply(String chapterStr, String collegeStr, String overseaStr, String industryStr, UserSession userSession);
+
+}

@@ -1,0 +1,5 @@
+package com.wisdombud.alumni.manage;
+
+public interface ImportExportSrv {
+
+}

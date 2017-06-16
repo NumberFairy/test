@@ -1,0 +1,14 @@
+#微信轮播图片管理,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,HOME_NEWS_PIC,;,,,,,,,
+CREATE TABLE ,HOME_NEWS_PIC,(,,,,,,,
+,ID,VARCHAR(36) ,NOT NULL,primary key,,,,,","
+,TITLE,VARCHAR(200) ,,,,,COMMENT ,图片名称',","
+,PIC_ID,VARCHAR(200),,,,,COMMENT ,图片ID',","
+,LINK_URL,VARCHAR(200),,,,,COMMENT ,指向链接',","
+,SORT_FLAG,int(1),,,,,COMMENT ,排序',","
+,PIC_STATE,int(10),,,,,COMMENT ,是否使用轮播图',","
+,INTRO,VARCHAR(200),,,,,COMMENT ,正文结束',","
+,IS_PC,VARCHAR(255),,,,,COMMENT ,是否是pc端的图片',","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,微信轮播图片管理',;,,,,,,,

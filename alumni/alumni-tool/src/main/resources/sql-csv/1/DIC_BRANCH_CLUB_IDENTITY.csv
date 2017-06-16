@@ -1,0 +1,8 @@
+#校友分会任职身份表,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,DIC_BRANCH_CLUB_IDENTITY,;,,,,,,,
+CREATE TABLE ,DIC_BRANCH_CLUB_IDENTITY,(,,,,,,,
+,ID,VARCHAR(36) ,NOT NULL,primary key,,,,,","
+,value,VARCHAR(36) ,,,,,COMMENT ,身份名称',","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,校友分会任职身份表',;,,,,,,,

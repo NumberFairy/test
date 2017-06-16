@@ -1,0 +1,50 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.enums.YesOrNoEnum;
+import com.wisdombud.alumni.manage.BaseMessageBoardSrv;
+import com.wisdombud.alumni.pojo.manage.BaseMessageBoard;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 留言表Srv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Service(value = "baseMessageBoardSrv")
+public class BaseMessageBoardSrvImpl extends BaseSrvImpl<BaseMessageBoard> implements BaseMessageBoardSrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseMessageBoardSrvImpl.class);
+
+	public BaseMessageBoardSrvImpl() {
+	}
+
+	@Autowired
+	public BaseMessageBoardSrvImpl(
+			@Qualifier(value = "baseMessageBoardDao") CommonDao<BaseMessageBoard, String> commonDao) {
+		super(commonDao);
+	}
+
+	@Override
+	public void page(PageEntity<BaseMessageBoard> pageEntity, Map<String, Param> params, List<Order> orders) {
+		super.page(pageEntity, params, orders);
+		for (BaseMessageBoard baseMessageBoard : pageEntity.getResults()) {
+			baseMessageBoard.setStatusName(YesOrNoEnum.valueByIndex(baseMessageBoard.getStatus()).getName());
+			baseMessageBoard.setIsReplyName(YesOrNoEnum.valueByIndex(baseMessageBoard.getIsReply()).getName());
+		}
+	}
+
+}

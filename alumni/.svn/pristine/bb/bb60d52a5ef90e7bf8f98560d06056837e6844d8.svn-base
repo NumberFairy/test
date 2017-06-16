@@ -1,0 +1,9 @@
+package com.wisdombud.alumni.system;
+
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.pojo.system.PublicUser;
+
+public interface PublicUserSrv extends IBaseSrv<PublicUser> {	
+
+	void updateResetPwd(String ids);
+}

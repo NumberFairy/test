@@ -1,0 +1,215 @@
+/**
+ * 校友管理中心--校友信息库
+ *
+ * zxguan@wisdombud.com
+ * 20170303
+ * */
+
+var actionPath = contextPath + "/alumni";
+
+$(function () {
+    loadData();
+    creatDicOption("collegeId", "/dic-common!findAllCollege", '', 'aa');
+
+    //专业院字典
+    creatDicOption("zhuanYeId", "/dic-common!findAllCollegeSpecialty", '', 'aa');
+
+    creatDicOption("zhengZhiId", "/dic-common!findPoliticalStatus", '', 'aa');  //政治面貌字典
+    creatDicOption("xueLiId", "/dic-common!findAllDicDegree", '', 'aa');//学历
+
+
+
+    //专业院字典
+    creatDicOption("major-sel", "/dic-common!findAllCollegeSpecialty", { 'id': 30100 });
+    $('#college-sel').change(function (event) {
+        creatDicOption("major-sel", "/dic-common!findAllCollegeSpecialty", { 'id': $(this).val() });
+    });
+    creatDicOption("politicalStatus", "/dic-common!findPoliticalStatus");  //政治面貌字典
+    creatDicOption("industryId", "/dic-common!findDicIndustry");    //行业
+    creatDicOption("educationId", "/dic-common!findAllDicDegree");//学历
+
+
+    $(".companyAddress").districtpicker({
+        url: contextPath + '/dic-common!findAllDistricts',
+        level: 3,
+        global: true, //是否有国家
+        onchange: function (obj) {
+            // var bv = $form.data('bootstrapValidator');
+            // //手动触发验证
+            // bv.revalidateField(obj);
+        }
+    });
+    $("#btn-search").click(function () {
+        var params = $("#form").serialize();
+        var options = {
+            url: actionPath + "!page",
+            queryParams: params
+        };
+        loadPaginationData(options);
+    });
+
+    $("#btn-detail").click(function () {
+        if (!judgeCheckedOneId()) {
+            return;
+        }
+        location.href = actionPath + "!hrefDetail?id=" + getCheckedFirstId();
+    });
+
+    $("#btn-update").click(function () {
+        if (!judgeCheckedOneId()) {
+            return;
+        }
+        location.href = actionPath + "!hrefAddOrUpdate?entity.id=" + getCheckedFirstId();
+    });
+
+    $("#btn-delete").click(function () {
+        if (!judgeCheckedIds()) {
+            return;
+        }
+        var ids = getCheckedIds();
+        alertify.confirm("确定要删除吗？", function (e) {
+            if (e) {
+                $.post(actionPath + "!delete?id=" + ids.join(','), function (data) {
+                    if (data.success) {
+                        loadData();
+                        alertify.alert("删除成功");
+                    }
+                }, "json");
+                location.href = actionPath + "!hrefPage";
+            } else {
+                return;
+            }
+        });
+    });
+
+    $("#btn-email").click(function () {
+        var ids = getCheckedIds();
+        $.post(actionPath + "!forEmail?id=" + ids, function (data) {
+            if (data.success) {
+                $("#emailAddress").val(data.message);
+            }
+        }, "json");
+
+        $('#myModal').modal({
+            keyboard: false
+        });
+    });
+
+    $("#btn-import").click(function () {
+        location.href = contextPath + "/alumni-import!hrefPage";
+    });
+        /*导出相关数据*/
+    $("#btn-export").click(function() {
+        $('#myModal').modal({
+            keyboard: false
+        });
+    });
+
+     /*导出Excel*/
+    $('#exprot_btn').on('click', function() {
+        location.href="alumni!exportInfo.action?exportFields=" + $("#exportFields").val();
+        // Export.ExportExcel(this, {
+        //     url: 'alumni!exportInfo.action',
+        //     params: 'exportFields=' + $("#exportFields").val()
+        // });
+    });
+
+    //可导出字段
+    var $p = $("#exportFieldChecks"),
+        $jp = $("input[name='exportFields']");
+    $("#flowDetail").delegate(":checkbox", "click", function() {
+        var zc = $p.data("zc");
+        if (!zc) {
+            zc = new Array;
+            $p.data("zc", zc);
+        }
+
+        var $this = $(this);
+        if ($this.is(':checked')) {
+            zc.push($this.val());
+        } else {
+            zc.splice(zc.indexOf($this.val()), 1);
+        }
+        $jp.val(zc.join()).trigger("change");
+    });
+
+    $("#emailSubmit").click(function () {
+        var flag = false;
+        var title = $('#title').val();
+        var email = $('#emailAddress').val();
+        var replyContent = $('#emailContent').val();
+        if (email != "" && replyContent != "") {
+            $.post(actionPath + "!sendMail", {
+                title: title,
+                email: email,
+                replyContent: replyContent
+            }, function (data) {
+                if (data.success) {
+                    alertify.alert("发送成功");
+
+                } else {
+                    alertify.alert("发送失败");
+                }
+                setTimeout(function () {
+                    location.href = actionPath + "!hrefPage";
+                }, 500);
+            }, "json");
+
+        } else {
+            alertify.alert('邮箱和回复内容不能为空');
+        }
+    });
+
+    $("#btn-liaison").click(function () {
+        if (!judgeCheckedIds()) {
+            return;
+        }
+        var ids = getCheckedIds();
+        alertify.confirm("确定要设为联络员吗？", function (e) {
+            if (e) {
+                $.post(actionPath + "!becomeLiaison?id=" + ids.join(','), function (data) {
+                    if (data.success) {
+                        loadData();
+                        alertify.alert("设置联络员成功！");
+                    }
+                }, "json");
+
+            } else {
+                return;
+            }
+        });
+    });
+    $("#btn-timeline").click(function () {
+        if (!judgeCheckedOneId()) {
+            return;
+        }
+        location.href = contextPath + "/timeline" + "!hrefDisplayTimeline?alumniId=" + getCheckedFirstId();
+
+    });
+
+    openOrHidden("open-department");
+    openOrHidden("open-jobnetwork");
+
+    function openOrHidden(id) {
+        var cObject = $("#" + id);
+        cObject.click(function () {
+            cObject.find(".ow").toggleClass("hide");
+            cObject.prev().toggleClass("fixed-height");
+            if (cObject.hasClass("sl-item-option")) {
+                cObject.removeClass("sl-item-option");
+                cObject.addClass("sl-item-shouqi");
+            } else {
+                cObject.removeClass("sl-item-shouqi");
+                cObject.addClass("sl-item-option");
+            }
+        });
+    }
+
+});
+
+function loadData() {
+    var options = {
+        url: actionPath + "!page"
+    };
+    loadPaginationData(options);
+}

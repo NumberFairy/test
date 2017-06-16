@@ -1,0 +1,335 @@
+/**
+ * Date:2015年4月15日 下午4:30:55
+ * Copyright (c) 2015, www.wisdombud.com All Rights Reserved.
+ */
+
+package com.wisdombud.alumni.common;
+
+import static com.google.common.base.Preconditions.checkArgument;
+
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Order;
+import org.hibernate.metadata.ClassMetadata;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
+
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.DateFormat;
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+import common.toolkit.java.orm.hibernate.GeneralQuery;
+import common.toolkit.java.util.DateUtil;
+import common.toolkit.java.util.ReflectUtils;
+import common.toolkit.java.util.StringUtil;
+
+/**
+ * date: 2015年4月15日 下午4:30:55 <br/>
+ *
+ * @author guohuilin
+ * @version
+ * @since JDK 1.6
+ */
+public abstract class BaseSrvImpl<T> implements IBaseSrv<T> {
+
+	@Autowired
+	protected SessionFactory sessionFactory;
+	private static final Pattern FROM_PATTERN = Pattern.compile("[Ff][Rr][Oo][Mm]");
+	private static final Pattern ORDER_PATTERN = Pattern.compile("[Oo][Rr][Dd][Ee][Rr]\\s*?[Bb][Yy].*");
+	private Class<T> entityClass;
+	protected CommonDao<T, String> commonDao;
+
+	public BaseSrvImpl() {
+		this.entityClass = ReflectUtils.getSuperClassGenricType(getClass());
+	}
+
+	@Autowired
+	public BaseSrvImpl(CommonDao<T, String> commonDao) {
+		this.entityClass = ReflectUtils.getSuperClassGenricType(getClass());
+		this.commonDao = commonDao;
+	}
+
+	/**
+	 * @see com.wisdombud.erp.business.IBaseSrv#find(java.lang.String)
+	 */
+
+	@Override
+	public T find(String id) {
+		return commonDao.get(id);
+	}
+
+	/**
+	 * @see com.wisdombud.erp.business.IBaseSrv#findAll()
+	 */
+
+	@Override
+	public List<T> findAll() {
+		return commonDao.getAll();
+	}
+
+	@Override
+	public String save(T entity) {
+		return commonDao.save(entity);
+	}
+
+	@Override
+	public void update(T entity) {
+		commonDao.update(entity);
+	}
+
+	/**
+	 * @see com.wisdombud.erp.business.IBaseSrv#saveOrUpdate(java.lang.Object)
+	 */
+
+	@Override
+	public void saveOrUpdate(T entity) {
+		commonDao.saveOrUpdate(entity);
+	}
+
+	/**
+	 * @see com.wisdombud.erp.business.IBaseSrv#findUniqueBy(java.lang.String,
+	 *      java.lang.Object)
+	 */
+
+	@Override
+	public T findUniqueBy(String key, Object value) {
+		return commonDao.findUniqueBy(key, value);
+	}
+
+	public T findFirst() {
+		GeneralQuery<T> query = commonDao.createGeneralQuery();
+		query.setMaxResults(1);
+		List<T> resultList = query.list();
+		return resultList.isEmpty() ? null : resultList.get(0);
+	}
+
+	/**
+	 * @see com.wisdombud.erp.business.IBaseSrv#findBy(java.lang.String,
+	 *      java.lang.Object)
+	 */
+
+	@Override
+	public List<T> findBy(String key, Object value) {
+		return commonDao.findBy(key, value);
+	}
+
+	@Override
+	public List<T> findBy(Map<String, Object> paramMap) {
+		GeneralQuery<T> gq = commonDao.createGeneralQuery();
+		for (String key : paramMap.keySet()) {
+			gq.eq(key, paramMap.get(key));
+		}
+		return gq.list();
+	}
+
+	@Override
+	public List<T> findByAsc(Map<String, Object> paramMap, List<String> orderPropertyList) {
+		GeneralQuery<T> gq = commonDao.createGeneralQuery();
+		for (String key : paramMap.keySet()) {
+			gq.eq(key, paramMap.get(key));
+		}
+		for (String os : orderPropertyList) {
+			gq.asc(os);
+		}
+		return gq.list();
+	}
+
+	@Override
+	public List<T> findByDesc(Map<String, Object> paramMap, List<String> orderPropertyList) {
+		GeneralQuery<T> gq = commonDao.createGeneralQuery();
+		for (String key : paramMap.keySet()) {
+			gq.eq(key, paramMap.get(key));
+		}
+		for (String os : orderPropertyList) {
+			gq.desc(os);
+		}
+		return gq.list();
+	}
+
+	/**
+	 * @see com.wisdombud.erp.business.IBaseSrv#findBy(java.util.Map,
+	 *      java.util.List)
+	 */
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<T> findBy(Map<String, Param> params, List<Order> orders) {
+		StringBuffer hql = new StringBuffer("FROM " + this.getEntityName() + " WHERE 1=1");
+		buildParams(hql, params);
+		bulidOrders(hql, orders);
+
+		Map<String, Object> paramsMap = new HashMap<String, Object>();
+		for (Entry<String, Param> entry : params.entrySet()) {
+			paramsMap.put(entry.getKey(), entry.getValue().getVal());
+		}
+
+		checkArgument(!StringUtil.isEmpty(hql.toString()), "hql can not be empty");
+		Query query = this.createQuery(hql.toString(), true, paramsMap);
+		return query.list();
+	}
+
+	/**
+	 * @see com.wisdombud.erp.business.IBaseSrv#findUniqueBy(java.util.Map,
+	 *      java.util.List)
+	 */
+
+	@Override
+	public T findUniqueBy(Map<String, Object> paramMap, List<Order> orderList) {
+		GeneralQuery<T> gq = commonDao.createGeneralQuery();
+		for (String key : paramMap.keySet()) {
+			gq.eq(key, paramMap.get(key));
+		}
+		if (orderList != null) {
+			for (Order o : orderList) {
+				gq.order(o);
+			}
+		}
+
+		List<T> resultList = gq.list();
+		return resultList.isEmpty() ? null : resultList.get(0);
+	}
+
+	@Override
+	public void deleteById(String id) {
+		commonDao.deleteById(id);
+	}
+
+	@Override
+	public void deleteByIds(String ids) {
+		String[] idArray = ids.split(",");
+		for (String id : idArray) {
+			commonDao.deleteById(id);
+		}
+	}
+
+	@Override
+	public void deleteBy(String key, Object value) {
+		Query query = sessionFactory.getCurrentSession()
+				.createQuery("delete " + this.getEntityName() + " where " + key + " =:" + key);
+		query.setParameter(key, value);
+		query.executeUpdate();
+	}
+
+	/**
+	 * 获取实体名称
+	 *
+	 * @return String
+	 */
+	protected String getEntityName() {
+		ClassMetadata meta = sessionFactory.getClassMetadata(entityClass);
+		return meta.getEntityName();
+	}
+
+	private void fillParams(final Query query, final Map<String, ?> params) {
+		if (null == query || null == params) {
+			return;
+		}
+		for (Map.Entry<String, ?> entry : params.entrySet()) {
+			if (null == entry.getValue() || StringUtil.isEmpty(entry.getValue().toString().trim())) {
+				continue;
+			}
+			if (entry.getValue() instanceof Collection<?>) {
+				query.setParameterList(entry.getKey(), (Collection<?>) entry.getValue());
+			} else if (entry.getValue() instanceof Object[]) {
+				query.setParameterList(entry.getKey(), (Object[]) entry.getValue());
+			} else {
+				query.setParameter(entry.getKey(), entry.getValue());
+			}
+		}
+	}
+
+	protected String generateCountHql(final String querySql) {
+		// 去掉order by
+		Matcher orderMatcher = ORDER_PATTERN.matcher(querySql);
+		final String newquerySql = orderMatcher.replaceAll("");
+
+		StringBuffer sb = new StringBuffer("select count(*) ");
+		Matcher matcher = FROM_PATTERN.matcher(newquerySql);
+		if (matcher.find()) {
+			sb.append(newquerySql.substring(matcher.start()));
+			return sb.toString();
+		}
+
+		return newquerySql;
+	}
+
+	protected Query createQuery(final String queryString, final boolean isHql, final Map<String, ?> values) {
+		Assert.hasText(queryString, "queryString不能为空");
+		Query query = isHql ? sessionFactory.getCurrentSession().createQuery(queryString)
+				: sessionFactory.getCurrentSession().createSQLQuery(queryString);
+
+		fillParams(query, values);
+		return query;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void page(PageEntity<T> pageEntity, Map<String, Param> params, List<Order> orders) {
+		StringBuffer hql = new StringBuffer("FROM " + this.getEntityName() + " WHERE 1=1");
+		buildParams(hql, params);
+		bulidOrders(hql, orders);
+
+		Map<String, Object> paramsMap = new HashMap<String, Object>();
+		for (Entry<String, Param> entry : params.entrySet()) {
+			paramsMap.put(entry.getKey(), entry.getValue().getVal());
+		}
+		Query countQuery, query;
+		checkArgument(!StringUtil.isEmpty(hql.toString()), "hql can not be empty");
+		countQuery = this.createQuery(generateCountHql(hql.toString()), true, paramsMap);
+		query = this.createQuery(hql.toString(), true, paramsMap);
+
+		Number count = (Number) countQuery.uniqueResult();
+		pageEntity.setTotalResults(count == null ? 0 : count.longValue()); // 总记录数
+		query.setFirstResult(pageEntity.getStart());
+		query.setMaxResults(pageEntity.getPageSize());
+		List<T> results = query.list();
+		pageEntity.setCurrentPageLength(results.size());// 当前页面记录数
+		pageEntity.setTotalPages(); // 总页数
+		pageEntity.setResults(results); // 分页数据
+	}
+
+	protected void bulidOrders(StringBuffer hql, List<Order> orders) {
+		if (CollectionUtils.isEmpty(orders)) {
+			return;
+		}
+		hql.append(" ORDER BY ");
+		for (int i = 0; i < orders.size(); i++) {
+			if (i == orders.size() - 1) {
+				hql.append(orders.get(i).toString());
+				continue;
+			}
+			hql.append(orders.get(i).toString() + ",");
+
+		}
+	}
+
+	protected void buildParams(StringBuffer hql, Map<String, Param> params) {
+		if (MapUtils.isEmpty(params)) {
+			return;
+		}
+		//20170413兼容列表页面日期查询
+		SimpleDateFormat sdf = new SimpleDateFormat(DateFormat.Date.getFormat());
+		for (Entry<String, Param> entry : params.entrySet()) {
+			if (entry.getValue().getVal() instanceof Date) {
+				hql.append(" AND date_format(" + entry.getKey() + ",'%Y-%m-%d')" + " " + entry.getValue().getOper() + " '" + sdf.format(entry.getValue().getVal()) + "'");
+				params.remove(entry.getKey());
+			} else {
+				hql.append(" AND " + entry.getKey() + " " + entry.getValue().getOper() + " :" + entry.getKey());
+			}
+		}
+	}
+}

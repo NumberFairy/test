@@ -1,0 +1,26 @@
+package com.wisdombud.alumni.manage;
+
+import java.util.List;
+
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniLiaison;
+
+/**
+ * 校友联络员表 ISrv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+public interface BaseAlumniLiaisonSrv extends IBaseSrv<BaseAlumniLiaison> {
+	/**
+	 * 功能: 获得选中的所有email邮箱.<br/>
+	 * date: 2017年4月10日 上午10:01:39 <br/>
+	 *
+	 * @author czjia
+	 * @param ids
+	 * @return
+	 */
+	String getSelectedEmail(String ids);
+
+	List<String> string2List(String strs);
+}

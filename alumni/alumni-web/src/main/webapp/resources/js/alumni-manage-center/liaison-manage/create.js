@@ -1,0 +1,209 @@
+var actionPath = contextPath + "/liaison-manage";
+var $baseInfoForm;
+var clubIds = "";
+var ids = "";
+var branchIds = "";
+$(function() {
+
+    validator();
+
+    var clubIds = alumniClubIdentityId.split(',');
+    var ids = alumniIdentityId.split(',');
+    var branchIds = branchClubIdentityId.split(',');
+    for (i in clubIds) {
+        if (clubIds[i]) {
+            $("#usertype1 option[value=" + clubIds[i] + "]").attr("selected", true);
+        }
+    }
+    for (i in ids) {
+        if (ids[i]) {
+            $("#usertype2 option[value=" + ids[i] + "]").attr("selected", true);
+        }
+    }
+    for (i in branchIds) {
+        if (branchIds[i]) {
+            $("#usertype3 option[value=" + branchIds[i] + "]").attr("selected", true);
+        }
+    }
+
+    $("#btn-submit").click(function() {
+        var bv = $baseInfoForm.data('bootstrapValidator');
+        bv.validate();
+        if (bv.isValid()) {
+            var entity = $("#form-all").serialize();
+            $.post(actionPath + "!update?entity.alumni.alumniClubIdentityName=" + clubIds +
+                "&entity.alumni.alumniIdentityName=" +
+                ids + "&entity.alumni.branchClubIdentityName=" + branchIds, entity,
+                function(data) {
+                    if (data.success) {
+                        location.href = actionPath + "!hrefPage";
+                    }
+                }, "json");
+        }
+    });
+
+    $("#btn1").click(function() {
+        $("#div1").toggle();
+    });
+
+    $("#btn2").click(function() {
+        $("#div2").toggle();
+    });
+
+    $("#btn3").click(function() {
+        $("#div3").toggle();
+    });
+
+    $("#usertype1").bind("change", function() {
+        var txt = "";
+        clubIds = "";
+        $("#usertype1 option:selected").each(function() {
+            clubIds += $(this).val() + ",";
+            txt += $(this).text() + ";";
+        });
+        $("#btn1").val(txt);
+    });
+
+    $("#usertype2").bind("change", function() {
+        var txt = "";
+        ids = "";
+        $("#usertype2 option:selected").each(function() {
+            ids += $(this).val() + ",";
+            txt += $(this).text() + ";";
+        });
+
+        $("#btn2").val(txt);
+    });
+
+    $("#usertype3").bind("change", function() {
+        var txt = "";
+        branchIds = "";
+        $("#usertype3 option:selected").each(function() {
+            branchIds += $(this).val() + ",";
+            txt += $(this).text() + ";";
+        });
+
+        $("#btn3").val(txt);
+    });
+
+    $("#collegeId").change(function() {
+        var id = $("#collegeId option:selected").val();
+        $.post(actionPath + "!findSepcialtyList?id=" + id, null, function(data) {
+            if (data.success) {
+                $("#majorId").empty();
+                for (i in data) {
+                    for (obj in data[i]) {
+                        $("#majorId").append("<option value=" + data[i][obj].id + ">" + data[i][obj].cnName + "</option>");
+                    }
+                }
+            }
+        }, "json");
+    });
+
+    //绑定地区选择插件
+    $(".address").districtpicker({
+        url: contextPath + '/dic-common!findAllDistricts',
+        level: 1,
+        global: true, //是否有国家
+        onchange: function(obj) {
+            // var bv = $form.data('bootstrapValidator');
+            // //手动触发验证
+            // bv.revalidateField(obj);
+        }
+    });
+
+    //绑定地区选择插件
+    $(".companyAddress").districtpicker({
+        url: contextPath + '/dic-common!findAllDistricts',
+        level: 3,
+        global: true, //是否有国家
+        onchange: function(obj) {
+            // var bv = $form.data('bootstrapValidator');
+            // //手动触发验证
+            // bv.revalidateField(obj);
+        }
+    });
+
+});
+
+function validator() {
+    $baseInfoForm = $('#form-all');
+    $baseInfoForm.bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+            "entity.alumni.name": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.alumni.enrollYear": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.alumni.phone": {
+                validators: {
+                    notEmpty: {
+                        message: '请填写手机'
+                    },
+                    regexp: {
+                        regexp: /^1\d{10}$/,
+                        message: '请输入有效的手机'
+                    }
+                }
+            },
+            "entity.alumni.email": {
+                validators: {
+                    notEmpty: {
+                        message: '请填写邮箱'
+                    },
+                    regexp: {
+                        regexp: /^(?=\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$).{0,30}$/,
+                        message: '输入的不是一个有效的邮箱'
+                    }
+                }
+            },
+            "entity.alumni.code": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.alumni.birthDate": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.alumni.nativeStr": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.alumni.companyCityStr": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            }
+
+        }
+
+    });
+}

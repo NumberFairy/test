@@ -1,0 +1,188 @@
+package com.wisdombud.alumni.constants;
+
+
+import java.util.Map;
+import java.util.TreeMap;
+
+/**
+ * ClassName: Constants. <br/>
+ * date: 2014年7月2日 上午9:38:56 <br/>
+ *
+ * @author Ghlin
+ * @version
+ * @since JDK 1.6
+ */
+public final class Constants {
+	public static final String OPTION_TEMPLATE = "<option value='%s'>%s</option>";
+	public static final String LICENSE_ERROR = "LINCENSE_ERROR";
+	public static final String NOT_EXIST = "NOTEXIST";
+	public static final String PASS = "PASS";
+	public static final String DENY = "DENY";
+	public static final String STUDENT_TRANSFER_PASS = "通过报名";
+
+	public static final Integer STU_TO_USER = 0; // 学生发送到用户
+	public static final Integer USER_TO_STU = 1; // 用户发送到学生
+
+	public static final Integer STU_LETTER = 0; // 学生站内信
+	public static final Integer USER_LETTER = 1; // 用户站内信
+
+	public static final Integer PARENT_NODE_TYPE = 0;
+	public static final Integer CHILD_NODE_TYPE = 1;
+
+	public static final int FAIL_CODE = 0; // false
+	public static final int SUCCESS_CODE = 1; // true
+	public static final Integer MAX_RANDOM_NUMBER = 225;
+	public static final int CAPTCHA_WIDTH = 200;
+	public static final int CAPTCHA_HEIGHT = 72;
+	public static final int RANDOM_NUMBER = 5;
+	public static final int RANDOM_COLOR_NUMBER_MIN = 220;
+	public static final int RANDOM_COLOR_NUMBER_MAX = 250;
+	public static final Map<String, Object> WORKING_PLACE_MAP = new TreeMap<String, Object>();
+
+	public static final int DEFUALT_PAGESIZE = 15;
+	public static final int DEFUALT_FLOW_PAGESIZE = 10;
+
+	public static final String NOT_REMENBER = "0";
+	public static final String REMENBER_ME = "1";
+
+	/********************** 是否静态化 **********************/
+	public static final int NOT_STATIC = 0;
+	public static final int IS_STATIC = 1;
+
+	/********************** 是否置顶 **********************/
+	public static final int NOT_TOP = 0;
+	public static final int IS_TOP = 1;
+
+	/********************** 新闻公告信息 **********************/
+	public static final int NEWS_CATEGORY = 12;
+	public static final int NOTICE_CATEGORY = 13;
+	public static final int VIDEO_CATEGORY = 50;
+	public static final int PIC_ENABLE = 1;
+	public static final int PIC_DISABLE = 0;
+	public static final int STARTUP_CATEGORY = 11; // 创业
+
+	/********************** 就业信息 **********************/
+	// 招聘信息类型
+	public static final int CATEGORY_RECRUIT_TYPE = 1;
+	public static final int CATEGORY_INTERN_TYPE = 2;
+
+	/************************** 静态页跳转参数 *************************/
+	public static final int NEWS_STATIC_TYPE = 1;
+	public static final int EMPLOYMENT_STATIC_TYPE = 2;
+	public static final int BIGFAIR_STATIC_TYPE = 3;
+	public static final int JOBFAIR_STATIC_TYPE = 4;
+	public static final int POSITION_STATIC_TYPE = 5;
+	public static final int CULTURE_STATIC_TYPE = 8;
+
+	/************************ 流程 ******************************/
+	public static final String BIG_FAIR_FLOW = "BIG_FAIR";
+	public static final String JOB_FAIR_FLOW = "NEW_JOB_FAIR";
+	public static final String INTERVIEW_TEST = "INTERVIEW_TEST";
+	public static final String FLOW_ENTERPRISE_REGISTER = "ENTERPRISE_REGISTER";
+	public static final String FLOW_SCHOOLMATE_REGISTER = "SCHOOLMATE_REGISTER";
+	public static final String WRITTEN_RESERVE = "WRITTEN_TEST";
+	public static final String FLOW_JOB_INFO = "NEW_JOB_INFO"; // 企业招聘信息流程
+	public static final String PROFESSION_SENTIMENT = "PROFESSION_SENTIMENT"; // 职业指导
+	public static final String POSITION_RECOMMEND = "POSITION_RECOMMEND"; // 职位推荐
+	public static final String STUDENT_PROFESSION_SENTIMENT = "STUDENT_PROFESSION_SENTIMENT"; // 职业指导
+	public static final String FLOW_ENTERPRISE_CULTURE = "ENTERPRISE_CULTURE"; // 企业文化流程
+	@Deprecated
+	public static final String GRADUATE_DESTINATION = "GRADUATE_DESTINATION"; // 毕业去向其他(废弃流程有空删除相关逻辑)
+	public static final String GRADUATE_DESTINATION_QIANYUE = "GRADUATE_DESTINATION_QIANYUE"; // 毕业去向签约
+	public static final String GRADUATE_DESTINATION_CHANGE = "GRADUATE_DESTINATION_CHANGE"; // 毕业去向修改
+	public static final String RECOMMENG_APPLY = "RECOMMENG_APPLY"; // 推荐表申领
+	public static final String RECOMMEND_MEND = "RECOMMEND_MEND"; // 推荐表补办
+	public static final String TRIPLE_AGREEMENT_APPLY = "TRIPLE_AGREEMENT_APPLY"; // 三方申领
+	public static final String TRIPLE_AGREEMENT_MEND = "TRIPLE_AGREEMENT_MEND"; // 三方补办2
+	public static final String TRIPLE_AGREEMENT_MEND2 = "TRIPLE_AGREEMENT_MEND2"; // 三方补办学院审核
+	public static final String TRANSFERRING_STUDENT = "TRANSFERRING_STUDENT"; // 学生报名选调生流程
+
+	/************************ 流程状态 ******************************/
+	public static final Integer NO_SUBMIT = null;
+	public static final int FLOW_START = 0; // 待审核
+	public static final int PASS_TYPE = 1; // 审核通过
+	public static final int NO_PASS_TYPE = 2; // 审核不通过
+	public static final int REJECTED_TYPE = 3; // 驳回
+	public static final int ONCE_PASS_TYPE = 4; // 第一次审核通过
+	public static final int ONCE_NO_PASS_TYPE = 5; // 第一次审核不通过
+	public static final int ONCE_REJECTED_TYPE = 6; // 第一次驳回
+	public static final int FLOW_END = 99; // 流程结束
+
+	/************************ 大型双选会流程状态 ******************************/
+	// REMIT(3, "汇款"), VERIFY(4, "已发确认函"), CANCEL(5, "已取消"), REJECT(
+	// 6, "驳回"), REJECT_RECEIPT(7, "驳回汇款凭证");
+	public static final int BIG_FAIR_REMIT = 3;
+	public static final int BIG_FAIR_REJECTED = 6;
+	public static final int BIG_FAIR_RECEIPT = 7;
+
+	/************************ 流程结果 ******************************/
+	public static final int AUDIT_RESULT_NOPASS = 0; // 未通过
+	public static final int AUDIT_RESULT_PASS = 1; // 通过
+
+	public static final String GOING_TO_URL_KEY = "going_to_url_key";
+	/************************ Banner分类 ******************************/
+	public static final int BANNER_TYPE = 1;
+
+	/************************ homePic分类 ******************************/
+	public static final int HOMEPIC_TYPE = 0;
+
+	public static final int NO = 0;
+	public static final int YES = 1;
+
+	public static final int REG_APPLY = 0; // 注册企业申请
+	public static final int UNREG_APPLY = 1; // 未注册企业申请
+
+	/************************ TASK KEY分类 ******************************/
+	public static final String MODIFY_APPLY_KEY = "modifyApply";
+
+	public static final Integer ONE_ONE_INTERVIEW = 1; // 一对一面试
+	public static final Integer GROUP_INTERVIEW = 2; // 小组面
+
+	public static final String SCHOOLMATE_SOURCE = "3"; // 校友
+	public static final String COLLEGE_SOURCE = "2"; // 学院
+	public static final String TEACHER_SOURCE = "1"; // 老师
+	public static final String ENTERPRISE_SOURCE = "0"; // 企业
+	/************************ PAY TYPE分类 ******************************/
+	public static final Integer PAY_REMITANCE = 0;
+	public static final Integer PAY_CASH = 1;
+	public static final Integer PAY_PRE = 2;
+
+	/************************ file path ******************************/
+	public static final String EMAIL_ATTACHMENT_PATH = "/email-attachment"; // 邮件附件路径
+	public static final String TEMP_CONFIRM_FILE_PAHT = "/email-attachment/temp"; // 确认函临时存放路径
+
+	public static final Double RESUME_PRICE = 5.00;
+
+	/************************ target分类 ******************************/
+	public static final Integer TARGET_UNIT = 1;
+	public static final Integer TARGET_STUDENT = 2;
+
+	/************************ category分类 ******************************/
+	public static final Integer CATEGORY_NOTICE = 13;
+
+	/************************ 毕业去向流程状态 ******************************/
+	public static final Integer TEACHER_AUDIT = 4;
+
+	/************************ 选调生 ***********************************/
+	public static final Integer TRANSFER_ALL_STATUS = 0; // 项目的任何状态
+	public static final Integer TRANSFER_NOT_SHOW = 0; // 选调生项目属性是否显示--不显示
+	public static final Integer TRANSFER_IS_SHOW = 1; // 选调生项目属性是否显示--显示
+	public static final Integer INPUT = 1; // 选调生项目属性类型--输入框
+	public static final Integer SELECT = 2; // 选调生项目属性类型--下拉框
+	public static final Integer TEXT = 3; // 选调生项目属性 类型--文本域
+	public static final String DEFAULT_MODEL_ID = "0";// 默认模板的id
+	public static final Integer NOT_DEFAULT = 0;// 是否是默认属性--不是默认
+	public static final Integer IS_DEFAULT = 1;// 是否是默认属性--是默认
+	public static final Integer DELETE_Y = 1;// 选调生项目属性--逻辑删除
+	public static final Integer DELETE_N = 0;// 选调生项目属性--逻辑未删除
+	public static final Integer ISAPPLY_Y = 0;// 选调生项目--允许报名
+	public static final Integer ISAPPLY_N = 1;// 选调生项目--不允许报名
+	/************************ 字典表维护 ***********************************/
+
+	public static final String PROJECT_STATUS = "projectStatus";// 项目的状态code
+	public static final String STUDENT_STATUS = "studentStatus";// 学生的状态code
+
+	private Constants() {
+	}
+
+}

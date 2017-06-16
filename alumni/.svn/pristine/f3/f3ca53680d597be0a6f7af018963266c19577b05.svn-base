@@ -1,0 +1,303 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <%@include file="/WEB-INF/jsp/common/portal-header.jsp"%>
+        <title>地质大学校友管理系统</title>
+        </head>
+
+        <body>
+            <%@include file="/WEB-INF/jsp/common/portal-menu.jsp"%>
+                <!--内容部分-->
+                <div class="main clearfix">
+                    <!--左侧部分-->
+                    <div class="h_left floatL">
+                        <div class="clearfix">
+                            <div class="focus-pic floatL">
+                            </div>
+                            <div class="news-information floatR">
+                                <h2 class="title-1">新闻动态</h2>
+                                <ul class="newlist2">
+                                    <li>
+                                        <a href="javascript:;">asd</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">asd</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">asd</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">asd</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">asd</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">asd</a>
+                                    </li>
+                                    <a class="more" href="javascript:;">+ 更多</a>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            <div class="new-content w-405 floatL">
+                                <h2 class="title-1">校友活动</h2>
+                                <ul class="newlist2">
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="date">
+                                                2017年3月27日
+                                            </span> cccccccc
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="date">
+                                                2017年3月27日
+                                            </span> cccccccc
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="date">
+                                                2017年3月27日
+                                            </span> cccccccc
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="date">
+                                                2017年3月27日
+                                            </span> cccccccc
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="date">
+                                                2017年3月27日
+                                            </span> cccccccc
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="date">
+                                                2017年3月27日
+                                            </span> cccccccc
+                                        </a>
+                                    </li>
+                                    <a class="more" href="javascript:;">+ 更多</a>
+                                </ul>
+                            </div>
+                            <div class="new-content  w-385 floatR">
+                                <h2 class="title-1">校友风采</h2>
+                                <ul class="newlist2">
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <a class="more" href="javascript:;">+ 更多</a>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="clearfix">
+                            <div class="new-content w-405 floatL">
+                                <h2 class="title-1">校友服务</h2>
+                                <ul class="newlist2">
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <a class="more" href="javascript:;">+ 更多</a>
+                                </ul>
+                            </div>
+                            <div class="new-content  w-385 floatR">
+                                <h2 class="title-1">校友捐赠</h2>
+                                <ul class="newlist2">
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">许光洪校友任重庆邮电大学党委常委、副校长</a>
+                                    </li>
+                                    <a class="more" href="javascript:;">+ 更多</a>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="w-1050">
+                            <h2 class="title-2">校友刊物</h2>
+                            <ul class="pic_list clearfix">
+                                <li>
+                                    <a href="javascript:;">
+                                        <img style="width: 160px;height: 199px;" src="">
+                                        <span>
+                                            《GEOSCIENCE FRONTIERS》
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">
+                                        <img style="width: 160px;height: 199px;" src="">
+                                        <span>
+                                            《GEOSCIENCE FRONTIERS》
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">
+                                        <img style="width: 160px;height: 199px;" src="">
+                                        <span>
+                                            《GEOSCIENCE FRONTIERS》
+                                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">
+                                        <img style="width: 160px;height: 199px;" src="">
+                                        <span>
+                                            《GEOSCIENCE FRONTIERS》
+                                        </span>
+                                    </a>
+                                </li>
+                                <a class="more" href="javascript:;">+ 更多</a>
+                            </ul>
+                        </div>
+                        <div class="clearfix">
+                            <h2 class="title-1">相关链接</h2>
+                            <div class="foot-link">
+                                <a href="http://www.cugb.edu.cn/index.action">母校要闻</a>
+
+                                <a href="http://xyh.cugb.edu.cn/xy/index/cugb/cugb_info.jsp?informationId=ff808081515b497c01516217e0340002">校友会微信公众号</a>
+
+                                <a href="http://jiuye.cugb.edu.cn/">就业信息网</a>
+
+                                <a href="http://jiuye.cugb.edu.cn/">招生信息网</a>
+
+                                <a href="http://xyh.cugb.edu.cn/xy/index/cugb/cugb_info.jsp?informationId=ff8080813ad70f76013ada3292510036">注册指南</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!--右侧部分-->
+                    <div class="h_right floatR">
+                        <h2 class="title-3">通知公告</h2>
+                        <div class="right-con">
+                            <ul class="newlist2">
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <a class="more" href="javascript:;">+ 更多</a>
+                            </ul>
+                        </div>
+                        <h2 class="title-3">校友文苑</h2>
+                        <div class="right-con">
+                            <ul class="newlist2">
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <a class="more" href="javascript:;">+ 更多</a>
+                            </ul>
+                        </div>
+                        <h2 class="title-3">图片视频</h2>
+                        <div class="right-con">
+                            <div class="video_box">
+                                <img id="videoPic" src="javascript:;">
+                            </div>
+                            <ul class="newlist2">
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <a class="more" href="javascript:;">+ 更多</a>
+                            </ul>
+                        </div>
+                        <h2 class="title-3">校友留言</h2>
+                        <div class="right-con">
+                            <ul class="newlist2">
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <li>
+                                    <a href="javascript:;">asd</a>
+                                </li>
+                                <a class="more" href="javascript:;">+ 更多</a>
+                            </ul>
+                        </div>
+                        <h2 class="title-3">联系我们</h2>
+                        <div class="right-con">
+                            <p>电 话 : 010-82321854</p>
+                            <p>传 真 : 010-82322959</p>
+                            <p>邮 箱 : xyh@cugb.edu.cn</p>
+                            <p>地 址 : 北京市海淀区学院路29号体育馆202室</p>
+                        </div>
+                    </div>
+                    <!---->
+                </div>
+                <!--内容部分end-->
+                <%@include file="/WEB-INF/jsp/common/portal-footer.jsp"%>
+                    <!--<%@include file="/WEB-INF/jsp/common/js-portal-container.jsp"%>-->
+        </body>
+
+        </html>

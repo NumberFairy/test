@@ -1,0 +1,14 @@
+
+
+var actionPath = contextPath + "/alumni-liaison";
+$(function () {
+    loadData();
+
+});
+
+function loadData() {
+    var options = {
+        url: actionPath + "!page"
+    };
+    loadPaginationData(options);
+}

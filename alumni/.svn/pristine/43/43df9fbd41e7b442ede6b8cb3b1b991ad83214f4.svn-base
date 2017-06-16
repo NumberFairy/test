@@ -1,0 +1,107 @@
+/**
+ * 校友活动管理--分会管理
+ * pfhu@wisdombud.com
+ * 20170329
+ * */
+
+var actionPath = contextPath + "/alumni-activity";
+var $baseInfoForm;
+var $productInListForm;
+var cList = [];
+var editor;
+$(function () {
+    validator();
+
+    $("#create-btn").click(function () {
+        addOrUpdate();
+    });
+
+    $("#specialSignUp").click(function () {
+        $("#isTimeHide").hide();
+    });
+
+    $("#ordinarySignUp").click(function () {
+        $("#isTimeHide").show();
+    })
+    
+    var options = {
+		width : '100%',
+		height : '300px',
+        uploadJson: "../common/kindeditor!kindeditorUpload.action?",
+		allowFileManager : true,
+		formatUploadUrl: false,
+        afterBlur: function () {
+            this.sync();
+            //手动重新验证
+            var bv = $form.data('bootstrapValidator');
+            bv.revalidateField("entity.content");
+        },
+        afterCreate: function () {
+            this.sync();
+        }
+    };
+
+    editor = KindEditor.create('#editor_id', options);
+    
+    $("#btn-submit").click(function () {
+        var bv = $baseInfoForm.data('bootstrapValidator');
+        bv.validate();
+        if (bv.isValid()) {
+            var entity = $("form").serialize();
+            $.post(actionPath + "!addOrUpdate", entity, function (data) {
+                if (data.success) {
+                    location.href = actionPath + "!hrefPage";
+                }
+            }, "json");
+        }
+    });
+})
+
+
+function loadTable(cList) {
+    var html = template("gridTpl", { 'results': cList });
+    $("#gridBody").html(html);
+}
+
+function validator() {
+    $baseInfoForm = $('#form-all');
+    $baseInfoForm.bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+            "entity.title": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.person": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.content": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.place": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+        }
+
+    });
+}

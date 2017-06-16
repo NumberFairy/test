@@ -1,0 +1,34 @@
+package com.wisdombud.alumni.manage.impl;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.manage.BaseAlumniActivityApplySrv;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniActivityApply;
+
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 校友活动申请表Srv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Service(value = "baseAlumniActivityApplySrv")
+public class BaseAlumniActivityApplySrvImpl extends BaseSrvImpl<BaseAlumniActivityApply>
+		implements BaseAlumniActivityApplySrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseAlumniActivityApplySrvImpl.class);
+
+	public BaseAlumniActivityApplySrvImpl() {
+	}
+
+	@Autowired
+	public BaseAlumniActivityApplySrvImpl(
+			@Qualifier(value = "baseAlumniActivityApplyDao") CommonDao<BaseAlumniActivityApply, String> commonDao) {
+		super(commonDao);
+	}
+}

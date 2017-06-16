@@ -1,0 +1,134 @@
+package com.wisdombud.alumni.pojo.system;
+
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import com.wisdombud.alumni.pojo.base.UUIDBasePo;
+
+/**
+ * 功能: 操作菜单<br/>
+ * date: 2017年4月11日 下午16:03:16 <br/>
+ *
+ * @author zxguan
+ * @version
+ * @since JDK 1.8
+ */
+
+@Entity
+@Table(name = "SEC_OPER")
+public class SecOper extends UUIDBasePo implements Comparable<SecOper>{
+
+	private static final long serialVersionUID = 1L;
+
+	@Column(name = "NAME")
+	private String name;
+
+	@Column(name = "DESC")
+	private String desc;
+
+	@Column(name = "PARENT_ID")
+	private String parentId;
+
+	@Column(name = "ICON")
+	private String icon;
+
+	@Column(name = "SORT_FLAG")
+	private Integer sortFlag;
+
+	@Column(name = "URL")
+	private String url;
+
+    @ManyToOne
+    @JoinColumn(name = "PARENT_ID", insertable = false, updatable = false)
+    private SecOper parent;
+
+    @ManyToMany
+    @JoinTable(name = "SEC_ROLE_OPER", joinColumns = { @JoinColumn(name = "OPER_ID") }, inverseJoinColumns = { @JoinColumn(name = "ROLE_ID") })
+    private List<SecRole> secRoles;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
+
+	public void setDesc(String desc) {
+		this.desc = desc;
+	}
+
+	public String getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
+	public Integer getSortFlag() {
+		return sortFlag;
+	}
+
+	public void setSortFlag(Integer sortFlag) {
+		this.sortFlag = sortFlag;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public List<SecRole> getSecRoles() {
+		return secRoles;
+	}
+
+	public void setSecRoles(List<SecRole> secRoles) {
+		this.secRoles = secRoles;
+	}
+
+	public SecOper getParent() {
+		return parent;
+	}
+
+	public void setParent(SecOper parent) {
+		this.parent = parent;
+	}
+
+    @Override
+    public int compareTo(SecOper oper) {
+        if (oper.getId().equalsIgnoreCase(this.getId())) {
+            return 0;
+        } else {
+            if (oper.getSortFlag() > this.getSortFlag()) {
+                return -1;
+            } else if (oper.getSortFlag() < this.getSortFlag()) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    }
+}

@@ -1,0 +1,57 @@
+package com.wisdombud.alumni.actions.system;
+
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+
+import com.wisdombud.alumni.system.SecOperSrv;
+
+import common.toolkit.java.struts2.AbstractCommonAction;
+
+/**
+ * 功能: 权限角色关联<br/>
+ * 
+ * @author cczhao
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("prototype")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "toPage", location = "/WEB-INF/jsp/system/user-manage/page.jsp"), })
+public class SecOperAction extends AbstractCommonAction {
+
+	private static final long serialVersionUID = 1L;
+	@Autowired
+	private SecOperSrv		  operSrv;
+	private String			  roleId;
+	private String			  operIdArray;
+
+	// 角色菜单表数据更新
+	public void saveRoleOper() {
+		// if (operSrv.updateconfigureAuthority(roleId, operIdArray)) {
+		// this.sendSuccessMsg();
+		// }
+		operSrv.updateconfigureAuthority(roleId, operIdArray);
+		this.sendSuccessMsg();
+	}
+
+	public String getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(String roleId) {
+		this.roleId = roleId;
+	}
+
+	public String getOperIdArray() {
+		return operIdArray;
+	}
+
+	public void setOperIdArray(String operIdArray) {
+		this.operIdArray = operIdArray;
+	}
+}

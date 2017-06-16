@@ -1,0 +1,63 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <%@include file="/WEB-INF/jsp/common/portal-header.jsp"%>
+        <link href="${contextPath}/resources/css/plugins/bootstrap.min.css" rel="stylesheet">
+        <title>地质大学校友管理系统</title>
+        <style>
+            span.star {
+                color: red;
+                padding: 0 10px;
+                vertical-align: middle;
+            }
+            
+            .form-horizontal .control-label {
+                text-align: right;
+                margin-bottom: 0;
+                padding-top: 7px;
+            }
+            
+            .col-sm-3 {
+                width: 25%;
+                float: left;
+            }
+            
+            .col-sm-7 {
+                width: 58.33333333%;
+                float: left;
+            }
+        </style>
+        </head>
+
+        <body>
+            <%@include file="../menu.jsp"%>
+                <!--内容部分-->
+                <div class="main-form clearfix">
+                    <form id="infoForm" class="form-horizontal bv-form" action="/update-info.html" method="post" novalidate="novalidate">
+                        <div class="form-group">
+                            <label class="control-label col-sm-3"><span class="star">*</span>院系分会：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入院系分会">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3"><span class="star">*</span>地方分会：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" placeholder="请输入地方分会" name="" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3"><span class="star">*</span>海外分会：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" placeholder="请输入海外分会" name="" value="">
+                            </div>
+                        </div>
+                        <div align="center">
+                            <button type="submit" class="btn btn-primary">提交申请</button>
+                        </div>
+                    </form>
+                </div>
+                <!--内容部分end-->
+                <%@include file="/WEB-INF/jsp/common/js-portal-container.jsp"%>
+                    <%@include file="/WEB-INF/jsp/common/portal-footer.jsp"%>
+        </body>
+
+        </html>

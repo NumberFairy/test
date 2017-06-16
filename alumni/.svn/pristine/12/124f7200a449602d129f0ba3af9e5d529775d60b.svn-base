@@ -1,0 +1,87 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@include file="/WEB-INF/jsp/common/header.jsp"%>
+<title>校友管理及分析系统</title>
+</head>
+<body class="gray-bg">
+    <div class="wrapper wrapper-content  animated fadeInRight">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <h5>留言板管理</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <form class="form-inline clearfix" role="form">
+                            <div class="form-group marb">
+                                <label>开始时间 ：</label>
+                                <input placeholder="开始时间" class="form-control  form_datetime ">
+                            </div>
+                            <div class="form-group marb">
+                                <label>结束时间 ：</label>
+                                <input placeholder="结束时间" class="form-control  form_datetime">
+                            </div>
+                            <div class="form-group marb">
+                                <button class="btn btn-sm btn-info mar0" type="submit">查 询</button>
+                            </div>
+                        </form>
+                        <div class="clearfix">
+                           
+                            <button type="button" id="btn-detail" class="btn btn-sm btn-info marl">查 看</button>
+                            <button type="button" id="btn-detail" class="btn btn-sm btn-info marl">通过</button>
+                            <button type="button" id="btn-detail" class="btn btn-sm btn-info marl">不通过</button>
+                            <button type="button" id="btn-detail" class="btn btn-sm btn-info marl">驳回</button>
+                            <button type="button" id="btn-email" class="btn btn-sm btn-info marl">删除</button>
+                            <button type="button" id="btn-email" class="btn btn-sm btn-info marl">邮件通知</button>
+                        </div>
+                        <table class="table  table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th class="bs-checkbox" style="width:36px;">
+                                        <input type="checkbox" class="check-all">
+                                    </th>
+                                    <th>标题</th>
+                                    <th>发布人</th>
+                                    <th>内容</th>
+                                    <th>创建时间</th>
+                                    <th>审核时间</th>
+                                </tr>
+                            </thead>
+                            <tbody id="gridBody">
+                             <tr id="{{value.id}}">
+                                <td class="bs-checkbox" style="width:36px;">
+                                    <input type="checkbox" class="child" value="{{value.id}}">
+                                </td>
+                                <td>title</td>
+                                <td>publisher</td>
+                                <td>content</td>
+                                <td>createTime</td>
+                                <td>aduitTime</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div align="right">
+                        <ul class="pagination" id="pageUl">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<%@ include file="/WEB-INF/jsp/common/js-container.jsp"%>
+<script type="text/javascript" src="${contentPath}/resources/js/message-board/page.js"></script>
+<script type="text/html" id="gridTpl">
+    {{each results as value index}}
+    <tr id="{{value.id}}">
+        <td class="bs-checkbox" style="width:36px;">
+            <input type="checkbox" class="child" value="{{value.id}}">
+        </td>
+        <td>{{value.useApplyCode}}</td>
+        <td>{{value.createTime}}</td>
+        <td>{{value.producePlanCode}}</td>
+        <td>{{value.producePlanName}}</td>
+    </tr>
+    {{/each}}
+</script>
+</html>

@@ -1,0 +1,80 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <script type="text/html" id="header-tpl">
+        <h2 class="title-4 bag-none">{{title}}</h2>
+        <s:if test="menuId==80">
+            <button type="button" id="liuyan">留言</button>
+        </s:if>
+    </script>
+    <script type="text/html" id="detail-header-tpl">
+        <h2 class="title-4  bag-none">{{title}}</h2>
+    </script>
+    <!-- 留言板模版 -->
+    <script type="text/html" id="msg-tpl">
+        {{each results as v}}
+        <div class="liuyan-content clearfix">
+            <div class="floatL student-info">
+                <div class="student-infos">
+                    {{v.name}}
+                </div>
+            </div>
+            <div class="reply">
+                <div class="threadlist_lz clearfix">
+                    <div class="threadlist_title floatL">
+                        <a href="javascript:;">{{v.title}}</a>
+                    </div>
+                    <div class="floatR">
+                        <span class="liuyan-time">
+                            {{v.createTime | dateFormat:'yyyy-MM-dd'}}
+                        </span>
+                    </div>
+                </div>
+                <p class="answer-content">{{v.message}}</p>
+                <div class="threadlist_detail">
+                    <h4><span>管理员</span>回复:</h4>
+                    <span class="time">{{v.replyTime | dateFormat:'yyyy-MM-dd'}}</span>
+                    <p class="replay-content">{{v.replyContent}}</p>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </script>
+    <script type="text/html" id="list-tpl">
+        {{if results.length
+        <1}} <div class="no-data">
+            暂无数据
+            </div>
+            {{/if}} {{each results as v}}
+            <dl class="clearfix">
+                <dt>{{#v.createTime | dateTitle}}</dt>
+                <dd class="content">
+                    <a href="/home!load?id={{v.id}}&menuId=${menuId}">{{v.title}}</a>
+                    <p class="abstract">{{v.summary}}</p>
+                </dd>
+            </dl>
+            {{/each}}
+    </script>
+
+    <script type="text/html" id="detail-tpl">
+        <h3 class="articel-title">{{title}}</h3>
+        <div class="sub-tit">
+            发布人：{{publisher}}&nbsp;&nbsp;&nbsp;&nbsp;发布日期：{{createTime}}
+        </div>
+        <div class="article-content">
+            {{if imgId}}
+            <div align="center">
+                <img style="width:900px" src="/gridfs-download?f_id={{imgId}}" alt="">
+            </div>
+            <br> {{/if}} {{#content}} {{if videoId}}
+            <div align="center">
+                <video id="really-cool-video" class="video-js vjs-default-skin" controls preload="auto" poster="http://video-js.zencoder.com/oceans-clip.png" data-setup='{}'>
+                <source src="http://localhost:8080/gridfs-download?f_id={{videoId}}" type='video/webm'>
+                <source src="http://localhost:8080/gridfs-download?f_id={{videoId}}" type='video/mp4'>
+            </video>
+            </div>
+            {{/if}} {{if fileId}}
+            <div>
+                <a href="/gridfs-download?f_id={{fileId}}">下载附件</a>
+            </div>
+            {{/if}}
+        </div>
+    </script>

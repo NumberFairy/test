@@ -1,0 +1,134 @@
+package com.wisdombud.alumni.actions.information;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.wisdombud.alumni.pojo.system.PublicUser;
+import com.wisdombud.alumni.system.PublicUserSrv;
+import com.wisdombud.alumni.threadlocal.UserSession;
+import com.wisdombud.alumni.threadlocal.UserThreadLocal;
+
+import common.toolkit.java.constant.ResultConstant;
+import common.toolkit.java.struts2.AbstractCommonAction;
+import common.toolkit.java.util.StringUtil;
+
+/**
+ * 功能: 登陆<br/>
+ * date: 2017-4-11 9:17:00 <br/>
+ *
+ * @author zxguan
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("prototype")
+@ParentPackage(value = "portal-default")
+@Namespace("/")
+@Results({
+	@Result(name="tologin", location="/WEB-INF/jsp/login.jsp"),
+	@Result(name="tohome", type="redirectAction", location="home")
+})
+public class LoginAction extends AbstractCommonAction {
+
+	private static final long serialVersionUID = 1L;
+
+	@Autowired
+	private PublicUserSrv		srv;
+
+	private String				loginName;
+	private String				password;
+
+	@Override
+	public String execute() throws Exception {
+		return ResultConstant.TOLOGIN;
+	}
+
+	public void login() {
+		if (StringUtils.isBlank(this.loginName) || StringUtils.isBlank(this.password)) {
+			sendFailMsg("", "用户名或密码为空");
+			return;
+		}
+		PublicUser user = srv.findUniqueBy("loginName", this.loginName);
+		if (user == null) {
+			sendFailMsg("", "用户名不存在");
+			return;
+		}
+		if (!user.getPwdHash().equals(StringUtil.encrypt(this.password + user.getSalt()))) {
+			sendFailMsg("", "密码错误");
+			return;
+		}
+		addSession(user);
+		addCookie();
+		sendSuccessMsg();
+	}
+
+	private void addSession(final PublicUser user) {
+		ActionContext.getContext().getSession().put("loginName", user.getLoginName());
+		final UserSession userSession = new UserSession();
+		userSession.setId(user.getId());
+		userSession.setLoginName(user.getLoginName());
+//		userSession.setUserName(user.getDesignation());
+		userSession.setSessionId(ServletActionContext.getRequest().getSession().getId());
+		userSession.setDesignation(user.getDesignation());
+//		SecUser se = this.secUserSrv.findById(user.getId());
+//		if (se != null && CollectionUtils.isNotEmpty(se.getSecRoles())) {
+//			userSession.setSecRoles(se.getSecRoles());
+//		}
+		ActionContext.getContext().getSession().put("UserSession", userSession);
+	}
+
+	private void addCookie() {
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setCharacterEncoding("UTF-8");
+		Cookie loginNamecookie = new Cookie("loginName", null == this.loginName ? "" : this.loginName);
+		Cookie passwordcookie = new Cookie("password", null == this.password ? "" : password);
+
+//		if (rememberme.equals(Constants.REMENBER_ME)) {
+//			passwordcookie.setMaxAge(60 * 60 * 24 * 7);
+//			userNamecookie.setMaxAge(60 * 60 * 24 * 7);
+//		} else {
+//			userNamecookie.setMaxAge(0);
+//			passwordcookie.setMaxAge(0);
+//		}
+		ServletActionContext.getResponse().addCookie(loginNamecookie);
+		ServletActionContext.getResponse().addCookie(passwordcookie);
+		response.addCookie(loginNamecookie);
+		response.addCookie(passwordcookie);
+	}
+
+	public String userExit() {
+		final HttpSession session = ServletActionContext.getRequest().getSession();
+		session.removeAttribute("loginName");
+		session.removeAttribute("UserSession");
+		session.invalidate();
+		UserThreadLocal.setUserSession(null);
+		return "tohome";
+	}
+
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+}

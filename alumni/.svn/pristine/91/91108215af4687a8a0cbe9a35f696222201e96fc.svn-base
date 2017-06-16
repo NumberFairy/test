@@ -1,0 +1,68 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@include file="/WEB-INF/jsp/common/portal-header.jsp"%>
+<title>地质大学校友管理系统</title>
+<style>
+    #baoming {
+    position: absolute;
+    right: 0;
+    top: 0;
+    border: none;
+    padding: 5px 11px;
+    background: #115095;
+    color: #fff;
+    cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+    <%@include file="/WEB-INF/jsp/common/portal-menu.jsp"%>
+    <!--内容部分-->
+    <div class="main clearfix">
+        <div class="article-main">
+            <%@include file="/WEB-INF/jsp/common/list-menu-left.jsp"%>
+            <div class="article-right floatR">
+                <div id="header"></div>
+                <div id="detail"></div>
+            </div>
+        </div>
+    </div>
+    <!--内容部分end-->
+    <%@include file="/WEB-INF/jsp/common/js-portal-container.jsp"%>
+    <script type="text/javascript" src="/js-lib/videoJs/js/video.min.js"></script>
+    <%@include file="/WEB-INF/jsp/common/portal-footer.jsp"%>
+    <%@include file="tpl.jsp"%>
+      <%@include file="footer.jsp"%>
+    <script type="text/javascript">
+        try {
+            videojs.options.flash.swf = "/js-lib/videoJs/js/video-js.swf";
+        } catch (error) {
+            
+        }        
+        var menuId='${menuId}'
+        var id='${id}';
+        $.post('/home-api!detail',{'menuId':menuId,'id':id},function(data){
+         var h =  template("detail-tpl",data );
+         $('#detail').html(h);
+        initHeader(data.isSignUp);
+     },'json')
+
+        $('#header').on('click', '#baoming', function(event) {
+                var user='${sessionScope.UserSession.id}';
+                if(!user){
+                    alertify.alert("请登录后在报名!");
+                    return;
+                }else{
+                    $.post('/home-api!baoming', {id: $("#d-id").val()}, function(data) {
+                        alertify.alert("报名成功!");
+                    });
+                }
+        });
+
+        function initHeader(sin){
+           var h =  template("detail-header-tpl", {'title':'${menu.name}','isSignUp':sin});
+           $('#header').html(h);
+       }
+       </script>
+</body>
+</html>

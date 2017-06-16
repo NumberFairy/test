@@ -1,0 +1,75 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.enums.GenderEnum;
+import com.wisdombud.alumni.enums.IdentityEnum;
+import com.wisdombud.alumni.enums.PoliticalStatusEnum;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.manage.BaseIdentityRelationSrv;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicDegree;
+import com.wisdombud.alumni.pojo.dic.DicIndustry;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseIdentityRelation;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 身份信息关联表’Srv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Service(value = "baseIdentityRelationSrv")
+public class BaseIdentityRelationSrvImpl extends BaseSrvImpl<BaseIdentityRelation> implements BaseIdentityRelationSrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseIdentityRelationSrvImpl.class);
+	@Autowired
+	public BaseAlumniSrv alumniSrv;
+	
+	public BaseIdentityRelationSrvImpl() {
+	}
+
+	@Autowired
+	public BaseIdentityRelationSrvImpl(
+			@Qualifier(value = "baseIdentityRelationDao") CommonDao<BaseIdentityRelation, String> commonDao) {
+		super(commonDao);
+	}
+
+	@Override
+	public void page(PageEntity<BaseIdentityRelation> pageEntity, Map<String, Param> params, List<Order> orders) {
+		super.page(pageEntity, params, orders);
+		List<BaseIdentityRelation> list=pageEntity.getResults();
+		for(BaseIdentityRelation inst :list){
+			if(StringUtils.isNotBlank(inst.getAlumniId())){
+				BaseAlumni entity=	alumniSrv.find(inst.getAlumniId());
+				inst.setAlumni(entity);
+			}
+		}
+		
+	}
+
+	@Override
+	public BaseIdentityRelation find(String id) {
+		BaseIdentityRelation relation=super.find(id);
+		if(StringUtils.isNotBlank(relation.getAlumniId())){
+			relation.setAlumni(alumniSrv.find(relation.getAlumniId()));
+		}
+		return relation;
+	}
+
+}

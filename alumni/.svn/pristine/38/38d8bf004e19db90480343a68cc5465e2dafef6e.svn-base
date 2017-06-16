@@ -1,0 +1,81 @@
+package com.wisdombud.alumni.pojo.dic;
+
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+import com.wisdombud.alumni.pojo.manage.BaseAlumniBranch;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniBranchStaff;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniLiaison;
+import com.wisdombud.alumni.pojo.manage.BaseBranchRelation;
+
+@Entity
+@Table(name= "DIC_CHAPTER_BRANCH")
+public class DicChapterBranch extends DicBasePo{
+	private static final long serialVersionUID = 1L;
+
+	@Column(name="INFO_ID")
+	private String infoId;
+
+	@OneToOne(cascade=CascadeType.DETACH,fetch=FetchType.EAGER)
+	private BaseAlumniBranch info;
+
+	@OneToMany(cascade=CascadeType.DETACH,fetch=FetchType.LAZY)
+    @JoinColumn(name="BRANCH_ID")
+	private List<BaseAlumniBranchStaff> staffList;
+
+	@OneToMany(cascade=CascadeType.DETACH,fetch=FetchType.LAZY)
+    @JoinColumn(name="BRANCH_ID")
+	private List<BaseAlumniLiaison> liaisonList;
+
+	@OneToMany(cascade=CascadeType.DETACH,fetch=FetchType.LAZY)
+    @JoinColumn(name="BRANCH_ID")
+	private List<BaseBranchRelation> memberList;
+
+	public String getInfoId() {
+		return infoId;
+	}
+
+	public void setInfoId(String infoId) {
+		this.infoId = infoId;
+	}
+
+	public BaseAlumniBranch getInfo() {
+		return info;
+	}
+
+	public void setInfo(BaseAlumniBranch info) {
+		this.info = info;
+	}
+
+	public List<BaseAlumniBranchStaff> getStaffList() {
+		return staffList;
+	}
+
+	public void setStaffList(List<BaseAlumniBranchStaff> staffList) {
+		this.staffList = staffList;
+	}
+
+	public List<BaseAlumniLiaison> getLiaisonList() {
+		return liaisonList;
+	}
+
+	public void setLiaisonList(List<BaseAlumniLiaison> liaisonList) {
+		this.liaisonList = liaisonList;
+	}
+
+	public List<BaseBranchRelation> getMemberList() {
+		return memberList;
+	}
+
+	public void setMemberList(List<BaseBranchRelation> memberList) {
+		this.memberList = memberList;
+	}
+}

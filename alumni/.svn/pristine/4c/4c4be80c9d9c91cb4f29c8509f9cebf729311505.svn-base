@@ -1,0 +1,23 @@
+package com.wisdombud.alumni.system.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.pojo.system.SecRole;
+import com.wisdombud.alumni.system.SecRoleSrv;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+@Service(value = "secRoleSrv")
+public class SecRoleSrvImpl extends BaseSrvImpl<SecRole> implements SecRoleSrv {
+
+	public SecRoleSrvImpl() {
+	}
+
+	@Autowired
+	public SecRoleSrvImpl(@Qualifier(value = "secRoleDao") CommonDao<SecRole, String> commonDao) {
+		super(commonDao);
+	}
+
+}

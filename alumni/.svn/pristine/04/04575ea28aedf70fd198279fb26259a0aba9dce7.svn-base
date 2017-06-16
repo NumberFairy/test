@@ -1,0 +1,52 @@
+<!--
+
+	校友管理中心--校友信息库--时光轴
+	zxguan
+	201703028
+-->
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <%@include file="/WEB-INF/jsp/common/header.jsp"%>
+        <title>校友管理及分析系统</title>
+        </head>
+        <body class="gray-bg">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="wrapper wrapper-content">
+                        <div class="row animated fadeInRight">
+                            <div class="col-sm-12">
+                                <div class="ibox float-e-margins">
+                                    <div class="ibox-title">
+                                        <h5>校友管理中心--校友信息库--时光轴</h5>
+                                    </div>
+                                    <div class="" id="ibox-content">
+                                        <div id="vertical-timeline" class="vertical-container light-timeline">
+                                            <!-- content -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%@ include file="/WEB-INF/jsp/common/js-container.jsp"%>
+                <script type="text/html" id="gridTpl">
+                    {{each results as value index}}
+                    <div class="vertical-timeline-block">
+                        <div class="vertical-timeline-icon yellow-bg">
+                            <i class="fa fa-phone"></i>
+                        </div>
+
+                        <div class="vertical-timeline-content">
+                            <h2>给李四打电话</h2>
+                            <p>给李四打电话分配本月工作任务</p>
+                            <span class="vertical-date">昨天 <br><small>2月2日</small></span>
+                        </div>
+                    </div>
+                    {{/each}}
+                </script>
+                <script type="text/javascript" src="${contentPath}/resources/js/alumni-manage-center/alumni-info-note/timeline.js"></script>
+        </body>
+
+        </html>

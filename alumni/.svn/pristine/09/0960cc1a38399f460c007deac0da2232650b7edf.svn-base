@@ -1,0 +1,206 @@
+package com.wisdombud.alumni.dao.manage.impl;
+
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.hibernate.SQLQuery;
+import org.hibernate.criterion.Order;
+import org.hibernate.transform.Transformers;
+import org.hibernate.type.StandardBasicTypes;
+import org.springframework.stereotype.Repository;
+
+import com.wisdombud.alumni.dao.manage.BaseAlumniDao;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.QueryExtension;
+import common.toolkit.java.orm.hibernate.SimpleHibernateDao;
+
+/**
+ * 校友信息表 DaoImpl. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Repository(value = "baseAlumniDao")
+public class BaseAlumniDaoImpl extends SimpleHibernateDao<BaseAlumni, String> implements BaseAlumniDao {
+
+	@Override
+	public void page(PageEntity<BaseAlumni> pageEntity, Map<String, Param> params, List<Order> orders) {
+		StringBuffer sql = new StringBuffer(" SELECT a.ID,a.NAME,a.CODE,a.GENDER,a.LABEL,a.EMAIL,a.COLLEGE,a.MAJOR,");
+		sql.append(" a.COMPANY,a.POST,a.PHONE FROM BASE_ALUMNI a");
+		sql.append(" LEFT JOIN BASE_IDENTITY_RELATION i ON( a.ID=i.ALUMNI_ID) WHERE 1=1");
+		Map<String, Object> map = buildParams(params);
+		buildSql(sql, map);
+		sql.append(" ORDER BY a.LAST_UPDATE DESC,a.CREATE_TIME DESC , a.ENROLL_YEAR DESC");
+		pageBySql(sql.toString(), pageEntity, queryExtension(), map);
+	}
+
+	private QueryExtension<BaseAlumni> queryExtension() {
+		QueryExtension<BaseAlumni> q = new QueryExtension<BaseAlumni>() {
+			@Override
+			public void doExtend(SQLQuery sq) {
+				sq.addScalar("id");
+				sq.addScalar("name");
+				sq.addScalar("code");
+				sq.addScalar("gender", StandardBasicTypes.INTEGER);
+				sq.addScalar("label");
+				sq.addScalar("email");
+				sq.addScalar("college", StandardBasicTypes.INTEGER);
+				sq.addScalar("major");
+				sq.addScalar("company");
+				sq.addScalar("post");
+				sq.addScalar("phone");
+				sq.setResultTransformer(Transformers.aliasToBean(BaseAlumni.class));
+			}
+		};
+		return q;
+	}
+
+	public void buildSql(StringBuffer hql, Map<String, Object> parm) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+		if (parm.containsKey("name")) {
+			hql.append(" AND a.NAME LIKE :name");
+		}
+		if (parm.containsKey("college")) {
+			hql.append(" AND a.COLLEGE = :college");
+		}
+		if (parm.containsKey("major")) {
+			hql.append(" AND a.MAJOR = :major");
+		}
+		if (parm.containsKey("gender")) {
+			hql.append(" AND a.GENDER = :gender");
+		}
+		if (parm.containsKey("identity")) {
+			hql.append(" AND a.IDENTITY = :identity");
+		}
+		if (parm.containsKey("code")) {
+			hql.append(" AND a.CODE = :code");
+		}
+		if (parm.containsKey("birthDate")) {
+			hql.append(" AND a.BIRTH_DATE like '%" + df.format(parm.get("birthDate")) + "%'");
+			parm.remove("birthDate");
+		}
+		if (parm.containsKey("nativeStr")) {
+			hql.append(" AND a.NATIVE_STR = :nativeStr");
+		}
+		if (parm.containsKey("politicalStatus")) {
+			hql.append(" AND a.POLITICAL_STATUS = :politicalStatus");
+		}
+		if (parm.containsKey("enrollYear")) {
+			hql.append(" AND a.ENROLL_YEAR = :enrollYear");
+		}
+		if (parm.containsKey("reVarchar1")) {
+			hql.append(" AND a.RE_VARCHAR_1 LIKE '"+parm.get("reVarchar1")+"'");
+			parm.remove("reVarchar1");
+		}
+		if (parm.containsKey("wechatId")) {
+			hql.append(" AND a.WECHAT_ID LIKE :wechatId");
+		}
+		if (parm.containsKey("wechatName")) {
+			hql.append(" AND a.WECHAT_NAME LIKE :wechatName");
+		}
+		if (parm.containsKey("phone")) {
+			hql.append(" AND a.PHONE LIKE :phone");
+		}
+		if (parm.containsKey("email")) {
+			hql.append(" AND a.EMAIL LIKE :email");
+		}
+		if (parm.containsKey("className")) {
+			hql.append(" AND a.CLASS_NAME LIKE :className");
+		}
+		if (parm.containsKey("teacher")) {
+			hql.append(" AND a.TEACHER LIKE :teacher");
+		}
+		if (parm.containsKey("company")) {
+			hql.append(" AND a.COMPANY LIKE :company");
+		}
+		if (parm.containsKey("reVarchar2")) {
+			hql.append(" AND a.RE_VARCHAR_2 LIKE :reVarchar2");
+		}
+		if (parm.containsKey("reVarchar3")) {
+			hql.append(" AND a.RE_VARCHAR_3 LIKE :reVarchar3");
+		}
+		if (parm.containsKey("companyAddress")) {
+			hql.append(" AND a.COMPANY_ADDRESS LIKE :companyAddress");
+		}
+		if (parm.containsKey("department")) {
+			hql.append(" AND a.DEPARTMENT LIKE :department");
+		}
+		if (parm.containsKey("title")) {
+			hql.append(" AND a.TITLE LIKE :title");
+		}
+		if (parm.containsKey("address")) {
+			hql.append(" AND a.ADDRESS LIKE :address");
+		}
+		if (parm.containsKey("highestEducation")) {
+			hql.append(" AND a.HIGHEST_EDUCATION = :highestEducation");
+		}
+		if (parm.containsKey("alumniClubIdentityId")) {
+			hql.append(" AND i.ALUMNI_CLUB_IDENTITY_ID LIKE :alumniClubIdentityId");
+		}
+		if (parm.containsKey("alumniIdentityId")) {
+			hql.append(" AND i.ALUMNI_IDENTITY_ID LIKE :alumniIdentityId");
+		}
+		if (parm.containsKey("branchClubIdentityId")) {
+			hql.append(" AND i.BRANCH_CLUB_IDENTITY_ID LIKE :branchClubIdentityId");
+		}
+		if (parm.containsKey("industry")) {
+			hql.append(" AND a.INDUSTY = :industry");
+		}
+		if (parm.containsKey("companyCityStr")) {
+			hql.append(" AND a.COMPANY_CITY_STR LIKE :companyCityStr");
+		}
+		if (parm.containsKey("officePhone")) {
+			hql.append(" AND a.OFFICE_PHONE LIKE :officePhone");
+		}
+		if (parm.containsKey("post")) {
+			hql.append(" AND a.POST LIKE :post");
+		}
+		if (parm.containsKey("remark1")) {
+			hql.append(" AND a.REMARK1 LIKE :remark1");
+		}
+		if (parm.containsKey("remark2")) {
+			hql.append(" AND a.REMARK2 LIKE :remark2");
+		}
+		if (parm.containsKey("remark3")) {
+			hql.append(" AND a.REMARK3 LIKE :remark3");
+		}
+		if (parm.containsKey("remark4")) {
+			hql.append(" AND a.REMARK4 LIKE :remark4");
+		}
+		if (parm.containsKey("remark5")) {
+			hql.append(" AND a.REMARK5 LIKE :remark5");
+		}
+		if (parm.containsKey("remark6")) {
+			hql.append(" AND a.REMARK6 LIKE :remark6");
+		}
+		if (parm.containsKey("remark7")) {
+			hql.append(" AND a.REMARK7 LIKE :remark7");
+		}
+		if (parm.containsKey("remark8")) {
+			hql.append(" AND a.REMARK8 LIKE :remark8");
+		}
+		if (parm.containsKey("remark9")) {
+			hql.append(" AND a.REMARK9 LIKE :remark9");
+		}
+		if (parm.containsKey("remark10")) {
+			hql.append(" AND a.REMARK10 LIKE :remark10");
+		}
+		
+	}
+
+	protected Map<String, Object> buildParams(Map<String, Param> params) {
+		Map<String, Object> paramsMap = new HashMap<String, Object>();
+		for (Entry<String, Param> entry : params.entrySet()) {
+			paramsMap.put(entry.getKey(), entry.getValue().getVal());
+		}
+		return paramsMap;
+	}
+
+}

@@ -1,0 +1,8 @@
+#地方分会,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容
+DROP TABLE IF EXISTS ,DIC_CHAPTERS,;,,,,,,
+CREATE TABLE ,DIC_CHAPTERS,(,,,,,,
+,ID,VARCHAR(36) ,NOT NULL,primary key,,,,
+,value,VARCHAR(36) ,,,,,,
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,地方分会,;,,,,,,

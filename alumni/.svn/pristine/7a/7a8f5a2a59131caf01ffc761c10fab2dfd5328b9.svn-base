@@ -1,0 +1,123 @@
+/**
+ * 门户菜单管理--信息发布管理
+ *
+ * zxguan@wisdombud.com
+ * 20170408
+ * */
+
+
+var actionPath = contextPath + "/home-information-release";
+var $form = $('#baseInfoForm');
+var editor;
+$(function(){
+    var options = {
+		width : '100%',
+		height : '300px',
+        uploadJson: "../common/kindeditor!kindeditorUpload.action?",
+		allowFileManager : true,
+		formatUploadUrl: false,
+        afterBlur: function () {
+            this.sync();
+            //手动重新验证
+            var bv = $form.data('bootstrapValidator');
+            bv.revalidateField("entity.content");
+        },
+        afterCreate: function () {
+            this.sync();
+        }
+    };
+	editor = KindEditor.create('#editor_id', options);
+
+    initValidator();
+    $("#btn-submit").click(function() {
+        var bv = $form.data('bootstrapValidator');
+        bv.validate();
+        if (bv.isValid()) {
+           multiFormSubmit({
+        	   url : actionPath + "!addOrUpdate",
+        	   queryParam : $form.seriailize()
+           });
+        }
+    });
+
+    uploadFile({
+    	successCall : function(data, status, a) {
+    		$('#imgId').val(data.f_id);
+    		$('#imgName').val(data.fileName);
+		}
+    });
+    uploadFile({
+		btnId : "btnVideoUpLoad",
+		fileId : "videoUpload",
+		successCall : function(data, status, a) {
+			$('#videoId').val(data.f_id);
+    		$('#videoName').val(data.fileName);
+		}
+    });
+});
+
+function initValidator() {
+    $form.bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+        	"entity.title": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+        	"entity.publisher": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+        	"entity.summary": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+             "entity.isEnable": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+             "entity.isTop": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+             "entity.imgId": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.videoId": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            }
+        }
+
+    });
+}

@@ -1,0 +1,20 @@
+package com.wisdombud.alumni.dao.manage.impl;
+
+import org.springframework.stereotype.Repository;
+import org.apache.log4j.Logger;
+
+import com.wisdombud.alumni.dao.manage.BaseAlumniDao;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+
+import common.toolkit.java.orm.hibernate.SimpleHibernateDao;
+
+/**
+ * 校友信息表 DaoImpl. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Repository(value = "baseAlumniDao")
+public class BaseAlumniDaoImpl extends SimpleHibernateDao<BaseAlumni, String> implements BaseAlumniDao {
+	private static final Logger LOGGER = Logger.getLogger(BaseAlumniDaoImpl.class);
+}

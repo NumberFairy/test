@@ -1,0 +1,19 @@
+#留言表,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,BASE_MESSAGE_BOARD,;,,,,,,,
+CREATE TABLE ,base_MESSAGE_BOARD,(,,,,,,,
+,ID,VARCHAR(100) ,NOT NULL,primary key,,,,,","
+,NAME,VARCHAR(100),,,,,COMMENT ,'留言人',","
+,eMAIL,VARCHAR(100),,,,,COMMENT ,'邮箱',","
+,QQ,VARCHAR(100),,,,,COMMENT ,'QQ',","
+,TITLE,int(1),,,,,COMMENT ,'标题',","
+,MESSAGE,VARCHAR(100),,,,,COMMENT ,'留言内容',","
+,STATUS,int(1),,,,,COMMENT ,'状态',","
+,AUDITOR,VARCHAR(100),,,,,COMMENT ,'审核人',","
+,AUDIT_TIME,datetime,,,,,COMMENT ,'审核时间',","
+,IS_REPLY,VARCHAR(100),,,,,COMMENT ,'是否回复',","
+,REPLY_PERSON_ROLE,int(1),,,,,COMMENT ,'回复人',","
+,REPLY_TIME,VARCHAR(100),,,,,COMMENT ,'回复时间',","
+,REPLY_CONTENT,VARCHAR(100),,,,,COMMENT ,'回复内容',","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,'留言表',;,,,,,,,

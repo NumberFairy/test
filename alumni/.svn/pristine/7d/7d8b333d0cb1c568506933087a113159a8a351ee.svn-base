@@ -1,0 +1,330 @@
+/**
+ * 我的办公桌
+ * zhangyan@wisdombud.com
+ * 20170407
+ */
+var actionPath = contextPath + "/my-desk";
+var eventActionPath = contextPath + "/event";
+var memoActionPath = contextPath + "/memo";
+var memoList = [];
+var eventList = [];
+var data = [];
+var tplname;
+var modalName;
+var addBodyName;
+$(function() {
+    loadData();
+    loadEventData();
+    $("#btn-memo-add").click(function() {
+        // memoAddOrCheck();
+        addOrCheck("memo", data);
+        initMemoValidator();
+    });
+
+    $("#btn-ev-add").click(function() {
+        evAddOrCheck();
+        initEventValidator();
+    });
+
+    $("#addMemo").click(function() {
+        saveMemo();
+    });
+
+    $("#addEvent").click(function() {
+        saveEvent();
+    });
+
+    $("#gridBodyMemo").on("click", '.detail', function() {
+        id = $(this).data('id');
+        detailMemo();
+    });
+
+    $("#gridBodyMemo").on("click", '.success', function() {
+        ids = $(this).data('id');
+        completeMemo();
+    });
+
+    $("#gridBodyEvent").on("click", '.edit', function() {
+        id = $(this).data('id');
+        editEvent();
+    });
+
+    $("#gridBodyEvent").on("click", ".remove", function() {
+        ids = $(this).data('id');
+        removeEvent();
+    });
+
+    $("#memoMore").click(function() {
+        location.href = memoActionPath + "!hrefPage";
+    })
+
+    $("#eventMore").click(function() {
+        location.href = eventActionPath + "!hrefPage";
+    });
+});
+/**
+ * 待处理方法
+ * 1： event
+ * 2:  memo
+ */
+function addOrCheck(callType, data) {
+    // getNameByParam(callType);
+    if (callType = "memo") {
+        tplname = "tpl-memo";
+        modalName = "#memoModal";
+        addBodyName = "#add-memo";
+    } else if (callType = "event") {
+        tplname = "tpl-event";
+        modalName = "#eventModal";
+        addBodyName = "#add-event";
+    }
+    var html = template(tplname, data);
+    if (data) {
+        $(".modal-title", modalName).html("查看");
+    } else {
+        $(".modal-title", modalName).html("新增");
+    }
+    $(addBodyName).html(html);
+    formData();
+    $(modalName).modal();
+}
+/**
+ * 引入时间插件
+ */
+function formData() {
+    $('.form_date').datetimepicker({
+        format: 'yyyy-mm-dd',
+        language: 'zh-CN',
+        autoclose: true,
+        startView: 2,
+        minView: 2,
+        forceParse: false,
+        todayBtn: true
+    }).on('changeDate', function(ev) {
+        $(this).trigger("blur");
+    });
+}
+
+/**
+ * 移除校友工作大事记
+ */
+function removeEvent() {
+    $.post(eventActionPath + "!changeStatus?ids=" + ids, function(data) {
+        if (data.success) {
+            location.href = actionPath + "!hrefPage";
+        } else {
+            alertify.alert("操作失败");
+        }
+    }, "json")
+}
+
+/**
+ * 待处理方法
+ * 通过传参得到变量值
+ */
+function getNameByParam(callType) {
+    if (callType = "1") {
+        tplname = "tpl-event";
+        modalName = "#eventModal";
+        addBodyName = "#add-event";
+    }
+    if (callType = "0") {
+        tplname = "tpl-memo";
+        modalName = "#memoModal";
+        addBodyName = "#add-memo";
+    }
+}
+
+/**
+ * 编辑校友工作大事记
+ */
+function editEvent() {
+    $.post(eventActionPath + "!detail?id=" + id, function(data) {
+        var objectEvent = {
+            id: data.id,
+            eventTitle: data.eventTitle,
+            eventContent: data.eventContent,
+            eventTime: data.eventTime
+        }
+        evAddOrCheck(objectEvent);
+    }, "json")
+}
+
+/**
+ * 已完成
+ */
+function completeMemo() {
+    $.post(memoActionPath + "!changeStatus?ids=" + ids, function(data) {
+        // var data = JSON.parse(data);
+        if (data.success) {
+            location.href = actionPath + "!hrefPage";
+        } else {
+            alertify.alert("修改失败");
+        }
+    }, "json")
+}
+
+/**
+ * 查看备忘录信息
+ */
+function detailMemo() {
+    $.post(memoActionPath + "!detail?id=" + id, function(data) {
+        var object = JSON.parse(data);
+        var objectMemo = {
+            isReadOnly: 1,
+            id: object.id,
+            title: object.title,
+            content: object.content,
+            memoTime: object.memoTime,
+        }
+        memoAddOrCheck(objectMemo);
+    });
+}
+
+/**
+ * 保存校友工作大事记
+ */
+function saveEvent() {
+    var bv = $eventForm.data('bootstrapValidator');
+    bv.validate();
+    if (bv.isValid()) {
+        var entity = $("#eventForm").serialize();
+        $.post(eventActionPath + "!addOrUpdate", entity, function(data) {
+            if (data.success) {
+                location.href = actionPath + "!hrefPage";
+            } else {
+                alertify.alert("保存失败");
+            }
+        }, "json");
+    }
+}
+
+/**
+ * 保存备忘录信息 
+ */
+function saveMemo() {
+    var bv = $memoForm.data('bootstrapValidator');
+    bv.validate();
+    if (bv.isValid()) {
+        var entity = $("#memoForm").serialize();
+        $.post(memoActionPath + "!addOrUpdate", entity, function(data) {
+            if (data.success) {
+                location.href = actionPath + "!hrefPage";
+            } else {
+                alertify.alert("保存失败");
+            }
+        }, "json");
+    }
+}
+
+function memoAddOrCheck(data) {
+    var html = template("tpl-memo", data);
+
+    if (data) {
+        $(".modal-title", "#memoModal").html("查看");
+    } else {
+        $(".modal-title", "#memoModal").html("新增");
+    }
+    $("#add-memo").html(html);
+    $("#memoModal").modal();
+    initMemoValidator();
+}
+
+function evAddOrCheck(data) {
+    var html = template("tpl-event", data);
+    if (data) {
+        $(".modal-title", "#eventModal").html("查看");
+    } else {
+        $(".modal-title", "#eventModal").html("新增");
+    }
+    $("#add-event").html(html);
+    formData();
+    $("#eventModal").modal();
+    initEventValidator();
+}
+
+function eventAddOrUpdate(data) {
+    var html = template("tpl-event", data);
+    if (data) {
+        $(".modal-title", "#eventModal").html("新增");
+    } else {
+        $(".modal-title", "#eventModal").html("修改");
+    }
+    $("#add-event").html(html);
+    $("#eventModal").modal();
+}
+
+function loadData() {
+    $.post(actionPath + "!findAllData", function(data) {
+        for (var i = 0; i < data.length; i++) {
+            memoList.push(data[i]);
+        }
+        var html = template("gridTplMemo", { 'memoList': memoList });
+        $("#gridBodyMemo").html(html);
+    }, 'json');
+}
+
+function loadEventData() {
+    $.post(actionPath + "!findEventData", function(data) {
+        var i = 0;
+        for (i; i < data.length; i++) {
+            eventList.push(data[i]);
+        }
+        var html = template("gridTplEvent", { 'eventList': eventList });
+        $("#gridBodyEvent").html(html);
+    }, "json");
+}
+
+function initMemoValidator() {
+    $memoForm = $('#memoForm');
+    $memoForm.bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+            "entity.title": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请输入标题'
+                    }
+                }
+            },
+            "entity.memoTime": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请选择录入时间'
+                    },
+                }
+            },
+
+        }
+    });
+}
+
+function initEventValidator() {
+    $eventForm = $('#eventForm');
+    $eventForm.bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+            "entity.eventTitle": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请输入标题'
+                    }
+                }
+            },
+            "entity.eventTime": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请选择录入时间'
+                    },
+                }
+            },
+
+        }
+    });
+}

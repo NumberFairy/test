@@ -1,0 +1,12 @@
+#友情链接信息管理,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,HOME_FRIENDSHIP_LINK,;,,,,,,,
+CREATE TABLE ,HOME_FRIENDSHIP_LINK,(,,,,,,,
+,ID,VARCHAR(20) ,NOT NULL,primary key,,,,,","
+,NAME,VARCHAR(200) ,,,,,COMMENT ,链接名称',","
+,PIC_ID,VARCHAR(200),,,,,COMMENT ,图片ID',","
+,LINK_URL,VARCHAR(200),,,,,COMMENT ,链接地址',","
+,SORT_FLAG,int(1),,,,,COMMENT ,排序',","
+,IS_ENABLE,int(10),,,,,COMMENT ,是否启用',","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,友情链接信息管理',;,,,,,,,

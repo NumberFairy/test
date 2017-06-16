@@ -1,0 +1,177 @@
+package com.wisdombud.alumni.actions.manage;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+
+import com.google.common.collect.Maps;
+import com.wisdombud.alumni.actions.base.AbstractCrudAction;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.enums.AlumniIdentityEnum;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.pojo.dic.DicAlumniBranchIdentity;
+import com.wisdombud.alumni.pojo.dic.DicAlumniClubIdentity;
+import com.wisdombud.alumni.pojo.dic.DicAlumniIdentity;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicDegree;
+import com.wisdombud.alumni.pojo.dic.DicIndustry;
+import com.wisdombud.alumni.pojo.dic.DicPoliticalStatus;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseIdentityRelation;
+import com.wisdombud.alumni.vo.Param;
+
+/**
+ * 功能: 校友信息表<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ * 
+ * @author robot
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("prototype")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "toAddOrUpdate", location = "/WEB-INF/jsp/alumni-manage-center/unversity-core-alumni/create.jsp"),
+		   @Result(name = "toDetail", location = "/WEB-INF/jsp/alumni-manage-center/unversity-core-alumni/detail.jsp"),
+		   @Result(name = "toPage", location = "/WEB-INF/jsp/alumni-manage-center/unversity-core-alumni/page.jsp") })
+public class SchoolKeyAlumniAction extends AbstractCrudAction<BaseIdentityRelation> {
+	private static final long serialVersionUID = 1L;
+	@Autowired
+	public BaseAlumniSrv					 alumniSrv;
+	@Autowired
+	public DicCommonSrv					 dicCommonSrv;
+	
+	public List<DicPoliticalStatus>		 dicPoliticalStatusList;
+	public List<DicCollege>				 dicCollegeList;
+	public List<DicSpecialty>			 dicSpecialtyList;
+	public List<DicDegree>				 dicDegreeList;
+	public List<DicIndustry>			 dicIndustryList;
+	public List<DicAlumniClubIdentity>	 dicAlumniClubIdentityList;
+	public List<DicAlumniBranchIdentity> dicAlumniBranchIdentityList;
+	public List<DicAlumniIdentity>		 dicAlumniIdentityList;
+	public BaseAlumni alumni;
+	
+	public SchoolKeyAlumniAction(@Qualifier(value = "baseIdentityRelationSrv") IBaseSrv<BaseIdentityRelation> baseSrv) {
+		super(baseSrv);
+	}
+
+	@Override
+	protected List<Order> buildOrder() {
+		return super.buildOrder();
+	}
+
+	@Override
+	protected Map<String, Param> buildParams() {
+		Map<String, Param> params=Maps.newHashMap();
+		params.put("alumniIdentityId", Param.like(AlumniIdentityEnum.SCHOOL_KEY_ALUMNI.getValue()));
+		return params;
+	}
+	
+	@Override
+	public String hrefAddOrUpdate() {
+		this.initData();
+		if (entity != null && StringUtils.isNotBlank(entity.getId())) {
+			entity = baseSrv.find(entity.getId());
+			if(StringUtils.isNotBlank(entity.getAlumniId())){
+				alumni=alumniSrv.find(entity.getAlumniId());
+				entity.setAlumni(alumni);
+			}
+		}
+		return "toAddOrUpdate";
+	}
+	
+	private void initData() {
+		dicPoliticalStatusList = dicCommonSrv.findAll(DicPoliticalStatus.class);
+		dicCollegeList = dicCommonSrv.findAll(DicCollege.class);
+		dicSpecialtyList = dicCommonSrv.findAll(DicSpecialty.class);
+		dicDegreeList = dicCommonSrv.findAll(DicDegree.class);
+		dicIndustryList = dicCommonSrv.findAll(DicIndustry.class);
+		dicAlumniClubIdentityList = dicCommonSrv.findAll(DicAlumniClubIdentity.class);
+		dicAlumniBranchIdentityList = dicCommonSrv.findAll(DicAlumniBranchIdentity.class);
+		dicAlumniIdentityList = dicCommonSrv.findAll(DicAlumniIdentity.class);
+	}
+
+	public List<DicPoliticalStatus> getDicPoliticalStatusList() {
+		return dicPoliticalStatusList;
+	}
+
+	public void setDicPoliticalStatusList(List<DicPoliticalStatus> dicPoliticalStatusList) {
+		this.dicPoliticalStatusList = dicPoliticalStatusList;
+	}
+
+	public List<DicCollege> getDicCollegeList() {
+		return dicCollegeList;
+	}
+
+	public void setDicCollegeList(List<DicCollege> dicCollegeList) {
+		this.dicCollegeList = dicCollegeList;
+	}
+
+	public List<DicSpecialty> getDicSpecialtyList() {
+		return dicSpecialtyList;
+	}
+
+	public void setDicSpecialtyList(List<DicSpecialty> dicSpecialtyList) {
+		this.dicSpecialtyList = dicSpecialtyList;
+	}
+
+	public List<DicDegree> getDicDegreeList() {
+		return dicDegreeList;
+	}
+
+	public void setDicDegreeList(List<DicDegree> dicDegreeList) {
+		this.dicDegreeList = dicDegreeList;
+	}
+
+	public List<DicIndustry> getDicIndustryList() {
+		return dicIndustryList;
+	}
+
+	public void setDicIndustryList(List<DicIndustry> dicIndustryList) {
+		this.dicIndustryList = dicIndustryList;
+	}
+
+	public List<DicAlumniClubIdentity> getDicAlumniClubIdentityList() {
+		return dicAlumniClubIdentityList;
+	}
+
+	public void setDicAlumniClubIdentityList(List<DicAlumniClubIdentity> dicAlumniClubIdentityList) {
+		this.dicAlumniClubIdentityList = dicAlumniClubIdentityList;
+	}
+
+	public List<DicAlumniBranchIdentity> getDicAlumniBranchIdentityList() {
+		return dicAlumniBranchIdentityList;
+	}
+
+	public void setDicAlumniBranchIdentityList(List<DicAlumniBranchIdentity> dicAlumniBranchIdentityList) {
+		this.dicAlumniBranchIdentityList = dicAlumniBranchIdentityList;
+	}
+
+	public List<DicAlumniIdentity> getDicAlumniIdentityList() {
+		return dicAlumniIdentityList;
+	}
+
+	public void setDicAlumniIdentityList(List<DicAlumniIdentity> dicAlumniIdentityList) {
+		this.dicAlumniIdentityList = dicAlumniIdentityList;
+	}
+
+	public BaseAlumni getAlumni() {
+		return alumni;
+	}
+
+	public void setAlumni(BaseAlumni alumni) {
+		this.alumni = alumni;
+	}
+	
+}

@@ -1,0 +1,197 @@
+<!--
+  留言板
+  cczhao@wisdombud.com
+  2017/02/06-->
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <%@include file="/WEB-INF/jsp/common/header.jsp"%>
+        <title>校友管理及分析系统</title>
+        <style>
+            /*#superProperty {
+                display: none;
+            }*/
+        </style>
+        </head>
+
+        <body class="gray-bg">
+            <div class="wrapper wrapper-content  animated fadeInRight">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>留言板管理</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <form class="form-inline clearfix" role="form">
+                                    <div class="form-group marb">
+                                        <input placeholder="" class="form-control  form_datetime ">
+                                    </div>
+                                    <div class="form-group marb">
+                                        <button class="btn btn-sm btn-info mar0" type="button">查 询</button>
+                                    </div>
+                                    <div class="form-group marb">
+                                        <button id="superSearch" class="btn btn-sm btn-info mar0" type="button">高 级 查 询</button>
+                                    </div>
+                                    <div id="superProperty">
+                                        <div class="form-group marb">
+                                            <label>标题 ：</label>
+                                            <input placeholder="标题" class="form-control  form_datetime ">
+                                        </div>
+                                        <div class="form-group marb">
+                                            <label>留言人 ：</label>
+                                            <input placeholder="留言人" class="form-control  form_datetime ">
+                                        </div>
+                                        <div class="form-group marb">
+                                            <label>审核状态 ：</label>
+                                            <input placeholder="审核状态" class="form-control  form_datetime ">
+                                        </div>
+                                        <div class="form-group marb">
+                                            <label>回复状态  ：</label>
+                                            <input placeholder="回复状态" class="form-control  form_datetime ">
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class="clearfix">
+                                    <button type="button" id="detail" class="btn btn-sm btn-info marl">查 看</button>
+                                    <!--<button type="button" id="btn-detail" class="btn btn-sm btn-info marl">通过</button>
+                                    <button type="button" id="btn-detail" class="btn btn-sm btn-info marl">不通过</button>
+                                    <button type="button" id="btn-detail" class="btn btn-sm btn-info marl">驳回</button>-->
+                                    <button type="button" id="delete" class="btn btn-sm btn-info marl">删除</button>
+                                    <button type="button" id="reply" class="btn btn-sm btn-info marl">回复</button>
+                                </div>
+                                <table class="table  table-bordered table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th class="bs-checkbox" style="width:36px;">
+                                                <input type="checkbox" class="check-all">
+                                            </th>
+                                            <th>标题</th>
+                                            <th>留言人</th>
+                                            <th>留言内容</th>
+                                            <th>留言时间</th>
+                                            <th>审核状态</th>
+                                            <th>回复状态</th>
+                                            <th>回复时间</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="gridBody">
+                                        <tr id="{{value.id}}">
+                                            <td class="bs-checkbox" style="width:36px;">
+                                                <input type="checkbox" class="child" value="{{value.id}}">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div align="right">
+                                    <ul class="pagination" id="pageUl">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div aria-hidden="true" aria-labelledby="modifyModal" role="dialog" tabindex="-1" id="modifyModal" class="modal fade">
+                <div class="modal-dialog" style="width:800px;">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="modal-title">邮件通知</h4>
+                        </div>
+                        <div class="modal-body">
+                            <!---->
+                            <form id="formInfo" class="form-horizontal">
+                                <fieldset>
+                                    <div class="clearfix">
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label"> <span
+											class="star">*</span>邮箱：
+										</label>
+                                            <div class="col-sm-7">
+                                                <input name="email" type="text" class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-4 control-label"> <span
+											class="star">*</span>请输入通知内容：
+										</label>
+                                            <div class="col-sm-7">
+                                                <textarea id="txtCode" rows="5" cols="50" style="width:100%"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </form>
+                            <!---->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                            <button id="save" type="button" class="btn btn-primary">保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </body>
+        <%@ include file="/WEB-INF/jsp/common/js-container.jsp"%>
+            <script type="text/javascript" src="${contentPath}/resources/js/message-board/page.js"></script>
+            <script type="text/html" id="gridTpl">
+    {{each results as value index}}
+    <tr id="{{value.id}}">
+        <td class="bs-checkbox" style="width:36px;">
+            <input type="checkbox" class="child" value="{{value.id}}">
+        </td>
+        <td>{{value.title}}</td>
+        <td>{{value.createTime}}</td>
+        <td>{{value.message}}</td>
+        <td>{{value.createTime}}</td>
+        <td>{{value.statusName}}</td>
+        <td>{{value.isReplyName}}</td>
+        <td>{{value.replyTime}}</td>
+    </tr>
+    {/each}
+</script>
+
+
+
+<script>
+$(function () {
+    $('#superProperty').css('display', 'none');
+    $("#superSearch").click(function(){
+        $('#superProperty').css('display', 'block');
+    });     
+
+    var reply=$('#reply');
+    reply.click(function(){
+        if (!judgeCheckedOneId()) {
+            return;
+        }
+
+        $('#modifyModal').modal({
+            keyboard: false
+        });
+        //userName=modifyPwd.attr('userName');     
+    });  
+    // $('#save').click(function(){
+    //     var formInfo = $("#formInfo").serializeObject();
+    //     formInfo["oldPwd"] = md5(formInfo["oldPwd"]);
+    //     formInfo["newPwd"] = md5(formInfo["newPwd"]);
+    //     formInfo["repeatNewPwd"] = md5(formInfo["repeatNewPwd"]);
+    //     if(formInfo["newPwd"]==formInfo["repeatNewPwd"]){                           
+    //         formInfo["userName"]=userName;
+    //         var params = jsonFormSerialize(formInfo);
+    //             $.post(contextPath + "/user!modifyPwd", params, function(data) {
+    //         if (data.success) {
+    //             alertify.alert(data.message);
+    //         } else {
+    //             alertify.alert(data.message);
+    //         }}, "json");
+    //     }else {
+    //         alertify.alert('两次密码输入不一致');
+    //     } 
+    //     $('#modifyModal').modal('hide');
+    // }); 
+});
+</script>
+
+            </html>

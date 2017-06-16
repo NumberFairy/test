@@ -1,0 +1,96 @@
+/**
+ * 用户管理
+ *
+ * zxguan@wisdombud.com
+ * 20170321
+ *
+ */
+
+var actionPath = contextPath + "/user-manage";
+var $baseInfoForm = $('#baseInfoForm');
+
+$(function () {
+
+    validator();
+    $("#btn-submit").click(function () {
+        var bv = $baseInfoForm.data('bootstrapValidator');
+        bv.validate();
+        if (bv.isValid()) {
+            var params = $("form").serialize();
+            $.post(actionPath + "!addOrUpdate", params, function (data) {
+                if (data.success) {
+                    alertify.success("保存成功");
+                    window.history.back();
+                } else {
+                    alertify.alert("保存失败");
+                }
+            }, "json");
+        }
+    });
+});
+
+function validator() {
+    $baseInfoForm.bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+            "entity.useriidd": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.userppww": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+             "entity.name": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+             "entity.position": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.departmentId": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.email": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.officeTel": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            }
+        }
+
+    });
+}

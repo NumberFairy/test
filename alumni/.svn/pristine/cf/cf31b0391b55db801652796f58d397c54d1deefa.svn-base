@@ -1,0 +1,250 @@
+package com.wisdombud.alumni.actions.manage;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+
+import com.google.common.collect.Maps;
+import com.wisdombud.alumni.actions.base.AbstractCrudAction;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.common.EmailSrv;
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.enums.AlumniIdentityEnum;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.manage.BaseIdentityRelationSrv;
+import com.wisdombud.alumni.pojo.dic.DicAlumniBranchIdentity;
+import com.wisdombud.alumni.pojo.dic.DicAlumniClubIdentity;
+import com.wisdombud.alumni.pojo.dic.DicAlumniIdentity;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicDegree;
+import com.wisdombud.alumni.pojo.dic.DicIndustry;
+import com.wisdombud.alumni.pojo.dic.DicPoliticalStatus;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseIdentityRelation;
+import com.wisdombud.alumni.util.BeanUtils;
+import com.wisdombud.alumni.vo.CommonResult;
+import com.wisdombud.alumni.vo.Param;
+
+/**
+ * 功能: 校友管理中心-联络员管理<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ * 
+ * @author robot
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("prototype")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "toAddOrUpdate", location = "/WEB-INF/jsp/alumni-manage-center/liaison-manage/create.jsp"),
+		   @Result(name = "toDetail", location = "/WEB-INF/jsp/alumni-manage-center/liaison-manage/detail.jsp"),
+		   @Result(name = "toPage", location = "/WEB-INF/jsp/alumni-manage-center/liaison-manage/page.jsp") })
+public class LiaisonManageAction extends AbstractCrudAction<BaseIdentityRelation> {
+	private static final long			 serialVersionUID = 1L;
+	@Autowired
+	public BaseAlumniSrv				 alumniSrv;
+	@Autowired
+	public DicCommonSrv					 dicCommonSrv;
+	@Autowired
+	private EmailSrv					 emailSrv;
+	@Autowired
+	private BaseIdentityRelationSrv		 relationSrv;
+
+	public List<DicPoliticalStatus>		 dicPoliticalStatusList;
+	public List<DicCollege>				 dicCollegeList;
+	public List<DicSpecialty>			 dicSpecialtyList;
+	public List<DicDegree>				 dicDegreeList;
+	public List<DicIndustry>			 dicIndustryList;
+	public List<DicAlumniClubIdentity>	 dicAlumniClubIdentityList;
+	public List<DicAlumniBranchIdentity> dicAlumniBranchIdentityList;
+	public List<DicAlumniIdentity>		 dicAlumniIdentityList;
+	public BaseAlumni					 alumni;
+	public String						 title;
+	public String						 email;
+	public String						 replyContent;
+
+	public LiaisonManageAction(
+			@Qualifier(value = "baseIdentityRelationSrv") IBaseSrv<BaseIdentityRelation> baseSrv) {
+		super(baseSrv);
+	}
+
+	@Override
+	protected List<Order> buildOrder() {
+		return super.buildOrder();
+	}
+
+	@Override
+	protected Map<String, Param> buildParams() {
+		Map<String, Param> params = Maps.newHashMap();
+		params.put("alumniIdentityId", Param.like(AlumniIdentityEnum.ALUMNI_LIAISON.getValue()));
+		return params;
+	}
+
+	public void sendMail() {
+		List<String> emailAddressList = relationSrv.string2List(email);
+		if (emailAddressList != null && emailAddressList.size() > 0) {
+			emailSrv.sendMail(title, emailAddressList, replyContent);
+			this.sendSuccessMsg();
+		} else {
+			this.sendFailMsg(email, "sendMail failed!");
+		}
+	}
+
+	public void forEmail() {
+		if (StringUtils.isNotEmpty(id)) {
+			String strEmail = relationSrv.getSelectedEmail(id);
+			this.sendSuccessMsg(null, strEmail);
+		}
+	}
+
+	@Override
+	public String hrefAddOrUpdate() {
+		this.initData();
+		if (entity != null && StringUtils.isNotBlank(entity.getId())) {
+			entity = baseSrv.find(entity.getId());
+			if (StringUtils.isNotBlank(entity.getAlumniId())) {
+				alumni = alumniSrv.find(entity.getAlumniId());
+				entity.setAlumni(alumni);
+			}
+		}
+		return "toAddOrUpdate";
+	}
+
+	@Override
+	public void update() {
+		CommonResult result = new CommonResult(CommonResult.FAIL);
+		if (entity.getAlumni() != null) {
+			entity.getAlumni().setLastUpdate(new Date());
+
+			BaseAlumni oldEntity = this.alumniSrv.find(entity.getAlumniId());
+			if (oldEntity == null) {
+				result.setInfo("所更新的对象不存在");
+			} else {
+				BeanUtils.copyProperties(entity.getAlumni(), oldEntity, "id", "createTime");
+				this.alumniSrv.update(oldEntity);
+				result.setInfo(CommonResult.SUCCESS_INFO);
+				result.setSuccess(CommonResult.SUCCESS);
+			}
+		}
+		this.sendResponseMsg(result);
+	}
+	
+	private void initData() {
+		dicPoliticalStatusList = dicCommonSrv.findAll(DicPoliticalStatus.class);
+		dicCollegeList = dicCommonSrv.findAll(DicCollege.class);
+		dicSpecialtyList = dicCommonSrv.findAll(DicSpecialty.class);
+		dicDegreeList = dicCommonSrv.findAll(DicDegree.class);
+		dicIndustryList = dicCommonSrv.findAll(DicIndustry.class);
+		dicAlumniClubIdentityList = dicCommonSrv.findAll(DicAlumniClubIdentity.class);
+		dicAlumniBranchIdentityList = dicCommonSrv.findAll(DicAlumniBranchIdentity.class);
+		dicAlumniIdentityList = dicCommonSrv.findAll(DicAlumniIdentity.class);
+	}
+
+	public List<DicPoliticalStatus> getDicPoliticalStatusList() {
+		return dicPoliticalStatusList;
+	}
+
+	public void setDicPoliticalStatusList(List<DicPoliticalStatus> dicPoliticalStatusList) {
+		this.dicPoliticalStatusList = dicPoliticalStatusList;
+	}
+
+	public List<DicCollege> getDicCollegeList() {
+		return dicCollegeList;
+	}
+
+	public void setDicCollegeList(List<DicCollege> dicCollegeList) {
+		this.dicCollegeList = dicCollegeList;
+	}
+
+	public List<DicDegree> getDicDegreeList() {
+		return dicDegreeList;
+	}
+
+	public void setDicDegreeList(List<DicDegree> dicDegreeList) {
+		this.dicDegreeList = dicDegreeList;
+	}
+
+	public List<DicIndustry> getDicIndustryList() {
+		return dicIndustryList;
+	}
+
+	public void setDicIndustryList(List<DicIndustry> dicIndustryList) {
+		this.dicIndustryList = dicIndustryList;
+	}
+
+	public List<DicAlumniClubIdentity> getDicAlumniClubIdentityList() {
+		return dicAlumniClubIdentityList;
+	}
+
+	public void setDicAlumniClubIdentityList(List<DicAlumniClubIdentity> dicAlumniClubIdentityList) {
+		this.dicAlumniClubIdentityList = dicAlumniClubIdentityList;
+	}
+
+	public List<DicAlumniBranchIdentity> getDicAlumniBranchIdentityList() {
+		return dicAlumniBranchIdentityList;
+	}
+
+	public void setDicAlumniBranchIdentityList(List<DicAlumniBranchIdentity> dicAlumniBranchIdentityList) {
+		this.dicAlumniBranchIdentityList = dicAlumniBranchIdentityList;
+	}
+
+	public List<DicAlumniIdentity> getDicAlumniIdentityList() {
+		return dicAlumniIdentityList;
+	}
+
+	public void setDicAlumniIdentityList(List<DicAlumniIdentity> dicAlumniIdentityList) {
+		this.dicAlumniIdentityList = dicAlumniIdentityList;
+	}
+
+	public List<DicSpecialty> getDicSpecialtyList() {
+		return dicSpecialtyList;
+	}
+
+	public void setDicSpecialtyList(List<DicSpecialty> dicSpecialtyList) {
+		this.dicSpecialtyList = dicSpecialtyList;
+	}
+
+	public BaseAlumni getAlumni() {
+		return alumni;
+	}
+
+	public void setAlumni(BaseAlumni alumni) {
+		this.alumni = alumni;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getReplyContent() {
+		return replyContent;
+	}
+
+	public void setReplyContent(String replyContent) {
+		this.replyContent = replyContent;
+	}
+
+}

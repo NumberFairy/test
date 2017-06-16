@@ -1,0 +1,37 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="${contextPath}/js-lib/template.js"></script>
+    <div class="footer">
+        <div class="footer-con">
+            <div class="footer-desc">
+                <p>
+                    中国地质大学校友会
+                </p>
+                <p>技术支持：北京慧萌信安软件技术有限公司</p>
+            </div>
+        </div>
+    </div>
+<script type="text/javascript">
+    $.get('/home!homeMenus',function(data){
+        if(data){
+            var h =  template("menu-tpl", {'data':data});
+            $('#home-menu-key').html(h);
+            return;
+        }
+        location.href="/home";
+    },"json")
+</script>
+<script type="text/html" id="menu-tpl">
+    {{each data as v}}
+    <li class="menu-item">
+        <a class="menu-text isMenu" href="javascript:;">{{v.name}}</a>
+        <ul class="menu-inner">
+            {{each v.children as s}}
+            <li class="menu-inner-item">
+                <a class="menu-text isMenu" href="/home!list">{{s.name}}</a>
+            </li>
+            {{/each}}
+        </ul>
+    </li>
+    {{/each}}
+</script>

@@ -1,0 +1,52 @@
+package com.wisdombud.alumni.common;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.dao.common.DicCommonDao;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+
+@Service
+public class DicCommonSrvImpl implements DicCommonSrv {
+	@Autowired
+	private DicCommonDao dicDao;
+
+	@Override
+	public <T> T findById(Class<T> clazz, int id) {
+		return dicDao.findById(clazz, id);
+	}
+
+	@Override
+	public <T> T findById(Class<T> clazz, String id) {
+		return dicDao.findById(clazz, id);
+	}
+
+	@Override
+	public <T> List<T> findAll(Class<T> clazz) {
+		return dicDao.findAll(clazz);
+	}
+
+	@Override
+	public <T> String findValueById(Class<T> clazz, int id) {
+		return this.dicDao.findValueById(clazz, id);
+	}
+
+	@Override
+	public <T> String findValueById(Class<T> clazz, String id) {
+		return this.dicDao.findValueById(clazz, id);
+	}
+
+
+	@Override
+	public List<DicSpecialty> findAllSpecialty() {
+		return dicDao.findAllSpecialty();
+	}
+
+	@Override
+	public List<DicSpecialty> findAllCollegeSpecialty(Integer collegeId) {
+		return dicDao.findAllCollegeSpecialty(collegeId);
+	}
+
+}

@@ -1,0 +1,219 @@
+package com.wisdombud.alumni.actions.system;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.wisdombud.alumni.constants.Constants;
+import com.wisdombud.alumni.pojo.system.PublicUser;
+import com.wisdombud.alumni.pojo.system.SecUser;
+import com.wisdombud.alumni.system.PublicUserSrv;
+import com.wisdombud.alumni.system.SecUserSrv;
+import com.wisdombud.alumni.vo.CommonResult;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.DateFormat;
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.struts2.AbstractCommonAction;
+
+/**
+ * 功能: 学院字典管理<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ * 
+ * @author xiefei
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("prototype")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "toPage", location = "/WEB-INF/jsp/system/user-manage/page.jsp"),
+		   @Result(name = "toAddOrUpdate", location = "/WEB-INF/jsp/system/user-manage/create.jsp"),
+		   @Result(name = "toDetail", location = "/WEB-INF/jsp/system/user-manage/detail.jsp") })
+public class UserManageAction extends AbstractCommonAction {
+
+	private static final long	  serialVersionUID = 1L;
+
+	protected SecUser			  entity;
+
+	protected String			  id;
+
+	protected PageEntity<SecUser> pageEntity;
+
+	@Autowired
+	private PublicUserSrv		  publicUserSrv;
+	@Autowired
+	private SecUserSrv			  secUserSrv;
+
+	public String hrefPage() {
+		return "toPage";
+	}
+
+	public String hrefAddOrUpdate() {
+		if (StringUtils.isNotEmpty(id)) {
+			entity = secUserSrv.find(id);
+		}
+		// if (entity != null && StringUtils.isNotBlank(entity.getId())) {
+		// entity = secUserSrv.find(entity.getId());
+		// }
+		return "toAddOrUpdate";
+	}
+
+	public String hrefDetail() {
+		entity = this.secUserSrv.find(id);
+		return "toDetail";
+	}
+
+	public void page() {
+		if (this.isAjaxRequest()) {
+			this.limit = this.limit == 0 ? Constants.DEFUALT_PAGESIZE : this.limit;
+			pageEntity = new PageEntity<>(start, limit);
+			final Map<String, Param> params = this.buildParams();
+			final List<Order> orderList = this.buildOrder();
+			this.secUserSrv.page(pageEntity, params, orderList);
+			final Gson g = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+			this.sendResponseMsg(g.toJson(pageEntity));
+		}
+	}
+
+	public void addOrUpdate() {
+		if (this.isAjaxRequest()) {
+			if (entity == null) {
+				CommonResult result = new CommonResult(CommonResult.FAIL, "entity == null");
+				this.sendResponseMsg(result);
+			} else {
+				if (StringUtils.isEmpty(entity.getId())) {
+					this.add();
+				} else {
+					this.update();
+				}
+			}
+
+		}
+	}
+
+	public void delete() {
+		if (this.isAjaxRequest()) {
+			this.secUserSrv.deleteByIds(id);
+			CommonResult result = new CommonResult(CommonResult.SUCCESS);
+			this.sendResponseMsg(result);
+		}
+	}
+
+	public void detail() {
+		entity = this.secUserSrv.find(id);
+		if (this.isAjaxRequest()) {
+			this.sendResponseMsg(entity);
+		}
+	}
+
+	protected void add() {
+		CommonResult result = new CommonResult(CommonResult.SUCCESS);
+		PublicUser pu = publicUserSrv.findUniqueBy("loginName", entity.getLoginName());
+		if (pu != null) {
+			result = new CommonResult(CommonResult.FAIL, "用户名已存在");
+			this.sendResponseMsg(result);
+			return;
+		}
+		entity.setId(null);
+		entity.setCreateTime(new Date());
+		entity.setLastUpdate(new Date());
+		this.secUserSrv.save(entity);
+		this.sendResponseMsg(result);
+	}
+
+	protected void update() {
+		entity.setLastUpdate(new Date());
+		CommonResult result = new CommonResult(CommonResult.FAIL);
+		SecUser oldEntity = this.secUserSrv.find(entity.getId());
+		if (oldEntity == null) {
+			result.setInfo("所更新的对象不存在");
+		} else {
+			// BeanUtils.copyProperties(oldEntity, entity, "id", "createTime");
+			entity.setCreateTime(oldEntity.getCreateTime());
+			this.secUserSrv.deleteById(entity.getId());
+			this.secUserSrv.save(entity);
+			result.setInfo(CommonResult.SUCCESS_INFO);
+			result.setSuccess(CommonResult.SUCCESS);
+		}
+		this.sendResponseMsg(result);
+	}
+
+	protected List<Order> buildOrder() {
+		List<Order> orders = new ArrayList<>();
+		orders.add(Order.desc("createTime"));
+		return orders;
+	}
+
+	protected Map<String, Param> buildParams() {
+		Map<String, Param> params = new HashMap<>();
+		if (entity != null) {
+			if (StringUtils.isNotBlank(entity.getName())) {
+				params.put("name", Param.like(entity.getName()));
+			}
+			if (StringUtils.isNotBlank(entity.getLoginName())) {
+				params.put("loginName", Param.like(entity.getLoginName()));
+			}
+		}
+		params.put("isAdmin", Param.put(Param.NEQ, SecUser.IS_ADMINISTRATOR_YES));
+		return params;
+	}
+
+	/**
+	 * 【重置密码】操作响应
+	 *
+	 * @return
+	 */
+	public void resetPassword() {
+		if (null != id) {
+			this.publicUserSrv.updateResetPwd(id);
+			sendSuccessMsg(null, "重置密码成功,新密码为：" + SecUser.DEFAULT_PASSWORD);
+		} else {
+			sendFailMsg(null, "用户不存在！");
+		}
+
+	}
+
+	protected void sendResponseMsg(Object src) {
+		final Gson g = new GsonBuilder().setDateFormat(DateFormat.DateTime.getFormat()).create();
+		this.sendResponseMsg(g.toJson(src));
+	}
+
+	public SecUser getEntity() {
+		return entity;
+	}
+
+	public void setEntity(SecUser entity) {
+		this.entity = entity;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public PageEntity<SecUser> getPageEntity() {
+		return pageEntity;
+	}
+
+	public void setPageEntity(PageEntity<SecUser> pageEntity) {
+		this.pageEntity = pageEntity;
+	}
+
+}

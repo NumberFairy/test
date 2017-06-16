@@ -1,0 +1,90 @@
+/**
+ * 用户管理
+ *
+ * zxguan@wisdombud.com
+ * 20170321
+ *
+ */
+
+var actionPath = contextPath + "/user-manage";
+var $baseInfoForm = $('#baseInfoForm');
+
+$(function () {
+
+    validator();
+    $("#btn-submit").click(function () {
+        var bv = $baseInfoForm.data('bootstrapValidator');
+        bv.validate();
+        if (bv.isValid()) {
+            var params = $("form").serialize();
+            $.post(actionPath + "!addOrUpdate", params, function (data) {
+                if (data.success) {
+                    alertify.success("保存成功");
+                    window.history.back();
+                } else {
+                    alertify.alert("保存失败");
+                }
+            }, "json");
+        }
+    });
+});
+
+function validator() {
+    $baseInfoForm.bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+            "entity.loginName": {
+                validators: {
+                    notEmpty: {
+                        message: '请填写登录名'
+                    }
+                }
+            },
+            "entity.pwd": {
+                validators: {
+                    notEmpty: {
+                        message: '请填写密码'
+                    }
+                }
+            },
+             "entity.name": {
+                validators: {
+                    notEmpty: {
+                        message: '请填写姓名'
+                    }
+                }
+            },
+             "entity.gender": {
+                validators: {
+                    notEmpty: {
+                        message: '请选择性别'
+                    }
+                }
+            },
+            "entity.mobile": {
+                validators: {
+                    notEmpty: {
+                        message: '请填写手机'
+                    },
+                    regexp : {
+						regexp : /^1\d{10}$/,
+						message : '请输入有效的手机'
+					}
+                }
+            },
+            "entity.email": {
+                validators: {
+                    notEmpty: {
+                        message: '请填写邮箱'
+                    },
+                    regexp : {
+						regexp : /^(?=\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$).{0,30}$/,
+						message : '输入的不是一个有效的邮箱'
+					}
+                }
+            }            
+        }
+
+    });
+}

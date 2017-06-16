@@ -1,0 +1,14 @@
+package com.wisdombud.alumni.dao.manage;
+import com.wisdombud.alumni.pojo.manage.BaseIdentityRelation;
+
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+	/**
+     * 身份信息关联表’ Dao. <br/>
+     * @author Administrator
+     
+     */
+public interface BaseIdentityRelationDao extends CommonDao<BaseIdentityRelation, String> {
+
+	
+}

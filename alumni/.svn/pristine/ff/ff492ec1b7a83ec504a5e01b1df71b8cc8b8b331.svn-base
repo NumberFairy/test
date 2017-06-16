@@ -1,0 +1,317 @@
+package com.wisdombud.alumni.dao.manage.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
+import org.springframework.stereotype.Repository;
+
+import com.wisdombud.alumni.dao.manage.BaseAlumniDao;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.SimpleHibernateDao;
+
+/**
+ * 校友信息表 DaoImpl. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Repository(value = "baseAlumniDao")
+public class BaseAlumniDaoImpl extends SimpleHibernateDao<BaseAlumni, String> implements BaseAlumniDao {
+	private static final Logger LOGGER = Logger.getLogger(BaseAlumniDaoImpl.class);
+
+	@Override
+	public void page(PageEntity<BaseAlumni> pageEntity, Map<String, Param> params, List<Order> orders) {
+		Map<String, Object> values = new HashMap<>();
+		StringBuffer hql = new StringBuffer(
+				"select a FROM BaseIdentityRelation i, BaseAlumni a ,DicCollege d ,DicSpecialty s WHERE i.alumniId = a.id AND a.college = d.id AND a.major = s.id");
+
+		Param p1 = params.get("alumniIdentityId");
+		if (p1 != null) {
+			hql.append(" and i.alumniIdentityId " + p1.getOper() + " :alumniIdentityId");
+			values.put("alumniIdentityId", p1.getVal());
+		}
+		Param p2 = params.get("name");
+		if (p2 != null) {
+			hql.append(" and a.name " + p2.getOper() + " :name");
+			values.put("name", p2.getVal());
+		}
+		Param p3 = params.get("label");
+		if (p3 != null) {
+			hql.append(" and a.label " + p3.getOper() + " :label");
+			values.put("label", p3.getVal());
+		}
+
+		Param p4 = params.get("college");
+		if (p4 != null) {
+			hql.append(" and a.college " + p4.getOper() + " :college");
+			values.put("college", p4.getVal());
+		}
+
+		Param p5 = params.get("company");
+		if (p5 != null) {
+			hql.append(" and a.company " + p5.getOper() + " :company");
+			values.put("company", p5.getVal());
+		}
+
+		Param p6 = params.get("post");
+		if (p6 != null) {
+			hql.append(" and a.post " + p6.getOper() + " :post");
+			values.put("post", p6.getVal());
+		}
+
+		Param p7 = params.get("phone");
+		if (p7 != null) {
+			hql.append(" and a.phone " + p7.getOper() + " :phone");
+			values.put("phone", p7.getVal());
+		}
+
+		Param p8 = params.get("email");
+		if (p8 != null) {
+			hql.append(" and a.email " + p8.getOper() + " :email");
+			values.put("email", p8.getVal());
+		}
+
+		Param p9 = params.get("remark1");
+		if (p9 != null) {
+			hql.append(" and a.remark1 " + p9.getOper() + " :remark1");
+			values.put("remark1", p9.getVal());
+		}
+
+		Param p10 = params.get("major");
+		if (p10 != null) {
+			hql.append(" and a.major " + p10.getOper() + " :major");
+			values.put("major", p10.getVal());
+		}
+
+		Param p11 = params.get("gender");
+		if (p11 != null) {
+			hql.append(" and a.gender " + p11.getOper() + " :gender");
+			values.put("gender", p11.getVal());
+		}
+
+		Param p12 = params.get("identity");
+		if (p12 != null) {
+			hql.append(" and a.identity " + p12.getOper() + " :identity");
+			values.put("identity", p12.getVal());
+		}
+
+		Param p13 = params.get("code");
+		if (p13 != null) {
+			hql.append(" and a.code " + p13.getOper() + " :code");
+			values.put("code", p13.getVal());
+		}
+
+		Param p14 = params.get("code");
+		if (p14 != null) {
+			hql.append(" and a.code " + p14.getOper() + " :code");
+			values.put("code", p14.getVal());
+		}
+
+		Param p15 = params.get("birthDate");
+		if (p15 != null) {
+			hql.append(" and a.birthDate " + p15.getOper() + " :birthDate");
+			values.put("birthDate", p15.getVal());
+		}
+
+		Param p16 = params.get("nativeStr");
+		if (p16 != null) {
+			hql.append(" and a.nativeStr " + p16.getOper() + " :nativeStr");
+			values.put("nativeStr", p16.getVal());
+		}
+
+		Param p17 = params.get("politicalStatus");
+		if (p17 != null) {
+			hql.append(" and a.politicalStatus " + p17.getOper() + " :politicalStatus");
+			values.put("politicalStatus", p17.getVal());
+		}
+
+		Param p18 = params.get("enrollYear");
+		if (p18 != null) {
+			hql.append(" and a.enrollYear " + p18.getOper() + " :enrollYear");
+			values.put("enrollYear", p18.getVal());
+		}
+
+		Param p19 = params.get("reVarchar1");
+		if (p19 != null) {
+			hql.append(" and a.reVarchar1 " + p19.getOper() + " :reVarchar1");
+			values.put("reVarchar1", p19.getVal());
+		}
+
+		Param p20 = params.get("wechatId");
+		if (p20 != null) {
+			hql.append(" and a.wechatId " + p20.getOper() + " :wechatId");
+			values.put("wechatId", p20.getVal());
+		}
+
+		Param p21 = params.get("wechatName");
+		if (p21 != null) {
+			hql.append(" and a.wechatName " + p21.getOper() + " :wechatName");
+			values.put("wechatName", p21.getVal());
+		}
+
+		Param p22 = params.get("qq");
+		if (p22 != null) {
+			hql.append(" and a.qq " + p22.getOper() + " :qq");
+			values.put("qq", p22.getVal());
+		}
+
+		Param p23 = params.get("className");
+		if (p23 != null) {
+			hql.append(" and a.className " + p23.getOper() + " :className");
+			values.put("className", p23.getVal());
+		}
+
+		Param p24 = params.get("teacher");
+		if (p24 != null) {
+			hql.append(" and a.teacher " + p24.getOper() + " :teacher");
+			values.put("teacher", p24.getVal());
+		}
+
+		Param p25 = params.get("reVarchar2");
+		if (p25 != null) {
+			hql.append(" and a.reVarchar2 " + p25.getOper() + " :reVarchar2");
+			values.put("reVarchar2", p25.getVal());
+		}
+
+		Param p26 = params.get("reVarchar3");
+		if (p26 != null) {
+			hql.append(" and a.reVarchar3 " + p26.getOper() + " :reVarchar3");
+			values.put("reVarchar3", p26.getVal());
+		}
+
+		Param p27 = params.get("companyAddress");
+		if (p27 != null) {
+			hql.append(" and a.companyAddress " + p27.getOper() + " :companyAddress");
+			values.put("companyAddress", p27.getVal());
+		}
+
+		Param p28 = params.get("department");
+		if (p28 != null) {
+			hql.append(" and a.department " + p28.getOper() + " :department");
+			values.put("department", p28.getVal());
+		}
+
+		Param p29 = params.get("title");
+		if (p29 != null) {
+			hql.append(" and a.title " + p29.getOper() + " :title");
+			values.put("title", p29.getVal());
+		}
+
+		Param p30 = params.get("address");
+		if (p30 != null) {
+			hql.append(" and a.address " + p30.getOper() + " :address");
+			values.put("address", p30.getVal());
+		}
+
+		Param p31 = params.get("highestEducation");
+		if (p31 != null) {
+			hql.append(" and a.highestEducation " + p31.getOper() + " :highestEducation");
+			values.put("highestEducation", p31.getVal());
+		}
+
+		// 校友会任职身份
+		Param p32 = params.get("alumniClubIdentityId");
+		if (p32 != null) {
+			hql.append(" and i.alumniClubIdentityId " + p32.getOper() + " :alumniClubIdentityId");
+			values.put("alumniClubIdentityId", p32.getVal());
+		}
+
+		// 校友身份
+		Param p33 = params.get("branchClubIdentityId");
+		if (p33 != null) {
+			hql.append(" and i.branchClubIdentityId " + p33.getOper() + " :branchClubIdentityId");
+			values.put("branchClubIdentityId", p33.getVal());
+		}
+
+		Param p34 = params.get("industry");
+		if (p34 != null) {
+			hql.append(" and a.industry " + p34.getOper() + " :industry");
+			values.put("industry", p34.getVal());
+		}
+
+		Param p35 = params.get("companyCityStr");
+		if (p35 != null) {
+			hql.append(" and a.companyCityStr " + p35.getOper() + " :companyCityStr");
+			values.put("companyCityStr", p35.getVal());
+		}
+
+		Param p36 = params.get("officePhone");
+		if (p36 != null) {
+			hql.append(" and a.officePhone " + p36.getOper() + " :officePhone");
+			values.put("officePhone", p36.getVal());
+		}
+
+		Param p37 = params.get("remark2");
+		if (p37 != null) {
+			hql.append(" and a.remark2 " + p37.getOper() + " :remark2");
+			values.put("remark2", p37.getVal());
+		}
+
+		Param p38 = params.get("remark3");
+		if (p38 != null) {
+			hql.append(" and a.remark3 " + p38.getOper() + " :remark3");
+			values.put("remark3", p38.getVal());
+		}
+
+		Param p39 = params.get("remark4");
+		if (p39 != null) {
+			hql.append(" and a.remark4 " + p39.getOper() + " :remark4");
+			values.put("remark4", p39.getVal());
+		}
+
+		Param p40 = params.get("remark5");
+		if (p40 != null) {
+			hql.append(" and a.remark5 " + p40.getOper() + " :remark5");
+			values.put("remark5", p40.getVal());
+		}
+
+		Param p41 = params.get("remark6");
+		if (p41 != null) {
+			hql.append(" and a.remark6 " + p41.getOper() + " :remark6");
+			values.put("remark6", p41.getVal());
+		}
+
+		Param p42 = params.get("remark7");
+		if (p42 != null) {
+			hql.append(" and a.remark7 " + p42.getOper() + " :remark7");
+			values.put("remark7", p42.getVal());
+		}
+
+		Param p43 = params.get("remark8");
+		if (p43 != null) {
+			hql.append(" and a.remark8 " + p43.getOper() + " :remark8");
+			values.put("remark8", p43.getVal());
+		}
+
+		Param p44 = params.get("remark9");
+		if (p44 != null) {
+			hql.append(" and a.remark9 " + p44.getOper() + " :remark9");
+			values.put("remark9", p44.getVal());
+		}
+
+		Param p45 = params.get("remark10");
+		if (p45 != null) {
+			hql.append(" and a.remark10 " + p45.getOper() + " :remark10");
+			values.put("remark10", p45.getVal());
+		}
+
+		hql.append(" ORDER BY ");
+		for (int i = 0; i < orders.size(); i++) {
+			if (i == orders.size() - 1) {
+				hql.append("i." + orders.get(i).toString());
+				continue;
+			}
+			hql.append("i." + orders.get(i).toString() + ",");
+
+		}
+		pageByHql(hql.toString(), pageEntity, values);
+	}
+
+}

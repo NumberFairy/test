@@ -1,0 +1,130 @@
+package com.wisdombud.alumni.pojo.manage;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.wisdombud.alumni.pojo.base.UUIDReservePo;
+
+@Entity
+@Table(name = "BASE_IDENTITY_RELATION")
+public class BaseIdentityRelation extends UUIDReservePo {
+	private static final long serialVersionUID = 1L;
+
+	@Column(name = "ALUMNI_ID")
+	private String alumniId;
+
+	@Column(name = "ALUMNI_CLUB_IDENTITY_ID")
+	private String alumniClubIdentityId;
+
+	@Column(name = "BRANCH_CLUB_IDENTITY_ID")
+	private String branchClubIdentityId;
+
+	@Column(name = "ALUMNI_IDENTITY_ID")
+	private String alumniIdentityId;
+
+	@Transient
+	 private BaseAlumni alumni;
+
+	/**
+	 * 功能:get 校友信息'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public String getAlumniId() {
+		return alumniId;
+	}
+
+	/**
+	 * 功能:set 校友信息'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setAlumniId(String alumniId) {
+		this.alumniId = alumniId;
+	}
+
+	/**
+	 * 功能:get 校友会任职身份'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public String getAlumniClubIdentityId() {
+		return alumniClubIdentityId;
+	}
+
+	/**
+	 * 功能:set 校友会任职身份'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setAlumniClubIdentityId(String alumniClubIdentityId) {
+		this.alumniClubIdentityId = alumniClubIdentityId;
+	}
+
+	/**
+	 * 功能:get 校友分会任职身份'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public String getBranchClubIdentityId() {
+		return branchClubIdentityId;
+	}
+
+	/**
+	 * 功能:set 校友分会任职身份'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setBranchClubIdentityId(String branchClubIdentityId) {
+		this.branchClubIdentityId = branchClubIdentityId;
+	}
+
+	/**
+	 * 功能:get 校友身份'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public String getAlumniIdentityId() {
+		return alumniIdentityId;
+	}
+
+	/**
+	 * 功能:set 校友身份'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setAlumniIdentityId(String alumniIdentityId) {
+		this.alumniIdentityId = alumniIdentityId;
+	}
+
+	public BaseAlumni getAlumni() {
+		return alumni;
+	}
+
+	public void setAlumni(BaseAlumni alumni) {
+		this.alumni = alumni;
+	}
+
+}

@@ -1,0 +1,52 @@
+/**
+*  首页
+*   xiefei 
+* */
+$(function() {
+
+
+//轮播
+//左侧内容块
+//右侧栏位
+//校友刊物
+
+$(".home-info").each(function(){
+    var menuId= $(this).data();
+
+    
+
+});
+
+
+init();
+});
+
+function init(url,menuId) {
+    var appendElement='list';
+    var templateId='home-base-tpl';
+    var options = {
+        'url': url,
+        'appendElement':appendElement,
+        'templateId':templateId,
+        'queryParams':{
+            'menuId':menuId
+        }
+    };
+
+    loadDate(options);
+}
+
+
+function loadData(options) {
+    var appendElement = options.appendElement;
+    var templateId = options.templateId;
+    $.ajax({
+        url: options.url,
+        dataType: "json",
+        method: 'post',
+        data: options.queryParams
+    }).then(function(data) {
+        var h = template(templateId, data);
+        $('#' + appendElement).html(h);
+    });
+}

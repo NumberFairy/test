@@ -1,0 +1,115 @@
+<!--
+  留言板
+  cczhao@wisdombud.com
+ 2017/04/06-->
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <%@include file="/WEB-INF/jsp/common/header.jsp"%>
+        <title>校友管理及分析系统</title>
+        </head>
+
+        <body class="gray-bg">
+            <div class="wrapper wrapper-content  animated fadeInRight">
+                <div class="row">
+                    <div class="col-lg-10 col-lg-offset-1">
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <h5>查看</h5>
+                                <div class="ibox-tools">
+                                    <c:if test="${entity.isReply==1}">
+                                        <a style="display:none" id="replyFromSelect" class="btn btn-primary btn-xs">回复</a>
+                                    </c:if>
+                                    <c:if test="${entity.isReply==0}">
+                                        <a id="replyFromSelect" class="btn btn-primary btn-xs">回复</a>
+                                    </c:if>
+                                    <a class="btn  btn-default marr  btn-sm" href="javascript:;" onclick="window.history.back();">
+                                        <i class="fa fa-reply"></i>&nbsp;返 回
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="m-t">
+                                    <form class="form-horizontal">
+                                        <div class="clearfix">
+                                            <input type="hidden" id="entityId" value="${entity.id}" />
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">
+                                                        标题：
+                                                    </label>
+                                                <div class="col-sm-8">
+                                                    <p class="form-control-static">${entity.title}</p>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">
+                                                        留言人：
+                                                    </label>
+                                                <div class="col-sm-8">
+                                                    <p class="form-control-static">${entity.name}</p>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">
+                                                        留言内容：
+                                                    </label>
+                                                <div class="col-sm-8">
+                                                    <p class="form-control-static">${entity.message}</p>
+                                                </div>
+                                            </div>
+                                            <c:if test="${not empty entity.replyContent}">
+                                                <div class="form-group">
+                                                    <label class="col-sm-4 control-label">
+                                                        回复内容：
+                                                    </label>
+                                                    <div class="col-sm-5">
+                                                        <p class="form-control-static">${entity.replyContent}</p>
+                                                    </div>
+                                                </div>
+                                            </c:if>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">
+                                                       留言时间：
+                                                    </label>
+                                                <div class="col-sm-8">
+                                                    <p class="form-control-static">
+                                                        <s:date name="entity.createTime" format="yyyy-MM-dd HH:mm:ss"/>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">
+                                                       审核状态：
+                                                    </label>
+                                                <div class="col-sm-8">
+                                                    <p class="form-control-static">${entity.statusName}</p>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">
+                                                        回复状态：
+                                                    </label>
+                                                <div class="col-sm-8">
+                                                    <p class="form-control-static">${entity.isReplyName}</p>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="col-sm-4 control-label">
+                                                        回复时间：
+                                                    </label>
+                                                <div class="col-sm-8">
+                                                    <p class="form-control-static">${entity.replyTime}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </body>
+        <%@ include file="/WEB-INF/jsp/common/js-container.jsp"%>
+            <script type="text/javascript" src="${contentPath}/resources/js/message-board/page.js"></script>
+
+            </html>

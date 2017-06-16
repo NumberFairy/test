@@ -1,0 +1,35 @@
+/**
+ * 校友会管理--分会管理--成员
+ *
+ * zxguan@wisdombud.com
+ * 20170328
+ * */
+
+var actionPath = contextPath + "/alumni-club";
+
+$(function() {
+    loadData();
+    $("#search-btn").click(function() {
+        loadData();
+    });
+
+    $(document).on('click', '#btn-remove', function(e){
+    	var id = $(this).data("id");
+    	$.ajax({
+            url: contextPath + "/branch-relation!delete",
+            dataType: "json",
+            method: 'post',
+            data: {id: id}
+        }).then(function(data) {
+        	window.location.reload();
+        });
+    });
+
+});
+
+function loadData() {
+    var options = {
+        url: actionPath + "!pageMember?id=" + id
+    };
+    loadPaginationData(options);
+}

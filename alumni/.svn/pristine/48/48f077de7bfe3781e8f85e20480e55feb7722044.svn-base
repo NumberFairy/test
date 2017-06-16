@@ -1,0 +1,447 @@
+package com.wisdombud.alumni.actions.manage;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.wisdombud.alumni.actions.base.AbstractCrudAction;
+import com.wisdombud.alumni.actions.base.AlumniBaseAction;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.common.EmailSrv;
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.manage.BaseIdentityRelationSrv;
+import com.wisdombud.alumni.pojo.dic.DicAlumniBranchIdentity;
+import com.wisdombud.alumni.pojo.dic.DicAlumniClubIdentity;
+import com.wisdombud.alumni.pojo.dic.DicAlumniIdentity;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicDegree;
+import com.wisdombud.alumni.pojo.dic.DicIndustry;
+import com.wisdombud.alumni.pojo.dic.DicPoliticalStatus;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseIdentityRelation;
+import com.wisdombud.alumni.vo.Param;
+
+/**
+ * 功能: 校友信息表<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ *
+ * @author robot
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("prototype")
+@ParentPackage(value = "struts-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "toAddOrUpdate", location = "/WEB-INF/jsp/alumni-manage-center/alumni-info-note/create.jsp"),
+		   @Result(name = "toDetail", location = "/WEB-INF/jsp/alumni-manage-center/alumni-info-note/detail.jsp"),
+		   @Result(name = "toPage", location = "/WEB-INF/jsp/alumni-manage-center/alumni-info-note/page.jsp"),
+		   @Result(name = "toAlumniRegisterAudit", location = "/WEB-INF/jsp/flow-audit/alumni-register-audit/page.jsp"),
+		   @Result(name = "toAlumniRegisterDetail", location = "/WEB-INF/jsp/flow-audit/alumni-register-audit/detail.jsp"), })
+public class AlumniAction extends AlumniBaseAction<BaseAlumni> {
+	private static final long			 serialVersionUID = 1L;
+	@Autowired
+	public DicCommonSrv					 dicCommonSrv;
+	@Autowired
+	public BaseIdentityRelationSrv		 relationSrv;
+	@Autowired
+	private EmailSrv					 emailSrv;
+	@Autowired
+	private BaseAlumniSrv				 alumniSrv;
+
+	public List<DicPoliticalStatus>		 dicPoliticalStatusList;
+	public List<DicCollege>				 dicCollegeList;
+	public List<DicSpecialty>			 dicSpecialtyList;
+	public List<DicDegree>				 dicDegreeList;
+	public List<DicIndustry>			 dicIndustryList;
+	public List<DicAlumniClubIdentity>	 dicAlumniClubIdentityList;
+	public List<DicAlumniBranchIdentity> dicAlumniBranchIdentityList;
+	public List<DicAlumniIdentity>		 dicAlumniIdentityList;
+	public List<BaseIdentityRelation>	 relationList;
+	public BaseIdentityRelation			 relation;
+	public String						 title;
+	public String						 email;
+	public String						 replyContent;
+	public String codeStr;
+	private String						  exportFields;
+
+	public AlumniAction(@Qualifier(value = "baseAlumniSrv") IBaseSrv<BaseAlumni> baseSrv) {
+		super(baseSrv);
+	}
+
+	@Override
+	public String hrefPage() {
+		initData();
+		return super.hrefPage();
+	}
+
+	@Override
+	protected List<Order> buildOrder() {
+		List<Order> list = Lists.newArrayList();
+		list.add(Order.desc("lastUpdate"));
+		return list;
+	}
+
+	@Override
+	protected Map<String, Param> buildParams() {
+		Map<String, Param> params = Maps.newHashMap();
+		if (this.entity == null) {
+			return new HashMap<>();
+		}
+		if (StringUtils.isNotEmpty(this.entity.getName())) {
+			params.put("name", Param.like(this.entity.getName()));
+		}
+		if (this.entity.getCollege() != null) {
+			params.put("college", Param.eq(this.entity.getCollege()));
+		}
+		if (StringUtils.isNotEmpty(this.entity.getMagorName())) {
+			params.put("magor", Param.eq(Integer.parseInt(this.entity.getMagorName())));
+		}
+		if (StringUtils.isNotEmpty(this.entity.getGenderName())) {
+			params.put("gender", Param.eq(this.entity.getGenderName()));
+		}
+		if (StringUtils.isNotEmpty(this.entity.getIdentityName())) {
+			params.put("identity", Param.eq(this.entity.getIdentityName()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getCode())) {
+			params.put("code", Param.eq(this.entity.getCode()));
+		}
+
+		if (this.entity.getBirthDate() != null) {
+			params.put("birthDate", Param.eq(this.entity.getBirthDate()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getNativeStr())) {
+			params.put("nativeStr", Param.eq(this.entity.getNativeStr()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getPoliticalStatusName())) {
+			params.put("politicalStatus", Param.eq(this.entity.getPoliticalStatusName()));
+		}
+
+		if (this.entity.getEnrollYear() != null) {
+			params.put("enrollYear", Param.eq(this.entity.getEnrollYear()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getReVarchar1())) {
+			params.put("reVarchar1", Param.like(this.entity.getReVarchar1()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getWechatId())) {
+			params.put("wechatId", Param.like(this.entity.getWechatId()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getWechatName())) {
+			params.put("wechatName", Param.like(this.entity.getWechatName()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getQq())) {
+			params.put("qq", Param.like(this.entity.getQq()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getPhone())) {
+			params.put("phone", Param.like(this.entity.getPhone()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getEmail())) {
+			params.put("email", Param.like(this.entity.getEmail()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getClassName())) {
+			params.put("className", Param.like(this.entity.getClassName()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getTeacher())) {
+			params.put("teacher", Param.like(this.entity.getTeacher()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getCompany())) {
+			params.put("company", Param.like(this.entity.getCompany()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getReVarchar2())) {
+			params.put("reVarchar2", Param.like(this.entity.getReVarchar2()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getReVarchar3())) {
+			params.put("reVarchar3", Param.like(this.entity.getReVarchar3()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getCompanyAddress())) {
+			params.put("companyAddress", Param.like(this.entity.getCompanyAddress()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getDepartment())) {
+			params.put("department", Param.like(this.entity.getDepartment()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getTitle())) {
+			params.put("title", Param.like(this.entity.getTitle()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getAddress())) {
+			params.put("address", Param.like(this.entity.getAddress()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getHighestEducationName())) {
+			params.put("highestEducation", Param.like(this.entity.getHighestEducationName()));
+		}
+		// 校友会任职身份
+		if (StringUtils.isNotEmpty(this.entity.getAlumniClubIdentityName())) {
+			params.put("alumniClubIdentityId", Param.like(this.entity.getAlumniClubIdentityName()));
+		}
+		// 校友身份
+		if (StringUtils.isNotEmpty(this.entity.getAlumniIdentityName())) {
+			params.put("alumniIdentityId", Param.like(this.entity.getAlumniIdentityName()));
+		}
+
+		// 校友身份
+		if (StringUtils.isNotEmpty(this.entity.getBranchClubIdentityName())) {
+			params.put("branchClubIdentityId", Param.like(this.entity.getBranchClubIdentityName()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getIndustryName())) {
+			params.put("industry", Param.like(this.entity.getIndustryName()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getCompanyCityStr())) {
+			params.put("companyCityStr", Param.like(this.entity.getCompanyCityStr()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getOfficePhone())) {
+			params.put("officePhone", Param.like(this.entity.getOfficePhone()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getPost())) {
+			params.put("post", Param.like(this.entity.getPost()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getRemark1())) {
+			params.put("remark1", Param.like(this.entity.getRemark1()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getRemark2())) {
+			params.put("remark2", Param.like(this.entity.getRemark2()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getRemark3())) {
+			params.put("remark3", Param.like(this.entity.getRemark3()));
+		}
+		if (StringUtils.isNotEmpty(this.entity.getRemark4())) {
+			params.put("remark4", Param.like(this.entity.getRemark4()));
+		}
+		if (StringUtils.isNotEmpty(this.entity.getRemark5())) {
+			params.put("remark5", Param.like(this.entity.getRemark5()));
+		}
+		if (StringUtils.isNotEmpty(this.entity.getRemark6())) {
+			params.put("remark6", Param.like(this.entity.getRemark6()));
+		}
+		if (StringUtils.isNotEmpty(this.entity.getRemark7())) {
+			params.put("remark7", Param.like(this.entity.getRemark7()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getRemark8())) {
+			params.put("remark8", Param.like(this.entity.getRemark8()));
+		}
+
+		if (StringUtils.isNotEmpty(this.entity.getRemark9())) {
+			params.put("remark9", Param.like(this.entity.getRemark9()));
+		}
+		if (StringUtils.isNotEmpty(this.entity.getRemark10())) {
+			params.put("remark10", Param.like(this.entity.getRemark10()));
+		}
+
+		return params;
+	}
+
+	public void sendMail() {
+		List<String> emailAddressList = alumniSrv.string2List(email);
+		if (emailAddressList != null && emailAddressList.size() > 0) {
+			emailSrv.sendMail(title, emailAddressList, replyContent);
+			this.sendSuccessMsg();
+		} else {
+			this.sendFailMsg(email, "sendMail failed!");
+		}
+	}
+
+	public void forEmail() {
+		if (StringUtils.isNotEmpty(id)) {
+			String strEmail = alumniSrv.getSelectedEmail(id);
+			this.sendSuccessMsg(null, strEmail);
+		}
+	}
+
+	public void becomeLiaison() {
+		alumniSrv.updateBecomeLiaison(id);
+		this.sendSuccessMsg();
+	}
+
+	private void initData() {
+		dicPoliticalStatusList = dicCommonSrv.findAll(DicPoliticalStatus.class);
+		dicCollegeList = dicCommonSrv.findAll(DicCollege.class);
+		if (dicCollegeList != null && dicCollegeList.size() > 0) {
+			dicSpecialtyList = alumniSrv.findAllCollegeSpecialty(dicCollegeList.get(0).getId());
+		}
+		dicDegreeList = dicCommonSrv.findAll(DicDegree.class);
+		dicIndustryList = dicCommonSrv.findAll(DicIndustry.class);
+		dicAlumniClubIdentityList = dicCommonSrv.findAll(DicAlumniClubIdentity.class);
+		dicAlumniBranchIdentityList = dicCommonSrv.findAll(DicAlumniBranchIdentity.class);
+		dicAlumniIdentityList = dicCommonSrv.findAll(DicAlumniIdentity.class);
+	}
+
+	@Override
+	public String hrefAddOrUpdate() {
+		this.initData();
+		if (entity != null && StringUtils.isNotBlank(entity.getId())) {
+			entity = baseSrv.find(entity.getId());
+			relationList = relationSrv.findBy("alumniId", entity.getId());
+			if (relationList != null && relationList.size() > 0) {
+				relation = relationList.get(0);
+			}
+		}
+		return "toAddOrUpdate";
+	}
+
+	public void findSepcialtyList() {
+		dicSpecialtyList = alumniSrv.findAllCollegeSpecialty(Integer.parseInt(id));
+		sendSuccessMsg(dicSpecialtyList, "");
+	}
+
+	public void exportInfo() {
+		alumniSrv.createExcelWorkBookInfo(response, id, exportFields);
+	}
+	
+	public List<DicPoliticalStatus> getDicPoliticalStatusList() {
+		return dicPoliticalStatusList;
+	}
+
+	public void setDicPoliticalStatusList(List<DicPoliticalStatus> dicPoliticalStatusList) {
+		this.dicPoliticalStatusList = dicPoliticalStatusList;
+	}
+
+	public List<DicCollege> getDicCollegeList() {
+		return dicCollegeList;
+	}
+
+	public void setDicCollegeList(List<DicCollege> dicCollegeList) {
+		this.dicCollegeList = dicCollegeList;
+	}
+
+	public List<DicSpecialty> getDicSpecialtyList() {
+		return dicSpecialtyList;
+	}
+
+	public void setDicSpecialtyList(List<DicSpecialty> dicSpecialtyList) {
+		this.dicSpecialtyList = dicSpecialtyList;
+	}
+
+	public List<DicDegree> getDicDegreeList() {
+		return dicDegreeList;
+	}
+
+	public void setDicDegreeList(List<DicDegree> dicDegreeList) {
+		this.dicDegreeList = dicDegreeList;
+	}
+
+	public List<DicIndustry> getDicIndustryList() {
+		return dicIndustryList;
+	}
+
+	public void setDicIndustryList(List<DicIndustry> dicIndustryList) {
+		this.dicIndustryList = dicIndustryList;
+	}
+
+	public List<DicAlumniClubIdentity> getDicAlumniClubIdentityList() {
+		return dicAlumniClubIdentityList;
+	}
+
+	public void setDicAlumniClubIdentityList(List<DicAlumniClubIdentity> dicAlumniClubIdentityList) {
+		this.dicAlumniClubIdentityList = dicAlumniClubIdentityList;
+	}
+
+	public List<DicAlumniBranchIdentity> getDicAlumniBranchIdentityList() {
+		return dicAlumniBranchIdentityList;
+	}
+
+	public void setDicAlumniBranchIdentityList(List<DicAlumniBranchIdentity> dicAlumniBranchIdentityList) {
+		this.dicAlumniBranchIdentityList = dicAlumniBranchIdentityList;
+	}
+
+	public List<DicAlumniIdentity> getDicAlumniIdentityList() {
+		return dicAlumniIdentityList;
+	}
+
+	public void setDicAlumniIdentityList(List<DicAlumniIdentity> dicAlumniIdentityList) {
+		this.dicAlumniIdentityList = dicAlumniIdentityList;
+	}
+
+	public BaseIdentityRelation getRelation() {
+		return relation;
+	}
+
+	public void setRelation(BaseIdentityRelation relation) {
+		this.relation = relation;
+	}
+
+	public List<BaseIdentityRelation> getRelationList() {
+		return relationList;
+	}
+
+	public void setRelationList(List<BaseIdentityRelation> relationList) {
+		this.relationList = relationList;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getReplyContent() {
+		return replyContent;
+	}
+
+	public void setReplyContent(String replyContent) {
+		this.replyContent = replyContent;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+	public String getCodeStr() {
+		return codeStr;
+	}
+
+	public void setCodeStr(String codeStr) {
+		this.codeStr = codeStr;
+	}
+
+	public String getExportFields() {
+		return exportFields;
+	}
+
+	public void setExportFields(String exportFields) {
+		this.exportFields = exportFields;
+	}
+
+}

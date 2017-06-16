@@ -1,0 +1,21 @@
+package com.wisdombud.alumni.manage;
+
+import java.util.List;
+
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniImport;
+import com.wisdombud.alumni.vo.RemindVo;
+
+import common.toolkit.java.entity.PageEntity;
+
+/**
+ * 校友信息表 ISrv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+public interface BaseAlumniImportSrv extends IBaseSrv<BaseAlumniImport> {
+	
+}

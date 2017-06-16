@@ -1,0 +1,39 @@
+package com.wisdombud.alumni.system.impl;
+
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.pojo.system.HomeMenu;
+import com.wisdombud.alumni.system.HomeMenuSrv;
+import com.wisdombud.alumni.vo.HomeMenuTreeVo;
+
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 门户菜单Srv. <br/>
+ * 
+ * @author xiefei
+ */
+@Service(value = "homeMenuSrv")
+public class HomeMenuSrvImpl extends BaseSrvImpl<HomeMenu> implements HomeMenuSrv {
+
+	private static final Logger LOGGER = Logger.getLogger(HomeMenuSrvImpl.class);
+
+	public HomeMenuSrvImpl() {
+	}
+
+	@Autowired
+	public HomeMenuSrvImpl(@Qualifier(value = "homeMenuDao") CommonDao<HomeMenu, String> commonDao) {
+		super(commonDao);
+	}
+
+	@Override
+	public List<HomeMenuTreeVo> buildTree() {
+		return null;
+	}
+	
+}

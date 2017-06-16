@@ -1,0 +1,125 @@
+package com.wisdombud.alumni.threadlocal;
+
+import java.util.Set;
+
+/**
+ * ClassName: UserSession. <br/>
+ * Function: TODO <br/>
+ * date: 2013年8月22日 下午3:44:17 <br/>
+ *
+ * @author ghlin
+ * @version
+ * @since JDK 1.6
+ */
+public class UserSession {
+	private String id;
+	private String loginName;
+	private String userName;
+	private String sessionId;
+	private Set<String> depIdList;
+	private int designation;
+	private Integer isBlack;//黑名单企业 0否 1是
+
+	private Short isCollege;//是否学院 0否 1是
+
+	private Integer collegeId;
+
+	public int getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(int designation) {
+		this.designation = designation;
+	}
+
+	public Set<String> getDepIdList() {
+		return depIdList;
+	}
+
+	public void setDepIdList(final Set<String> depIdList) {
+		this.depIdList = depIdList;
+	}
+
+	/**
+	 * id.
+	 *
+	 * @return the id
+	 * @since JDK 1.6
+	 */
+	public String getId() {
+		return this.id;
+	}
+
+	/**
+	 * sessionId.
+	 *
+	 * @return the sessionId
+	 * @since JDK 1.6
+	 */
+	public String getSessionId() {
+		return this.sessionId;
+	}
+
+	/**
+	 * id.
+	 *
+	 * @param id
+	 *            the id to set
+	 * @since JDK 1.6
+	 */
+	public void setId(final String id) {
+		this.id = id;
+	}
+
+	/**
+	 * sessionId.
+	 *
+	 * @param sessionId
+	 *            the sessionId to set
+	 * @since JDK 1.6
+	 */
+	public void setSessionId(final String sessionId) {
+		this.sessionId = sessionId;
+	}
+
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(final String loginName) {
+		this.loginName = loginName;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public Short getIsCollege() {
+		return isCollege;
+	}
+
+	public void setIsCollege(Short isCollege) {
+		this.isCollege = isCollege;
+	}
+
+	public Integer getCollegeId() {
+		return collegeId;
+	}
+
+	public void setCollegeId(Integer collegeId) {
+		this.collegeId = collegeId;
+	}
+
+	public Integer getIsBlack() {
+		return isBlack;
+	}
+
+	public void setIsBlack(Integer isBlack) {
+		this.isBlack = isBlack;
+	}
+
+}

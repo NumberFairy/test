@@ -1,0 +1,50 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <div class="header">
+        <h1 class="logo">
+            <a href="/home" style="color:transparent;">
+                <img src="${contextPath}/resources/images/portal/logo.png">
+            </a>
+        </h1>
+    </div>
+    <div class="nav">
+        <div class="nav-con clearfix">
+            <ul class="login-msg floatR">
+                <li class="user-info">
+                    <a href="javascript:;" class="user-name">潘立存 </a>
+                    <ul class="ul-info">
+                        <li>
+                            <a href="/login-out.html">退出</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="sub-nav floatR module">
+                <li class="menu-item">
+                    <a class="menu-text" href="/home!personalInfo">
+                    个人信息
+                </a>
+                </li>
+
+                <li class="menu-item">
+                    <a class="menu-text" href="/home!changePassword">
+                    修改密码
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-text" href="/home!launchEvent">
+                    发布活动
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-text" href="/home!myActivity">
+                        我报名的活动
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-text" href="/home!myAlumniAssociation">
+                     我的校友会
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>

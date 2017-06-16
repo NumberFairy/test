@@ -1,0 +1,186 @@
+// main:portal.less
+.title-4 {
+    font-size: 24px;
+    color: #950011;
+    font-weight: normal;
+    background-position: 100px center;
+    border-bottom:4px dotted #e4e6eb;
+    padding-bottom: 10px;
+    width:940px;
+}
+.article-main{
+    background: url(../images/portal/left_bg.png) @write no-repeat 20px 0px;
+    padding: 20px;
+    overflow: hidden;
+    .article-left{
+        width: 200px;
+        background: #eeeeee;
+        padding-bottom: 100px;
+    }
+    .article-right {
+        width: 940px;
+        position: relative;
+    }
+}
+/*列表左侧样式*/
+.sub-menu li {
+    height: 45px;
+    line-height: 45px;
+    border-bottom: solid 1px #e3e3e3;
+    border-top: solid 1px #f4f4f4;
+    font-size: 14px;
+    cursor: pointer;
+    a {
+        margin-left: 5px;
+        border-radius: 5px 0 0 5px;
+        display: block;
+        height: 45px;
+        text-indent: 30px;
+        background: url(../images/portal/ico9.png) no-repeat 10px 20px;
+        &:hover{
+             background: url(../images/portal/ico10.png) @write no-repeat 10px 20px;
+        }
+    }
+}
+.sub-menu li .isMenu{
+     background: url(../images/portal/ico10.png) @write no-repeat 10px 20px;
+}
+
+/*列表右侧样式*/
+.column-list dl,
+.liuyan-content{
+     padding: 25px 0px;
+}
+.column-list dl{
+    border-bottom: 1px dotted #e4e6eb;
+    margin-bottom:0;
+    dt {
+        width: 55px;
+        height: 95px;
+        border-radius: 10px;
+        border: solid 1px @portal-color;
+        float: left;
+        margin: 0 30px 0 15px;
+        line-height: 30px;
+        color: @portal-color;
+        text-align: center;
+        span {
+            display: block;
+            font-size: 30px;
+            font-weight: bold;
+        }
+    }
+    .content {
+        width: 838px;
+        float: left;
+    a {
+        font-size: 18px;
+        height: 30px;
+        line-height: 30px;
+        display: block;
+        overflow: hidden;
+    }
+    p {
+        line-height: 14px;
+        color: #444;
+        line-height: 25px;
+    }
+    .abstract {
+        margin-top: 15px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        }
+    }
+} 
+/**/
+.liuyan-content{
+    border-bottom: 1px dotted #e4e6eb;
+    overflow:hidden;
+    .student-info{
+        width:90px;
+       .student-infos{
+            width:70px;
+            height: 30px;
+            line-height: 26px;
+            background: url(../images/portal/tag.png) no-repeat;
+            color:#333;
+            text-align: center;
+            position:relative;
+        }
+    }
+    .reply{
+        position:relative;
+        margin-left:70px;
+        overflow:hidden;
+        .threadlist_lz{
+            .threadlist_title {
+                font-size: 14px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                width:770px;
+                a{
+                    font-size:14px;
+                    font-weight:700;
+                }
+               
+            }
+            .threadlist_title a,.liuyan-time{
+                color:@portal-color;
+            }
+            
+        }
+        .answer-content{
+            margin:10px 0;
+            font-size: 13px;
+            line-height: 16px;
+            letter-spacing:1px;
+        }
+        .threadlist_detail {
+            position: relative;
+            background-color: #f5f5f5; 
+            margin: 15px 0 10px;
+            padding: 5px 5px 10px 10px;
+            box-shadow: none;
+            h4{
+                font-size:14px;
+                span{
+                    color:@portal-color;
+                    font-weight:700;
+                }
+            }
+            .time{
+                font-size:12px;
+                color:@portal-color;
+            }
+            .replay-content{
+                margin:10px 0;
+            }
+            &:after{
+                width: 0;
+                height: 0;
+                content: ""; 
+                top: -15px;
+                left:10px;
+                z-index:999;
+                position: absolute;
+                border:8px solid #f5f5f5;
+                border-top-color: transparent;
+                border-left-color: transparent;
+                border-right-color: transparent;
+            }
+        }
+    }
+}
+/**/
+.page {
+    padding: 30px 0px;
+    text-align: center;
+     a {
+        padding: 5px 10px;
+        border: solid 1px #d9d9d9;
+    }
+}

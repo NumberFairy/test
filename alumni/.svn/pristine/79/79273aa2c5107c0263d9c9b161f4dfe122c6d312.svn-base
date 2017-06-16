@@ -1,0 +1,46 @@
+var actionPath = contextPath + "/alumni-import";
+
+$(function () {
+    loadData();
+    uploadFile({
+        subfix : ['xlsx'],
+        subfixTip : "请选择Excel的xlsx文件！",
+        successCall : function(data, status, a) {
+            $('[name=attachementPath]').val(data.fileName);
+            $.post(actionPath+"!importExcel", {"f_id":data.f_id},function (data) {
+                if(data.success){
+                    alertify.alert(data.message);
+                    $("#myModal").modal("hide");
+                    loadData();
+                } else{
+                    alertify.alert(data.message);
+                }
+                
+            },"json");
+        }
+    });
+
+    $("#btn-import").click(function () {
+        var html = template("importTpl");
+        $("#import-body").html(html);        
+        $("#myModal").modal();
+    });
+
+    $("#btn-sure").click(function () {
+        var ids = getCheckedIds();
+    });
+
+    $("#btn-detail").click(function () {
+        if (judgeCheckedOneId()) {
+            location.href = actionPath + "!hrefDetail?id=" + getCheckedFirstId();
+        }
+    });
+});
+
+function loadData() {
+    $().srli
+    var options = {
+        url: actionPath + "!page"
+    };
+    loadPaginationData(options);
+}

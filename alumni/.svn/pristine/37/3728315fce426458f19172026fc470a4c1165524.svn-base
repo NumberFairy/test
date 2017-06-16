@@ -1,0 +1,72 @@
+/*
+分配权限
+cczhao
+2017/04/13
+*/		
+
+var setting = {
+	check: {
+		enable: true
+	},
+	data: {
+		simpleData: {
+			enable: true
+		}
+	}
+};
+
+var operTree;
+$(function(){
+	init();
+	operTree = $.fn.zTree.getZTreeObj("operTree");
+	//保存
+	$('#subForm').click(function(){
+		var nodes = operTree.getCheckedNodes(true);
+		var ids = getSelected();
+		var id = $('#roleId').val();
+		if(nodes.length > 0){
+			$.post("sec-oper!saveRoleOper",
+				{ roleId:id,operIdArray: ids },
+				function(data){
+					alertify.alert("权限分配完成！");
+				},"json");
+		}else{
+			alertify.alert("请先分配权限！");
+		}
+	});
+});
+
+//获取勾选的节点id
+function getSelected(){
+	var ids = "";
+	var nodes = operTree.getCheckedNodes(true);
+
+	if(nodes.length > 0){
+		for(var i = 0 , j = nodes.length ; i < j ; i++){
+			if(nodes[i].id=="0"){
+				continue;
+			}
+			ids +=(nodes[i].id + ",");
+		}
+	}
+	if(ids!=""){
+		ids = ids.substring(0,ids.length -1 );
+	}
+
+	return ids;
+}
+
+function init(){
+	$.post("/sec-oper!findAllMenus", {}, function(data){
+		$.fn.zTree.init($("#operTree"), setting, data);
+	},'json')
+
+	if(id){
+		$.post("/sec-oper!findUserMenus", {'userId':id}, function(data){
+			$.each(data,function(i,v){
+				var node=operTree.getNodeByParam("id", v.id, null);
+				node.c
+			});
+		},'json')
+	}
+}

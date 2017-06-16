@@ -1,0 +1,39 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@include file="/WEB-INF/jsp/common/portal-header.jsp"%>
+<title>地质大学校友管理系统</title>
+</head>
+
+<body>
+    <%@include file="/WEB-INF/jsp/common/portal-menu.jsp"%>
+    <!--内容部分-->
+    <div class="main clearfix">
+        <div class="article-main">
+            <%@include file="/WEB-INF/jsp/common/list-menu-left.jsp"%>
+            <div class="article-right floatR">
+                <div id="header"></div>
+                <div id="detail"></div>
+            </div>
+        </div>
+    </div>
+    <!--内容部分end-->
+    <%@include file="/WEB-INF/jsp/common/js-portal-container.jsp"%>
+    <script type="text/javascript" src="/js-lib/videoJs/js/video.min.js"></script>
+    <%@include file="/WEB-INF/jsp/common/portal-footer.jsp"%>
+    <%@include file="tpl.jsp"%>
+
+    <script type="text/javascript">
+        videojs.options.flash.swf = "/js-lib/videoJs/js/video-js.swf";
+        initHeader();
+        var menuId='${menuId}'
+        var id='${id}';
+        $.post('/home-api!detail',{'menuId':menuId,'id':id},function(data){
+         var h =  template("detail-tpl",data );
+         $('#detail').html(h);
+     },'json')
+        function initHeader(){
+           var h =  template("detail-header-tpl", {'title':'${menu.name}'});
+           $('#header').html(h);
+       }
+       </script>
+</body>
+</html>

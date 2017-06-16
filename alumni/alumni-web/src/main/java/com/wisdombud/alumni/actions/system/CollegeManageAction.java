@@ -1,0 +1,107 @@
+package com.wisdombud.alumni.actions.system;
+
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.wisdombud.alumni.manage.CollgeManageSrv;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+
+import common.toolkit.java.entity.DateFormat;
+import common.toolkit.java.struts2.AbstractCommonAction;
+
+/**
+ * 功能: 学院字典管理<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ * 
+ * @author xiefei
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("basealumni")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "tree", location = "/WEB-INF/jsp/system/college-manage.jsp") })
+public class CollegeManageAction extends AbstractCommonAction {
+
+	private static final long serialVersionUID = 1L;
+
+	@Autowired
+	private CollgeManageSrv	  srv;
+
+	private DicCollege		  college;
+	private DicSpecialty	  specialty;
+	private Integer			  pid;
+	private Integer			  id;
+
+	@Override
+	public String execute() throws Exception {
+		return "tree";
+	}
+
+	public void saveOrUpdate() {
+		if (college != null) {
+			srv.saveOrUpdate(college);
+			sendSuccessMsg();
+			return;
+		}
+		if (specialty != null) {
+			srv.saveOrUpdate(specialty);
+			sendSuccessMsg();
+			return;
+		}
+		sendFailMsg("", "");
+	}
+
+	public void del() {
+		if(id==null){
+			sendFailMsg("", "");
+			return;
+		}
+		srv.delete(id, pid);
+		sendSuccessMsg();
+	}
+
+	public void tree() {
+		final Gson g = new GsonBuilder().setDateFormat(DateFormat.DateTime.getFormat()).create();
+		this.sendResponseMsg(g.toJson(srv.buildCollegeTree()));
+	}
+
+	public DicSpecialty getSpecialty() {
+		return specialty;
+	}
+
+	public void setSpecialty(DicSpecialty specialty) {
+		this.specialty = specialty;
+	}
+
+	public DicCollege getCollege() {
+		return college;
+	}
+
+	public void setCollege(DicCollege college) {
+		this.college = college;
+	}
+
+	public Integer getPid() {
+		return pid;
+	}
+
+	public void setPid(Integer pid) {
+		this.pid = pid;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+}

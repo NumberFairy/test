@@ -1,0 +1,60 @@
+package com.wisdombud.alumni.system.impl;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Lists;
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.dao.system.SecRoleDao;
+import com.wisdombud.alumni.pojo.system.SecOper;
+import com.wisdombud.alumni.pojo.system.SecRole;
+import com.wisdombud.alumni.system.SecOperSrv;
+import com.wisdombud.alumni.system.SecRoleSrv;
+
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+@Service(value = "secOperSrv")
+public class SecOperSrvImpl extends BaseSrvImpl<SecOper> implements SecOperSrv {
+
+	@Autowired
+	private SecRoleDao roleDao;
+	@Autowired
+	private SecRoleSrv roleSrv;
+
+	public SecOperSrvImpl() {
+	}
+
+	@Autowired
+	public SecOperSrvImpl(@Qualifier(value = "secOperDao") CommonDao<SecOper, String> commonDao) {
+		super(commonDao);
+	}
+
+	public void updateconfigureAuthority(final String roleId, final String operIdList) {
+		final SecRole role = roleDao.get(roleId);
+		final List<String> idList = new ArrayList<>();
+		final String[] arr = operIdList.split(",");
+		for (String id : arr) {
+			idList.add(id);
+		}
+		final List<SecOper> opers = roleDao.findByOperIds(idList);
+		final Set<SecOper> roleOpers = new HashSet<>();
+		roleOpers.addAll(opers);
+		role.setSecOpers(roleOpers);
+		roleDao.update(role);
+	}
+
+	@Override
+	public List<SecOper> findOperListByUserId(String userId) {
+		List<SecOper> operList = Lists.newArrayList();
+		SecRole role = roleSrv.find(userId);
+		operList.addAll(role.getSecOpers());
+		return operList;
+	}
+
+}

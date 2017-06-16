@@ -1,0 +1,23 @@
+package com.wisdombud.alumni.actions.information;
+
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Results;
+import org.springframework.context.annotation.Scope;
+
+import common.toolkit.java.struts2.AbstractCommonAction;
+
+@Scope("prototype")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({})
+public class HomeAction extends AbstractCommonAction {
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	public String execute() throws Exception {
+		sendResponseMsg("hello");
+		return null;
+	}
+
+}

@@ -1,0 +1,12 @@
+package com.wisdombud.alumni.system.impl;
+
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.pojo.system.PublicUser;
+import com.wisdombud.alumni.system.PublicUserSrv;
+
+@Service(value = "publicUserSrv")
+public class PublicUserSrvImpl extends BaseSrvImpl<PublicUser> implements PublicUserSrv {
+
+}

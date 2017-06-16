@@ -1,0 +1,152 @@
+/**
+ * 校友工作大事记
+ * zhangyan@wisdombud.com
+ * 20170408
+ */
+var actionPath = contextPath + "/event";
+$(function() {
+    loadData();
+
+    $("#addEvent").click(function() {
+        eventAddOrCheck();
+        initEventValidator();
+    });
+
+    $("#detail").click(function() {
+        detail();
+    });
+
+    $("#saveEvent").click(function() {
+        saveEvent();
+    });
+
+    $("#alert").click(function() {
+        detail();
+    });
+
+    $("#complete").click(function() {
+        complete();
+    });
+
+    $("#delete").click(function() {
+        deleteByIds();
+    });
+});
+
+/**
+ * 根据id删除数据
+ */
+function deleteByIds() {
+    if (!judgeCheckedIds) {
+        return;
+    }
+    var ids = getCheckedIds();
+    $.post(actionPath + "!deleteByIds?ids=" + ids, function(data) {
+        if (data.success) {
+            location.href = actionPath + "!hrefPage";
+        } else {
+            alertify.alert("操作失败");
+        }
+    }, "json");
+}
+
+/**
+ * 点击完成改变事件状态
+ */
+function complete() {
+    if (!judgeCheckedIds) {
+        return;
+    }
+    var ids = getCheckedIds();
+    $.post(actionPath + "!changeStatus?ids=" + ids.join(','), function(data) {
+        if (data.success) {
+            location.href = actionPath + "!hrefPage";
+        } else {
+            alertify.alert("操作失败");
+        }
+    }, "json")
+}
+/**
+ * 保存新增备忘录数据
+ */
+function saveEvent() {
+    var bv = $eventForm.data('bootstrapValidator');
+    bv.validate();
+    if (bv.isValid()) {
+        var entity = $("#eventForm").serialize();
+        $.post(actionPath + "!addOrUpdate", entity, function(data) {
+            if (data.success) {
+                location.href = actionPath + "!hrefPage";
+            } else {
+                alertify.alert("保存失败");
+            }
+        }, "json");
+    }
+}
+
+/**
+ * 点击查看弹出模态框
+ */
+function detail() {
+    if (!judgeCheckedOneId()) {
+        return;
+    }
+    var id = getCheckedFirstId();
+    $.post(actionPath + "!detail?id=" + id, function(data) {
+        var object = JSON.parse(data);
+        var objectEvent = {
+            id: object.id,
+            eventTitle: object.eventTitle,
+            eventContent: object.eventContent,
+            eventTime: object.eventTime,
+        }
+        eventAddOrCheck(objectEvent);
+    })
+}
+
+function loadData() {
+    var options = {
+        url: actionPath + "!page"
+    };
+    loadPaginationData(options);
+}
+
+function eventAddOrCheck(data) {
+    var html = template("tpl-event", data);
+
+    if (data) {
+        $(".modal-title", "#eventModal").html("查看");
+    } else {
+        $(".modal-title", "#eventModal").html("新增");
+    }
+    $("#add-event").html(html);
+    $("#eventModal").modal();
+}
+
+
+function initEventValidator() {
+    $eventForm = $('#eventForm');
+    $eventForm.bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+            "entity.title": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请输入标题'
+                    }
+                }
+            },
+            "entity.eventTime": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请选择录入时间'
+                    },
+                }
+            },
+
+        }
+    });
+}

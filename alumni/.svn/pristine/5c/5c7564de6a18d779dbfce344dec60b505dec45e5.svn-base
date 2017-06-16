@@ -1,0 +1,79 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.lang.reflect.Field;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.enums.FlowAuditEnum;
+import com.wisdombud.alumni.manage.BaseAlumniActivityApplySrv;
+import com.wisdombud.alumni.manage.BaseAlumniActivitySrv;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniActivity;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniActivityApply;
+import com.wisdombud.alumni.util.BeanUtils;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.orm.hibernate.CommonDao;
+import common.toolkit.java.orm.hibernate.GeneralQuery;
+
+/**
+ * 校友活动申请表Srv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Service(value = "baseAlumniActivityApplySrv")
+public class BaseAlumniActivityApplySrvImpl extends BaseSrvImpl<BaseAlumniActivityApply>
+		implements BaseAlumniActivityApplySrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseAlumniActivityApplySrvImpl.class);
+
+	public BaseAlumniActivityApplySrvImpl() {
+	}
+	@Autowired
+	private BaseAlumniActivitySrv			baseAlumniActivitySrv;
+	private BaseAlumniActivityApply			baseAlumniActivityApply;
+	@Autowired
+	public BaseAlumniActivityApplySrvImpl(
+			@Qualifier(value = "baseAlumniActivityApplyDao") CommonDao<BaseAlumniActivityApply, String> commonDao) {
+		super(commonDao);
+	}
+
+	public List<BaseAlumniActivityApply> findAllByDesc(Map<String, String> parms,List<String> orderPropertyList) {
+		GeneralQuery<BaseAlumniActivityApply> gq = commonDao.createGeneralQuery();
+		for (String key : parms.keySet()) {
+			gq.eq(key, parms.get(key));
+		}
+		for (String os : orderPropertyList) {
+			gq.desc(os);
+		}
+		return gq.list();
+	}
+
+	@Override
+	public void updateAudit(String id, String auditStatus,String auditPerson){
+		this.baseAlumniActivityApply=this.find(id);
+		BaseAlumniActivity baseAlumniActivity=new BaseAlumniActivity();
+		if(baseAlumniActivityApply!=null){
+			FlowAuditEnum flowAuditEnum=FlowAuditEnum.valueByName(auditStatus);
+			if(flowAuditEnum!=null){
+				baseAlumniActivityApply.setStatus(flowAuditEnum.getValue());
+			}
+			super.saveOrUpdate(baseAlumniActivityApply);
+			BeanUtils.copyProperties(baseAlumniActivityApply, baseAlumniActivity, "id");
+			baseAlumniActivity.setApplicyPerson(baseAlumniActivityApply.getPerson());
+			baseAlumniActivity.setCreateTime(new Date());
+			baseAlumniActivity.setLastUpdate(new Date());
+			baseAlumniActivity.setPerson(auditPerson);
+			this.baseAlumniActivitySrv.saveOrUpdate(baseAlumniActivity);
+		}
+	}
+
+
+}

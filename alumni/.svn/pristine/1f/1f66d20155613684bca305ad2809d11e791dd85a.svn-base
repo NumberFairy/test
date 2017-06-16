@@ -1,0 +1,108 @@
+package com.wisdombud.alumni.actions.manage;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.wisdombud.alumni.manage.BaseEventSrv;
+import com.wisdombud.alumni.manage.BaseMemoSrv;
+import com.wisdombud.alumni.pojo.manage.BaseEvent;
+import com.wisdombud.alumni.pojo.manage.BaseMemo;
+
+import common.toolkit.java.entity.DateFormat;
+import common.toolkit.java.struts2.AbstractCommonAction;
+
+/**
+ * 功能: 首页我的办公桌<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ * 
+ * @author zhangyan
+ * @version
+ * @since JDK 1.8
+ */
+
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "toAddOrUpdate", location = "/WEB-INF/jsp/library-tube/storehouse-management/create-storehouse-management.jsp"),
+		   @Result(name = "toDetail", location = "/WEB-INF/jsp/library-tube/storehouse-management/storehouse-management-detail.jsp"),
+		   @Result(name = "toPage", location = "/WEB-INF/jsp/my-desk/my_desk.jsp") })
+public class MyDeskAction extends AbstractCommonAction {
+	private static final long serialVersionUID = 1L;
+	@Autowired
+	private BaseEventSrv	  eventSrv;
+	@Autowired
+	private BaseMemoSrv		  memoSrv;
+
+	private List<BaseEvent>	  eventList;
+	private List<BaseMemo>	  memoList;
+
+	public String hrefPage() {
+		return "toPage";
+	}
+
+	public void findAllData() {
+		memoList = new ArrayList<BaseMemo>();
+		memoList = memoSrv.findAll();
+		// eventList = eventSrv.findAll();
+		sendResponseMsg(memoList);
+	}
+
+	public void findEventData() {
+		eventList = new ArrayList<>();
+		eventList = eventSrv.findAll();
+		sendResponseMsg(eventList);
+	}
+
+	protected void sendResponseMsg(Object src) {
+		final Gson g = new GsonBuilder().setDateFormat(DateFormat.DateTime.getFormat()).create();
+		this.sendResponseMsg(g.toJson(src));
+	}
+
+	/**
+	 * eventList.
+	 * 
+	 * @return the eventList
+	 * @since JDK 1.7
+	 */
+	public List<BaseEvent> getEventList() {
+		return eventList;
+	}
+
+	/**
+	 * eventList.
+	 * 
+	 * @param eventList the eventList to set
+	 * @since JDK 1.7
+	 */
+	public void setEventList(List<BaseEvent> eventList) {
+		this.eventList = eventList;
+	}
+
+	/**
+	 * memoList.
+	 * 
+	 * @return the memoList
+	 * @since JDK 1.7
+	 */
+	public List<BaseMemo> getMemoList() {
+		return memoList;
+	}
+
+	/**
+	 * memoList.
+	 * 
+	 * @param memoList the memoList to set
+	 * @since JDK 1.7
+	 */
+	public void setMemoList(List<BaseMemo> memoList) {
+		this.memoList = memoList;
+	}
+
+}

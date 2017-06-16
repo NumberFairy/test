@@ -1,0 +1,783 @@
+package com.wisdombud.alumni.actions.common;
+
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.convention.annotation.Action;
+import org.apache.struts2.convention.annotation.ExceptionMapping;
+import org.apache.struts2.convention.annotation.ExceptionMappings;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.apache.struts2.json.JSONException;
+import org.springframework.context.annotation.Scope;
+
+import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import com.wisdombud.alumni.util.ImageUtils;
+
+import common.toolkit.java.entity.DateFormat;
+import common.toolkit.java.struts2.AbstractCommonAction;
+import common.toolkit.java.util.DateUtil;
+
+/**
+ * ClassName: KindEditorAction. <br/>
+ * date: 2014年7月3日 下午1:13:31 <br/>
+ *
+ * @author zhang
+ * @version
+ * @since JDK 1.6
+ */
+@Scope("prototype")
+@SuppressWarnings("unchecked")
+@Results({ @Result(name = "submit", location = "/view/submit.jsp"),
+		   @Result(name = "json_data", location = "/WEB-INF/jsp/json_data.jsp"),
+		   @Result(name = "download", type = "stream", params = { "contentType", "application/octet-stream",
+																  "inputName", "stream", "bufferSize", "1024",
+																  "contentDisposition",
+																  "attachment;filename=\"${exportFileName}\"",
+																  "contentLength", "%{streamLength}" }),
+		   @Result(name = "file-not-exist", location = "/WEB-INF/jsp/file-not-exist.jsp"),
+		   @Result(name = "error", location = "/500.jsp") })
+@ExceptionMappings({ @ExceptionMapping(exception = "java.lange.RuntimeException", result = "error") })
+public class KindeditorAction extends AbstractCommonAction {
+	private static final long			   serialVersionUID	  = 572146812454L;
+	private static final Logger			   LOGGER			  = Logger.getLogger(KindeditorAction.class);
+	private static HashMap<String, String> extMap			  = new HashMap<String, String>();
+	private static final String			   FILE_SEPARATOR	  = File.separator;
+	private static final String			   FILE_SEPARATOR2	  = "/";
+	private static final int			   MAXIMUM_FILE_SIZE  = 100;									 // 最大文件大小30MB
+
+	private static final String			   BASE_ATTACH_DIR	  = "attached";
+	private static final String			   ENTERPRISE_LICENSE = "enterprise-license";
+
+	// 文件下载
+	private String						   exportFileName;
+	private InputStream					   stream;
+	private long						   streamLength;
+
+	static {
+		extMap.put("image", "gif,jpg,jpeg,png,bmp");
+		extMap.put("flash", "swf,flv");
+		extMap.put("media", "swf,flv,mp3,wav,wma,wmv,mid,avi,mpg,asf,rm,rmvb");
+		extMap.put("file", "pdf,xml,doc,docx,xls,xlsx,ppt,htm,html,txt,zip,rar,gz,bz2");
+		extMap.put("enterprise_reg", "gif,jpg,jpeg,png,bmp,rar,zip,gz,bz2,pdf,xml,doc,docx,xls,xlsx,ppt,txt"); // 企业上传文件
+	}
+
+	private List<File>	 upload;			 // 得到上传的文件
+	private List<String> uploadContentType;	 // 得到文件的类型
+	private List<String> uploadFileName;	 // 得到文件的名称
+
+	// for kindeditor
+	private List<File>	 imgFile;			 // 得到上传的文件
+	private List<String> imgFileContentType; // 得到文件的类型
+	private List<String> imgFileFileName;	 // 得到文件的名称
+
+	/**
+	 * 远程图库. <br/>
+	 *
+	 * @author zhang
+	 */
+	public void remoteImages() {
+		// 根目录路径，可以指定绝对路径，比如 /var/www/attached/
+		String rpath = request.getContextPath();
+		String basePath =
+				request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + rpath + "/";
+		String rootPath = ServletActionContext.getServletContext().getRealPath("/attached") + "/";
+		// 根目录URL，可以指定绝对路径，比如 http://www.yoursite.com/attached/
+		String rootUrl = basePath + "/attached/";
+		// 图片扩展名
+		String[] fileTypes = new String[] { "gif", "jpg", "jpeg", "png", "bmp" };
+
+		String dirName = request.getParameter("dir");
+		if (dirName != null) {
+			if (!Arrays.<String> asList(new String[] { "image", "flash", "media", "file" }).contains(dirName)) {
+				sendResponseMsg("Invalid Directory name.");
+				return;
+			}
+			rootPath += dirName + "/";
+			rootUrl += dirName + "/";
+			File saveDirFile = new File(rootPath);
+			if (!saveDirFile.exists()) {
+				saveDirFile.mkdirs();
+			}
+		}
+		// 根据path参数，设置各路径和URL
+		String path = request.getParameter("path") != null ? request.getParameter("path") : "";
+		String currentPath = rootPath + path;
+		String currentUrl = rootUrl + path;
+		String currentDirPath = path;
+		String moveupDirPath = "";
+		if (!"".equals(path)) {
+			String str = currentDirPath.substring(0, currentDirPath.length() - 1);
+			moveupDirPath = str.lastIndexOf("/") >= 0 ? str.substring(0, str.lastIndexOf("/") + 1) : "";
+		}
+
+		// 排序形式，name or size or type
+		String order = request.getParameter("order") != null ? request.getParameter("order").toLowerCase() : "name";
+
+		// 不允许使用..移动到上一级目录
+		if (path.indexOf("..") >= 0) {
+			sendResponseMsg("不允许访问.");
+		}
+		// 最后一个字符不是/
+		if (!"".equals(path) && !path.endsWith("/")) {
+			sendResponseMsg("参数是无效的.");
+		}
+		// 目录不存在或不是目录
+		final File currentPathFile = new File(currentPath);
+		if (!currentPathFile.isDirectory()) {
+			sendResponseMsg("目录不存在");
+		}
+
+		// 遍历目录取的文件信息
+		List<Hashtable<String, Object>> fileList = new ArrayList<Hashtable<String, Object>>();
+		if (currentPathFile.listFiles() != null) {
+			for (File file : currentPathFile.listFiles()) {
+				final Hashtable<String, Object> hash = new Hashtable<String, Object>();
+				final String fileName = file.getName();
+				if (file.isDirectory()) {
+					hash.put("is_dir", true);
+					hash.put("has_file", (file.listFiles() != null));
+					hash.put("filesize", 0L);
+					hash.put("is_photo", false);
+					hash.put("filetype", "");
+				} else if (file.isFile()) {
+					String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+					hash.put("is_dir", false);
+					hash.put("has_file", false);
+					hash.put("filesize", file.length());
+					hash.put("is_photo", Arrays.<String> asList(fileTypes).contains(fileExt));
+					hash.put("filetype", fileExt);
+				}
+				hash.put("filename", fileName);
+				hash.put("datetime", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(file.lastModified()));
+				fileList.add(hash);
+			}
+		}
+
+		if ("size".equals(order)) {
+			Collections.sort(fileList, new SizeComparator());
+		} else if ("type".equals(order)) {
+			Collections.sort(fileList, new TypeComparator());
+		} else {
+			Collections.sort(fileList, new NameComparator());
+		}
+		Map<String, Object> result = new HashMap<>();
+		result.put("moveup_dir_path", moveupDirPath);
+		result.put("current_dir_path", currentDirPath);
+		result.put("current_url", currentUrl);
+		result.put("total_count", fileList.size());
+		result.put("file_list", fileList);
+		sendResponseMsg(new Gson().toJson(result));
+	}
+
+	public void kindeditorUpload() throws UnsupportedEncodingException {
+		String dirName = request.getParameter("dir");
+		dirName = StringUtils.isEmpty(dirName) ? "bulletin" : dirName;
+
+		response.setCharacterEncoding("UTF-8"); // 防止中文乱码
+		/*
+		 * The file upload plugin makes use of an Iframe Transport module for
+		 * browsers like Microsoft Internet Explorer
+		 * and Opera, which do not yet support XMLHTTPRequest file uploads.
+		 * Iframe based uploads require a Content-type of text/plain or
+		 * text/html for the JSON response - they will show
+		 * an undesired download dialog if the iframe response is set to
+		 * application/json.
+		 */
+		response.setContentType("text/html; charset=UTF-8");
+
+		final String dateDir = DateUtil.getNowTime(DateFormat.Date);
+		// 文件保存跟目录路径
+		final PathSupport ps = this.generateSavePath(false, dirName, dateDir);
+
+		JqueryUploadData jud = new JqueryUploadData();
+
+		for (int i = 0; i < imgFile.size(); i++) {
+			final File file = imgFile.get(i);
+			final String fileName = imgFileFileName.get(i);
+
+			LOGGER.info("-------->上传的文件的文件名为：" + fileName);
+			// 检查文件大小
+			if (file.length() > MAXIMUM_FILE_SIZE * 1000 * 1000) {
+				// 删除无用文件
+				FileUtils.deleteQuietly(file);
+				LOGGER.error("-------->上传文件大小超过限制,当前允许的最大文件大小为：" + MAXIMUM_FILE_SIZE + "MB");
+				jud.setError(1);
+				jud.setMessage("上传文件大小超过限制, ,当前允许的最大文件大小为：" + MAXIMUM_FILE_SIZE + "MB");
+				jud.setFilename(fileName);
+				break;
+			}
+			// 检查扩展名
+			final String fileExt = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+
+			// 构造目标文件名
+			final String dstFileName = new Date().getTime() + "_" + fileName;
+			final String dstFilePath = ps.getRealPath() + dstFileName;
+			try {
+				// 如果是图片，需要调整图片大小
+				if (extMap.get("image").contains(fileExt)) {
+					resizeImage(file, dstFilePath, fileExt);
+				} else {
+					FileUtils.copyFile(file, new File(dstFilePath));
+				}
+				jud.setName(fileName);
+				jud.setSize(file.length());
+				jud.setDeleteType("DELETE");
+				jud.setDeleteUrl("../common/kindeditor!jQueryRemove.action?jQuerydownloadName="
+								 + URLEncoder.encode(ps.getRelativePath() + dstFileName, "UTF-8"));
+				jud.setAttachment(ps.getRelativePath() + dstFileName);
+				// for kindeditor
+				jud.setError(0);
+				jud.setMessage("上传成功");
+				jud.setUrl("/" + ps.getRelativePath() + dstFileName);
+				jud.setFilename(fileName);
+				LOGGER.info("保存上传附件：" + dstFilePath + "成功!");
+			} catch (IOException e) { // 如果resize图片失败，就保存原始图片
+				try {
+					FileUtils.copyFile(file, new File(dstFilePath));
+				} catch (IOException e1) {
+					LOGGER.error("保存上传文件失败!", e);
+				}
+				LOGGER.error("保存上传文件失败!", e);
+				jud.setError(1);
+				jud.setMessage("调整图片失败");
+			}
+
+			break;
+		}
+
+		sendResponseMsg(new Gson().toJson(jud));
+	}
+
+	private void resizeImage(File sourceFile, String disFilePath, String ext) throws IOException {
+		Image image = ImageIO.read(sourceFile);
+		BufferedImage desinationBi = ImageUtils.scale((BufferedImage) image);
+
+		File outputfile = new File(disFilePath);
+		ImageIO.write(desinationBi, ext, outputfile);
+	}
+
+	/**
+	 * jquery-file-upload上传.
+	 *
+	 * @author ssippi
+	 * @throws IOException
+	 * @throws JSONException
+	 */
+	public void jQueryFileUpload() throws Exception {
+		String dirName = request.getParameter("dir");
+		String maxSizeStr = request.getParameter("maxSize");
+		String customFileName = request.getParameter("customFileName");
+		int maxSize = StringUtils.isNotEmpty(maxSizeStr) ? Integer.valueOf(maxSizeStr) : MAXIMUM_FILE_SIZE;
+		dirName = StringUtils.isEmpty(dirName) ? ENTERPRISE_LICENSE : dirName;
+
+		response.setCharacterEncoding("UTF-8"); // 防止中文乱码
+		/*
+		 * The file upload plugin makes use of an Iframe Transport module for
+		 * browsers like Microsoft Internet Explorer
+		 * and Opera, which do not yet support XMLHTTPRequest file uploads.
+		 * Iframe based uploads require a Content-type of text/plain or
+		 * text/html for the JSON response - they will show
+		 * an undesired download dialog if the iframe response is set to
+		 * application/json.
+		 */
+		response.setContentType("text/html; charset=UTF-8");
+
+		final String dateDir = DateUtil.getNowTime(DateFormat.Date);
+		// 文件保存跟目录路径
+		final PathSupport ps = this.generateSavePath(false, dirName, dateDir);
+
+		List<JqueryUploadData> results = Lists.newArrayList();
+		// 为了照顾kindeditor
+		for (int i = 0; i < upload.size(); i++) {
+			final File file = upload.get(i);
+			final String originFileName = uploadFileName.get(i);
+			// 检查扩展名
+			final String fileExt = originFileName.substring(originFileName.lastIndexOf(".") + 1).toLowerCase();
+			final String fileName =
+					StringUtils.isNotEmpty(customFileName) ? customFileName + "." + fileExt : uploadFileName.get(i);
+
+			LOGGER.info("-------->上传的文件的文件名为：" + fileName);
+			// 检查文件大小
+			if (file.length() > maxSize * 1000 * 1000) {
+				// 删除无用文件
+				FileUtils.deleteQuietly(file);
+				LOGGER.error("-------->上传文件大小超过限制,当前允许的最大文件大小为：" + maxSize + "MB");
+				JqueryUploadData jud = new JqueryUploadData();
+				jud.setError(1);
+				jud.setMessage("上传文件大小超过限制, ,当前允许的最大文件大小为：" + maxSize + "MB");
+				jud.setName(fileName);
+				jud.setSize(file.length());
+				results.add(jud);
+				continue;
+			}
+
+			// 构造目标文件名
+			final String dstFileName = new Date().getTime() + "_" + fileName;
+			final String dstFilePath = ps.getRealPath() + dstFileName;
+			FileUtils.copyFile(file, new File(dstFilePath));
+			LOGGER.info("保存上传附件：" + dstFilePath + "成功!");
+			JqueryUploadData jud = new JqueryUploadData();
+			jud.setName(fileName);
+			jud.setSize(file.length());
+			jud.setDeleteType("DELETE");
+			jud.setDeleteUrl("../common/kindeditor!jQueryRemove.action?jQuerydownloadName="
+							 + URLEncoder.encode(ps.getRelativePath() + dstFileName, "UTF-8"));
+			jud.setAttachment(ps.getRelativePath() + dstFileName);
+
+			// for kindeditor
+			jud.setError(0);
+			jud.setMessage("上传成功");
+			jud.setUrl(ps.getRelativePath() + dstFileName);
+			jud.setFilename(fileName);
+
+			results.add(jud);
+		}
+
+		sendResponseMsg(new Gson().toJson(results));
+	}
+
+	/**
+	 * 删除企业附件 <br/>
+	 *
+	 * @author ssippi
+	 */
+	public void jQueryRemove() {
+		// 默认保存目录是image
+		String rootPath = ServletActionContext.getServletContext().getRealPath("/");
+		String fileName = request.getParameter("jQuerydownloadName");
+		// 文件保存跟目录路径
+		final File removeFile = new File(rootPath + fileName);
+		if (removeFile.exists()) {
+			removeFile.delete();
+		}
+		sendResponseMsg("{\"hah\":\"hah\"}"); // 返回json
+	}
+
+	/**
+	 * 下载文件
+	 *
+	 * @author ghlin
+	 */
+	@Action(value = "/download")
+	public String downloadFile() {
+		String fileName = request.getParameter("fileName");
+		if (StringUtils.isEmpty(fileName)) {
+			return "file-not-exist";
+		}
+		// 不允许使用..移动到上一级目录
+		if (fileName.indexOf("..") >= 0) {
+			return "file-not-exist";
+		}
+		if (fileName.length() < 8) {
+			return "file-not-exist";
+		}
+		// 不是attached目录下的文件不许下载
+		String startName = fileName.substring(0, 8);
+		if (!"attached".equals(startName)) {
+			return "file-not-exist";
+		}
+		String fileRawName =
+				fileName.lastIndexOf(FILE_SEPARATOR) == -1 ? fileName
+														   : fileName
+																   .substring(fileName.lastIndexOf(FILE_SEPARATOR) + 1);
+		if (!fileName.startsWith("/")) {
+			fileName = "/" + fileName;
+		}
+		InputStream is = ServletActionContext.getServletContext().getResourceAsStream(fileName);
+		if (is == null) {
+			return "404";
+		}
+		try {
+			byte[] outByteArray = IOUtils.toByteArray(is);
+			this.stream = new ByteArrayInputStream(outByteArray); // 直接输出inputStream会报500错。。。。
+			this.streamLength = outByteArray.length;
+			this.exportFileName = new String(fileRawName.getBytes("UTF-8"), "ISO8859-1");
+			LOGGER.info("下载文件： " + fileRawName + ", 文件大小为：" + this.streamLength);
+		} catch (IOException e) {
+			LOGGER.error("下载文件：" + fileRawName + " 失败!", e);
+			return "404";
+		}
+		return "download";
+	}
+
+	/**
+	 * @param isAccessory
+	 * @param dirName 目录名称
+	 * @param dateDir 目录日期
+	 * @return
+	 */
+	private PathSupport generateSavePath(boolean isAccessory, String dirName, String dateDir) {
+		String realPath = "";
+		String relativePath = "";
+		String filePathUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+							 + request.getContextPath() + "/";
+		if (isAccessory == true) {
+			realPath = ServletActionContext.getServletContext().getRealPath("/DownloadCenter/");
+			relativePath += FILE_SEPARATOR + "DownloadCenter" + FILE_SEPARATOR;
+			filePathUrl += "/DownloadCenter/";
+		} else {
+			realPath = ServletActionContext.getServletContext().getRealPath(BASE_ATTACH_DIR);
+			realPath += FILE_SEPARATOR2 + dirName + FILE_SEPARATOR2;
+			relativePath += BASE_ATTACH_DIR + FILE_SEPARATOR2 + dirName + FILE_SEPARATOR2;
+			filePathUrl += BASE_ATTACH_DIR + "/" + dirName + "/";
+			File saveDirFile = new File(realPath);
+			if (!saveDirFile.exists()) {
+				saveDirFile.mkdirs();
+			}
+			// 构造日期目录
+			if (StringUtils.isNotEmpty(dateDir)) {
+				realPath += dateDir + FILE_SEPARATOR2;
+				relativePath += dateDir + FILE_SEPARATOR2;
+				filePathUrl += dateDir + "/";
+				File dirFile = new File(realPath);
+				if (!dirFile.exists()) {
+					dirFile.mkdirs();
+				}
+			}
+		}
+		PathSupport ps = new PathSupport();
+		ps.setRealPath(realPath);
+		ps.setRelativePath(relativePath);
+		ps.setUrl(filePathUrl);
+
+		return ps;
+	}
+
+	private class PathSupport {
+		private String realPath;
+		private String relativePath;
+		private String url;
+
+		public String getRealPath() {
+			return realPath;
+		}
+
+		public void setRealPath(String realPath) {
+			this.realPath = realPath;
+		}
+
+		public String getRelativePath() {
+			return relativePath;
+		}
+
+		public void setRelativePath(String relativePath) {
+			this.relativePath = relativePath;
+		}
+
+		public String getUrl() {
+			return url;
+		}
+
+		public void setUrl(String url) {
+			this.url = url;
+		}
+
+		@Override
+		public String toString() {
+			return "PathSupport [realPath=" + realPath + ", relativePath=" + relativePath + ", url=" + url + "]";
+		}
+
+	}
+
+	/**
+	 * 生成错误信息json. <br/>
+	 *
+	 * @author ghlin
+	 * @param message
+	 * @return
+	 */
+	private String getError(String message) throws JSONException {
+		Map<String, Object> obj = new HashMap<>();
+		obj.put("error", 1);
+		obj.put("message", message);
+		return new Gson().toJson(obj);
+	}
+
+	private boolean isNonEmpty(Object[] objArray) {
+		boolean result = false;
+		for (int index = 0; index < objArray.length && !result; index++) {
+			if (objArray[index] != null) {
+				result = true;
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * ClassName: NameComparator. <br/>
+	 * Function: TODO <br/>
+	 * date: 2014年7月3日 下午5:24:53 <br/>
+	 *
+	 * @author zhang
+	 * @version
+	 * @since JDK 1.6
+	 */
+	public class NameComparator implements Comparator {
+		@Override
+		public int compare(Object a, Object b) {
+			Hashtable hashA = (Hashtable) a;
+			Hashtable hashB = (Hashtable) b;
+			if (((Boolean) hashA.get("is_dir")) && !((Boolean) hashB.get("is_dir"))) {
+				return -1;
+			} else if (!((Boolean) hashA.get("is_dir")) && ((Boolean) hashB.get("is_dir"))) {
+				return 1;
+			} else {
+				return ((String) hashA.get("filename")).compareTo((String) hashB.get("filename"));
+			}
+		}
+	}
+
+	/**
+	 * ClassName: SizeComparator. <br/>
+	 * Function: TODO <br/>
+	 * date: 2014年7月3日 下午5:24:55 <br/>
+	 *
+	 * @author zhang
+	 * @version
+	 * @since JDK 1.6
+	 */
+	public class SizeComparator implements Comparator {
+		@Override
+		public int compare(Object a, Object b) {
+			Hashtable hashA = (Hashtable) a;
+			Hashtable hashB = (Hashtable) b;
+			if (((Boolean) hashA.get("is_dir")) && !((Boolean) hashB.get("is_dir"))) {
+				return -1;
+			} else if (!((Boolean) hashA.get("is_dir")) && ((Boolean) hashB.get("is_dir"))) {
+				return 1;
+			} else {
+				if (((Long) hashA.get("filesize")) > ((Long) hashB.get("filesize"))) {
+					return 1;
+				} else if (((Long) hashA.get("filesize")) < ((Long) hashB.get("filesize"))) {
+					return -1;
+				} else {
+					return 0;
+				}
+			}
+		}
+	}
+
+	/**
+	 * ClassName: TypeComparator. <br/>
+	 * Function: TODO <br/>
+	 * date: 2014年7月3日 下午5:24:58 <br/>
+	 *
+	 * @author zhang
+	 * @version
+	 * @since JDK 1.6
+	 */
+	public class TypeComparator implements Comparator {
+		@Override
+		public int compare(Object a, Object b) {
+			Hashtable hashA = (Hashtable) a;
+			Hashtable hashB = (Hashtable) b;
+			if (((Boolean) hashA.get("is_dir")) && !((Boolean) hashB.get("is_dir"))) {
+				return -1;
+			} else if (!((Boolean) hashA.get("is_dir")) && ((Boolean) hashB.get("is_dir"))) {
+				return 1;
+			} else {
+				return ((String) hashA.get("filetype")).compareTo((String) hashB.get("filetype"));
+			}
+		}
+	}
+
+	private class JqueryUploadData {
+		private String	name;
+		private long	size;
+		private String	thumbnailUrl;
+		private String	deleteUrl;
+		private String	deleteType;
+		private String	type;
+		private String	attachment;
+		private String	url;
+		private Integer	error;
+		private String	message;
+		private String	filename;
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
+		}
+
+		public long getSize() {
+			return size;
+		}
+
+		public void setSize(long size) {
+			this.size = size;
+		}
+
+		public String getUrl() {
+			return url;
+		}
+
+		public void setUrl(String url) {
+			this.url = url;
+		}
+
+		public String getThumbnailUrl() {
+			return thumbnailUrl;
+		}
+
+		public void setThumbnailUrl(String thumbnailUrl) {
+			this.thumbnailUrl = thumbnailUrl;
+		}
+
+		public String getDeleteUrl() {
+			return deleteUrl;
+		}
+
+		public void setDeleteUrl(String deleteUrl) {
+			this.deleteUrl = deleteUrl;
+		}
+
+		public String getDeleteType() {
+			return deleteType;
+		}
+
+		public void setDeleteType(String deleteType) {
+			this.deleteType = deleteType;
+		}
+
+		public String getType() {
+			return type;
+		}
+
+		public void setType(String type) {
+			this.type = type;
+		}
+
+		public String getAttachment() {
+			return attachment;
+		}
+
+		public void setAttachment(String attachment) {
+			this.attachment = attachment;
+		}
+
+		public Integer getError() {
+			return error;
+		}
+
+		public void setError(Integer error) {
+			this.error = error;
+		}
+
+		public String getMessage() {
+			return message;
+		}
+
+		public void setMessage(String message) {
+			this.message = message;
+		}
+
+		public String getFilename() {
+			return filename;
+		}
+
+		public void setFilename(String filename) {
+			this.filename = filename;
+		}
+	}
+
+	public List<File> getUpload() {
+		return upload;
+	}
+
+	public void setUpload(List<File> upload) {
+		this.upload = upload;
+	}
+
+	public List<String> getUploadContentType() {
+		return uploadContentType;
+	}
+
+	public void setUploadContentType(List<String> uploadContentType) {
+		this.uploadContentType = uploadContentType;
+	}
+
+	public List<String> getUploadFileName() {
+		return uploadFileName;
+	}
+
+	public void setUploadFileName(List<String> uploadFileName) {
+		this.uploadFileName = uploadFileName;
+	}
+
+	public String getExportFileName() {
+		return exportFileName;
+	}
+
+	public void setExportFileName(String exportFileName) {
+		this.exportFileName = exportFileName;
+	}
+
+	public InputStream getStream() {
+		return stream;
+	}
+
+	public void setStream(InputStream stream) {
+		this.stream = stream;
+	}
+
+	public long getStreamLength() {
+		return streamLength;
+	}
+
+	public void setStreamLength(long streamLength) {
+		this.streamLength = streamLength;
+	}
+
+	public List<File> getImgFile() {
+		return imgFile;
+	}
+
+	public void setImgFile(List<File> imgFile) {
+		this.imgFile = imgFile;
+	}
+
+	public List<String> getImgFileContentType() {
+		return imgFileContentType;
+	}
+
+	public void setImgFileContentType(List<String> imgFileContentType) {
+		this.imgFileContentType = imgFileContentType;
+	}
+
+	public List<String> getImgFileFileName() {
+		return imgFileFileName;
+	}
+
+	public void setImgFileFileName(List<String> imgFileFileName) {
+		this.imgFileFileName = imgFileFileName;
+	}
+
+}

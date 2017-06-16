@@ -1,0 +1,48 @@
+/**
+*  门户列表
+*   xiefei 
+* */
+$(function() {
+    initHeader();
+    loadData();
+    //留言
+    $("#liuyan").click(function(){
+        $("#liuyan-model").modal();
+    })
+    $("#msg-btn").click(function(){
+            $.post('/home!saveMessageBoard', $("#msg-form").serialize(), function(data) {
+                if(data){
+                    alertify.alert("操作成功！");
+                }
+                $("#liuyan-model").modal('hide');
+            });
+    })
+
+});
+
+function loadData() {
+    var appendElement='list';
+    var templateId='list-tpl';
+    var options = {
+        'url': menuOption.url,
+        'appendElement':appendElement,
+        'templateId':templateId,
+        'queryParams':{
+            'menuId':menuOption.menuId
+        }
+    };
+    //留言板
+    if(menuOption.menuId==80){
+        options.templateId='msg-tpl';
+    }
+
+    loadPaginationData(options);
+}
+function initHeader(){
+ var h =  template("header-tpl", {'title':menuOption.title});
+ $('#header').html(h);
+}
+
+template.helper("dateTitle", function(date){
+    return parseInt(date.substring(5,7))+'月<span>'+date.substring(8,10)+'</span>'+date.substring(0,4);
+});

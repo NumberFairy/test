@@ -1,0 +1,21 @@
+#校友分会表,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,base_alumni_club,;,,,,,,,
+CREATE TABLE ,base_alumni_club,(,,,,,,,
+,ID,VARCHAR(36) ,NOT NULL,primary key,,,,,","
+,NAME,VARCHAR(100),,,,,COMMENT ,校友会名称',","
+,TYPE,int(1),,,,,COMMENT ,'类型',","
+,huizhang,VARCHAR(100),,,,,COMMENT ,'会长',","
+,changwufuhuizhang,VARCHAR(100),,,,,COMMENT ,'常务副会长',","
+,fuhuizhang,VARCHAR(100),,,,,COMMENT ,'副会长',","
+,mishuzhang,VARCHAR(100),,,,,COMMENT ,'秘书长',","
+,changwufumishuzhang,VARCHAR(100),,,,,COMMENT ,'常务副秘书长',","
+,fumishuzhang,VARCHAR(100),,,,,COMMENT ,'副秘书长',","
+,changwulishi,VARCHAR(100),,,,,COMMENT ,'常务理事',","
+,lishi,VARCHAR(100),,,,,COMMENT ,'理事',","
+,MEMBER_NUM,int(6),,,,,COMMENT ,'成员数',","
+,WECHAT_ID,VARCHAR(36),,,,,COMMENT ,'微信号',","
+,ESTABLISHED_TIME,datetime,,,,,COMMENT ,'成立时间',","
+,INTRODUCTION ,longtext,,,,,COMMENT ,'简介',","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,'校友分会表',;,,,,,,,

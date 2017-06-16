@@ -1,0 +1,288 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <%@include file="/WEB-INF/jsp/common/header.jsp"%>
+        <title>校友管理及分析系统</title>
+        </head>
+
+        <body class="gray-bg">
+            <div class="wrapper wrapper-content  animated fadeInRight">
+                <%--提醒-and 我的申请--%>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <h5 style="color:#d9534f;"><i class="fa fa-bell"></i> 提醒</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>提醒类型</th>
+                                                <th>提醒时间</th>
+                                                <th>提醒事项</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>发货提醒</td>
+                                                <td>2017-01-07</td>
+                                                <td>XX订单的货物将要在2天后进行发货</td>
+                                            </tr>
+                                            <tr>
+                                                <td>合同付款提醒</td>
+                                                <td></td>
+                                                <td>XX合同的第一笔付款将在2天后到期</td>
+                                            </tr>
+                                            <tr>
+                                                <td>催货提醒</td>
+                                                <td>2017-01-07</td>
+                                                <td>XX订单的货物已经超过合同约束时间</td>
+                                            </tr>
+                                            <tr>
+                                                <td>月结提醒</td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>催货提醒</td>
+                                                <td>2017-01-07</td>
+                                                <td>XX订单的货物已经超过合同约束时间</td>
+                                            </tr>
+                                            <tr>
+                                                <td>月结提醒</td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="ibox float-e-margins">
+                                <div class="ibox-title">
+                                    <h5 style="color:#23b7e5;"><i class="fa fa-pencil-square-o"></i> 我的申请</h5>
+                                </div>
+                                <div class="ibox-content">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>申请事项</th>
+                                                <th>当前审核人</th>
+                                                <th>提交时间</th>
+                                                <th>审核状态</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>生产计划</td>
+                                                <td>杨样</td>
+                                                <td>2017-01-08</td>
+                                                <td><a href="javascript:;"><i class="fa fa-check text-navy"></i> 通过</a></td>
+                                                <td><a href="${contextPath}/jsp/product/pro-director/product-plan/product-plan.jsp"><i class="fa fa-eye text-navy"></i> 查看</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>技术验收</td>
+                                                <td>杨样</td>
+                                                <td>2017-01-08</td>
+                                                <td><a href="javascript:;" style="color:#f05050;"><i class="fa fa-times"></i> 不通过</a></td>
+                                                <td><a href="${contextPath}/jsp/product/pro-director/technology-acceptance/technology-acceptance.jsp"><i class="fa fa-eye text-navy"></i> 查看</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>生产计划</td>
+                                                <td>杨样</td>
+                                                <td>2017-01-08</td>
+                                                <td><a href="javascript:;"><i class="fa fa-check text-navy"></i> 通过</a></td>
+                                                <td><a href="${contextPath}/jsp/product/pro-director/product-plan/product-plan.jsp"><i class="fa fa-eye text-navy"></i> 查看</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>技术验收</td>
+                                                <td>杨样</td>
+                                                <td>2017-01-08</td>
+                                                <td><a href="javascript:;" style="color:#f05050;"><i class="fa fa-times"></i> 不通过</a></td>
+                                                <td><a href="${contextPath}/jsp/product/pro-director/technology-acceptance/technology-acceptance.jsp"><i class="fa fa-eye text-navy"></i> 查看</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>生产计划</td>
+                                                <td>杨样</td>
+                                                <td>2017-01-08</td>
+                                                <td><a href="javascript:;"><i class="fa fa-check text-navy"></i> 通过</a></td>
+                                                <td><a href="${contextPath}/jsp/product/pro-director/product-plan/product-plan.jsp"><i class="fa fa-eye text-navy"></i> 查看</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td>技术验收</td>
+                                                <td>杨样</td>
+                                                <td>2017-01-08</td>
+                                                <td><a href="javascript:;" style="color:#f05050;"><i class="fa fa-times"></i> 不通过</a></td>
+                                                <td><a href="${contextPath}/jsp/product/pro-director/technology-acceptance/technology-acceptance.jsp"><i class="fa fa-eye text-navy"></i> 查看</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <%--待办事项-and 已办事项--%>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="ibox float-e-margins">
+                                    <div class="ibox-title">
+                                        <h5 style="color:#d58512;"><i class="fa fa-list"></i> 待办事项</h5>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>待办事项</th>
+                                                    <th>提交人</th>
+                                                    <th>提交时间</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>生产计划</td>
+                                                    <td>杨样</td>
+                                                    <td>2017-01-08</td>
+                                                    <td>
+                                                        <a href="#" class="marl"><i class="fa fa-check text-navy"></i> 通过</a>
+                                                        <a href="#" style="color:#f05050;" class="marl"><i class="fa fa-times"></i> 不通过</a>
+                                                        <a href="#"><i class="fa fa-eye text-navy"></i> 查看</a>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>生产计划</td>
+                                                    <td>杨样</td>
+                                                    <td>2017-01-08</td>
+                                                    <td>
+                                                        <a href="#" class="marl"><i class="fa fa-check text-navy"></i> 通过</a>
+                                                        <a href="#" style="color:#f05050;" class="marl"><i class="fa fa-times"></i> 不通过</a>
+                                                        <a href="#"><i class="fa fa-eye text-navy"></i> 查看</a>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>生产计划</td>
+                                                    <td>杨样</td>
+                                                    <td>2017-01-08</td>
+                                                    <td>
+                                                        <a href="#" class="marl"><i class="fa fa-check text-navy"></i> 通过</a>
+                                                        <a href="#" style="color:#f05050;" class="marl"><i class="fa fa-times"></i> 不通过</a>
+                                                        <a href="#"><i class="fa fa-eye text-navy"></i> 查看</a>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>生产计划</td>
+                                                    <td>杨样</td>
+                                                    <td>2017-01-08</td>
+                                                    <td>
+                                                        <a href="#" class="marl"><i class="fa fa-check text-navy"></i> 通过</a>
+                                                        <a href="#" style="color:#f05050;" class="marl"><i class="fa fa-times"></i> 不通过</a>
+                                                        <a href="#"><i class="fa fa-eye text-navy"></i> 查看</a>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>生产计划</td>
+                                                    <td>杨样</td>
+                                                    <td>2017-01-08</td>
+                                                    <td>
+                                                        <a href="#" class="marl"><i class="fa fa-check text-navy"></i> 通过</a>
+                                                        <a href="#" style="color:#f05050;" class="marl"><i class="fa fa-times"></i> 不通过</a>
+                                                        <a href="#"><i class="fa fa-eye text-navy"></i> 查看</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>生产计划</td>
+                                                    <td>杨样</td>
+                                                    <td>2017-01-08</td>
+                                                    <td>
+                                                        <a href="#" class="marl"><i class="fa fa-check text-navy"></i> 通过</a>
+                                                        <a href="#" style="color:#f05050;" class="marl"><i class="fa fa-times"></i> 不通过</a>
+                                                        <a href="#"><i class="fa fa-eye text-navy"></i> 查看</a>
+                                                    </td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="ibox float-e-margins">
+                                    <div class="ibox-title">
+                                        <h5 style="color:#27c24c;"><i class="fa fa-check-circle"></i> 已办事项</h5>
+                                    </div>
+                                    <div class="ibox-content">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>已办事项</th>
+                                                    <th>提交人</th>
+                                                    <th>提交时间</th>
+                                                    <th>操作</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>生产计划</td>
+                                                    <td>杨样</td>
+                                                    <td>2017-01-08</td>
+                                                    <td>
+                                                        <a href="#"><i class="fa fa-eye text-navy"></i> 查看</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>技术验收</td>
+                                                    <td>杨样</td>
+                                                    <td>2017-01-08</td>
+                                                    <td>
+                                                        <a href="#"><i class="fa fa-eye text-navy"></i> 查看</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>生产计划</td>
+                                                    <td>杨样</td>
+                                                    <td>2017-01-08</td>
+                                                    <td>
+                                                        <a href="#"><i class="fa fa-eye text-navy"></i> 查看</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>技术验收</td>
+                                                    <td>杨样</td>
+                                                    <td>2017-01-08</td>
+                                                    <td>
+                                                        <a href="#"><i class="fa fa-eye text-navy"></i> 查看</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>生产计划</td>
+                                                    <td>杨样</td>
+                                                    <td>2017-01-08</td>
+                                                    <td>
+                                                        <a href="#"><i class="fa fa-eye text-navy"></i> 查看</a>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>技术验收</td>
+                                                    <td>杨样</td>
+                                                    <td>2017-01-08</td>
+                                                    <td>
+                                                        <a href="#"><i class="fa fa-eye text-navy"></i> 查看</a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+            </div>
+        </body>
+        <%@ include file="/WEB-INF/jsp/common/js-container.jsp"%>
+
+            </html>

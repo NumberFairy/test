@@ -1,0 +1,34 @@
+package com.wisdombud.alumni.actions.system;
+
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+
+import com.wisdombud.alumni.actions.base.AbstractCrudAction;
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.pojo.system.SecUser;
+
+/**
+ * 功能: 学院字典管理<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ * 
+ * @author xiefei
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("basealumni")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "toPage", location = "/WEB-INF/jsp/system/user-manage/page.jsp") })
+public class UserManageAction extends AbstractCrudAction<SecUser> {
+
+	private static final long serialVersionUID = 1L;
+	
+	public UserManageAction(@Qualifier(value = "secUserSrv") IBaseSrv<SecUser> baseSrv) {
+		super(baseSrv);
+	}
+
+}

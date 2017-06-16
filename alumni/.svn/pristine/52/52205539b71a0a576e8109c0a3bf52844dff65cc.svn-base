@@ -1,0 +1,36 @@
+package com.wisdombud.alumni.manage.impl;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.dao.manage.BaseBranchRelationDao;
+import com.wisdombud.alumni.manage.BaseBranchRelationSrv;
+import com.wisdombud.alumni.pojo.manage.BaseBranchRelation;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 分会信息关联表Srv. <br/>
+ *
+ * @author Administrator
+ *
+ */
+@Service(value = "baseBranchRelationSrv")
+public class BaseBranchRelationSrvImpl extends BaseSrvImpl<BaseBranchRelation> implements BaseBranchRelationSrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseBranchRelationSrvImpl.class);
+
+	@Autowired
+	private BaseBranchRelationDao dao;
+	
+	public BaseBranchRelationSrvImpl() {
+	}
+
+	@Autowired
+	public BaseBranchRelationSrvImpl(@Qualifier(value = "baseBranchRelationDao") CommonDao<BaseBranchRelation, String> commonDao) {
+		super(commonDao);
+	}
+
+}

@@ -1,0 +1,154 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Lists;
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.dao.manage.BaseAlumniClubDao;
+import com.wisdombud.alumni.dao.manage.BaseAlumniLiaisonDao;
+import com.wisdombud.alumni.dao.manage.BaseBranchRelationDao;
+import com.wisdombud.alumni.manage.BaseAlumniBranchStaffSrv;
+import com.wisdombud.alumni.manage.BaseAlumniClubSrv;
+import com.wisdombud.alumni.manage.BaseBranchRelationSrv;
+import com.wisdombud.alumni.pojo.base.DicAlumniBranchType;
+import com.wisdombud.alumni.pojo.dic.DicBasePo;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniBranch;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniBranchStaff;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniLiaison;
+import com.wisdombud.alumni.pojo.manage.BaseBranchRelation;
+import com.wisdombud.alumni.util.BeanUtils;
+import com.wisdombud.alumni.vo.AlumniBranchVo;
+import com.wisdombud.alumni.vo.Param;
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+	/**
+     * 校友分会表Srv. <br/>
+     * @author zxguan
+     */
+@Service(value= "baseAlumniClubSrv")
+public class BaseAlumniClubSrvImpl extends BaseSrvImpl<BaseAlumniBranch> implements BaseAlumniClubSrv {
+
+    private static final Logger LOGGER = Logger.getLogger(BaseAlumniClubSrvImpl.class);
+
+	@Autowired
+	private DicCommonSrv dicSrv;
+	@Autowired
+	private BaseBranchRelationSrv memberSrv;
+	@Autowired
+	private BaseAlumniBranchStaffSrv staffSrv;
+	@Autowired
+	private BaseAlumniClubDao dao;
+	@Autowired
+	private BaseAlumniLiaisonDao liaisonDao;
+	@Autowired
+	private BaseBranchRelationDao memberDao;
+
+    public BaseAlumniClubSrvImpl(){}
+
+	@Autowired
+	public BaseAlumniClubSrvImpl(@Qualifier(value = "baseAlumniClubDao") CommonDao<BaseAlumniBranch, String> commonDao) {
+		super(commonDao);
+	}
+
+	@Override
+	public String fillAlumniBranchTypeStr(String type) {
+		String typeStr = null;
+		if (StringUtils.isNotBlank(type)) {
+			List<DicAlumniBranchType> lists = dicSrv.findAll(DicAlumniBranchType.class);
+			for (DicAlumniBranchType item : lists) {
+				if ((item.id).equals(type)) {
+					typeStr = item.getValue();
+					break;
+				}
+			}
+		}
+		return typeStr;
+	}
+
+	@Override
+	public void page(PageEntity<DicBasePo> pageEntity, PageEntity<AlumniBranchVo> pageBranchVo, Map<String, Param> params, String type) {
+		List<AlumniBranchVo> branchVoList = Lists.newArrayList();
+		dao.pageByHql(pageEntity, params, buildOrder(), type);
+		List<DicBasePo> branchList = pageEntity.getResults();
+		for (DicBasePo branch : branchList) {
+			AlumniBranchVo vo = new AlumniBranchVo();
+			BaseAlumniBranch branchPo = dao.findBy("branchId", branch.getId()).get(0);
+			String liaisonStr = getLiaisonStr(branchPo.getLiaisons());
+			List<BaseBranchRelation> menberList = memberDao.findBy("branchId", branchPo.getBranchId());
+			vo.setId(branchPo.getId());
+			vo.setBranchId(branchPo.getBranchId());
+			vo.setName(branchPo.getName());
+			vo.setHuizhang(branchPo.getHuizhang());
+			vo.setLiaison(liaisonStr);
+			vo.setMemberNum(menberList.size());
+			vo.setWechat(branchPo.getWechatId());
+			vo.setEmail(branchPo.getEmail());
+			vo.setAddress(branchPo.getAddress());
+			branchVoList.add(vo);
+		}
+		pageBranchVo.setResults(branchVoList);
+		pageBranchVo.setCurrentPage(pageEntity.getCurrentPage());
+		pageBranchVo.setCurrentPageLength(pageEntity.getCurrentPageLength());
+		pageBranchVo.setPageSize(pageEntity.getPageSize());
+		pageBranchVo.setStart(pageEntity.getStart());
+		pageBranchVo.setTotalPages(pageEntity.getTotalPages());
+		pageBranchVo.setTotalResults(pageEntity.getTotalResults());
+
+	}
+
+	private String getLiaisonStr(Set<BaseAlumniLiaison> liaisonSet) {
+		StringBuilder liaisonStr = new StringBuilder();
+		for (BaseAlumniLiaison liaison : liaisonSet) {
+			liaisonStr.append(liaison.getAlumni().getName()).append("、");
+		}
+		return liaisonStr.toString().endsWith("、") ? liaisonStr.substring(0, liaisonStr.lastIndexOf("、")-1) : liaisonStr.toString();
+	}
+
+	private List<Order> buildOrder() {
+		List<Order> orders = Lists.newArrayList();
+		return orders;
+	}
+
+	@Override
+	public void findMemberByBranch(PageEntity<BaseBranchRelation> pageMenber, Map<String, Param> params) {
+		memberDao.pageByHql(pageMenber, params, new ArrayList<Order>());
+	}
+
+	@Override
+	public void deleteDicById(String branchId, String type) {
+		dao.deleteDicById(branchId, type);
+	}
+
+	@Override
+	public void addOrUpdate(BaseAlumniBranch entity, List<BaseAlumniBranchStaff> list) {
+		if (null != entity && StringUtils.isBlank(entity.id)) {
+			entity.setCreateTime(new Date());
+			this.save(entity);
+		} else {
+			entity.setLastUpdate(new Date());
+			BaseAlumniBranch oldEntity = this.find(entity.id);
+			BeanUtils.copyProperties(entity, oldEntity, "id", "createTime");
+			this.update(oldEntity);
+		}
+
+		staffSrv.deleteBy("branchId", entity.id);
+		for (BaseAlumniBranchStaff inst : list) {
+			inst.setBranchId(entity.getId());
+			staffSrv.save(inst);
+		}
+ 	}
+
+}

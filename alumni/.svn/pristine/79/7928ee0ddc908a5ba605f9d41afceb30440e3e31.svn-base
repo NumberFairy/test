@@ -1,0 +1,43 @@
+package com.wisdombud.alumni.common;
+
+import java.util.List;
+
+import com.wisdombud.alumni.vo.MailVo;
+
+public interface EmailSrv {
+
+	/**
+	 * @DES:发送邮件
+	 * @param title:标题<br/>
+	 * @param toUsers:收件人邮箱列表<br/>
+	 * @param filePaths:邮件附件路径<br/>
+	 * @param isHtml:是否为富文本,(true：yes)<br/>
+	 * @param content:邮件内容<br/>
+	 * @autor:xiefei<br/>
+	 */
+	void sendMail(String title, List<String> toUsers, List<String> filePaths, boolean isHtml, String content);
+
+	/**
+	 * @DES:发送 纯文本邮件
+	 * @autor:xiefei<br/>
+	 */
+	void sendTextMail(MailVo vo);
+
+	/**
+	 * @DES:发送 纯文本邮件
+	 * @autor:xiefei<br/>
+	 */
+	void sendTextMail(String title, List<String> toUsers, String content);
+
+	/**
+	 * @DES:发送 富文本邮件
+	 * @autor:xiefei<br/>
+	 */
+	void sendHtmlMail(MailVo vo);
+
+	/**
+	 * @DES:发送 富文本邮件
+	 * @autor:xiefei<br/>
+	 */
+	void sendHtmlMail(String title, List<String> toUsers, String content);
+}

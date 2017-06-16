@@ -1,0 +1,89 @@
+package com.wisdombud.alumni.actions.system;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+
+import com.wisdombud.alumni.actions.base.AbstractCrudAction;
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.pojo.system.PublicUser;
+import com.wisdombud.alumni.pojo.system.SecUser;
+import com.wisdombud.alumni.system.PublicUserSrv;
+import com.wisdombud.alumni.vo.CommonResult;
+import com.wisdombud.alumni.vo.Param;
+
+/**
+ * 功能: 学院字典管理<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ * 
+ * @author xiefei
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("basealumni")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({
+	@Result(name = "toPage", location = "/WEB-INF/jsp/system/user-manage/page.jsp"),
+	@Result(name = "toAddOrUpdate", location = "/WEB-INF/jsp/system/user-manage/create.jsp"),
+	@Result(name = "toDetail", location = "/WEB-INF/jsp/system/user-manage/detail.jsp")
+})
+public class UserManageAction extends AbstractCrudAction<SecUser> {
+
+	private static final long serialVersionUID = 1L;
+	
+	@Autowired
+	private PublicUserSrv publicUserSrv;
+	
+	public UserManageAction(@Qualifier(value = "secUserSrv") IBaseSrv<SecUser> baseSrv) {
+		super(baseSrv);
+	}
+
+	@Override
+	protected List<Order> buildOrder() {
+		List<Order> orders = new ArrayList<>();
+		orders.add(Order.desc("createTime"));
+		return orders;
+	}
+
+	@Override
+	protected Map<String, Param> buildParams() {
+		Map<String, Param> params = new HashMap<>();
+		if (entity!=null) {
+			if (StringUtils.isNotBlank(entity.getName())) {
+				params.put("name", Param.like(entity.getName()));
+			}
+		}
+		params.put("isAdmin", Param.put(Param.NEQ, 1));
+		return params;
+	}
+	
+	@Override
+	protected void add() {
+		CommonResult result = new CommonResult(CommonResult.SUCCESS);
+		PublicUser pu = publicUserSrv.findUniqueBy("loginName", entity.getLoginName());
+		if (pu!=null) {
+			result = new CommonResult(CommonResult.FAIL, "用户名已存在");
+			this.sendResponseMsg(result);
+			return;
+		}
+		entity.setId(null);
+		entity.setCreateTime(new Date());
+		entity.setLastUpdate(new Date());
+		this.baseSrv.save(entity);
+		this.sendResponseMsg(result);
+	}
+
+}

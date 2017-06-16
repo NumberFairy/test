@@ -1,0 +1,11 @@
+#校友联络员表,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,BASE_ALUMNI_LIAISON,;,,,,,,,
+CREATE TABLE ,BASE_ALUMNI_LIAISON,(,,,,,,,
+,ID,VARCHAR(36) ,NOT NULL,primary key,,,,,","
+,BRANCH_ID,VARCHAR(36) ,,,,,COMMENT ,分会ID',","
+,ALUMNI_ID,VARCHAR(36) ,,,,,COMMENT ,校友ID',","
+,CREATE_TIME,datetime,,,,,COMMENT ,'创建时间',","
+,LAST_UPDATE,datetime,,,,,COMMENT ,'更新时间',","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,校友联络员表',;,,,,,,,

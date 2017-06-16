@@ -1,0 +1,96 @@
+package com.wisdombud.alumni.dao.manage.impl;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
+import org.springframework.stereotype.Repository;
+
+import com.wisdombud.alumni.dao.manage.BaseIdentityRelationDao;
+import com.wisdombud.alumni.pojo.manage.BaseIdentityRelation;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.SimpleHibernateDao;
+
+/**
+ * 身份信息关联表’ DaoImpl. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Repository(value = "baseIdentityRelationDao")
+public class BaseIdentityRelationDaoImpl extends SimpleHibernateDao<BaseIdentityRelation, String>
+		implements BaseIdentityRelationDao {
+	private static final Logger LOGGER = Logger.getLogger(BaseIdentityRelationDaoImpl.class);
+	
+	public void page(PageEntity<BaseIdentityRelation> pageEntity, Map<String, Param> params, List<Order> orders) {
+		Map<String, Object> values = new HashMap<>();
+		StringBuffer hql = new StringBuffer("select i FROM BaseIdentityRelation i, BaseAlumni a   WHERE i.alumniId = a.id");
+
+		Param p1 = params.get("alumniIdentityId");
+		if (p1!=null) {
+			hql.append(" and i.alumniIdentityId " + p1.getOper() + " :alumniIdentityId");
+			values.put("alumniIdentityId", p1.getVal());
+		}
+		Param p2 = params.get("name");
+		if (p2!=null) {
+			hql.append(" and a.name " + p2.getOper() + " :name");
+			values.put("name", p2.getVal());
+		}
+		Param p3 = params.get("label");
+		if (p3!=null) {
+			hql.append(" and a.label " + p3.getOper() + " :label");
+			values.put("label", p3.getVal());
+		}
+		
+		Param p4 = params.get("college");
+		if (p4!=null) {
+			hql.append(" and a.college " + p4.getOper() + " :college");
+			values.put("college", p4.getVal());
+		}
+		
+		Param p5 = params.get("company");
+		if (p5!=null) {
+			hql.append(" and a.company " + p5.getOper() + " :company");
+			values.put("company", p5.getVal());
+		}
+		
+		Param p6 = params.get("post");
+		if (p6!=null) {
+			hql.append(" and a.post " + p6.getOper() + " :post");
+			values.put("post", p6.getVal());
+		}
+		
+		Param p7 = params.get("phone");
+		if (p7!=null) {
+			hql.append(" and a.phone " + p7.getOper() + " :phone");
+			values.put("phone", p7.getVal());
+		}
+		
+		Param p8 = params.get("email");
+		if (p8!=null) {
+			hql.append(" and a.email " + p8.getOper() + " :email");
+			values.put("email", p8.getVal());
+		}
+		
+		Param p9 = params.get("remark1");
+		if (p9!=null) {
+			hql.append(" and a.remark1 " + p9.getOper() + " :remark1");
+			values.put("remark1", p9.getVal());
+		}
+		
+		hql.append(" ORDER BY ");
+		for (int i = 0; i < orders.size(); i++) {
+			if (i == orders.size() - 1) {
+				hql.append("i." + orders.get(i).toString());
+				continue;
+			}
+			hql.append("i." + orders.get(i).toString() + ",");
+
+		}
+		pageByHql(hql.toString(), pageEntity, values);
+	}
+}

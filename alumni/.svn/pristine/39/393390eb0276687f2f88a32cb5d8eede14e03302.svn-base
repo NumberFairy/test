@@ -1,0 +1,15 @@
+package com.wisdombud.alumni.manage;
+
+import com.wisdombud.alumni.common.IBaseSrv;
+
+import com.wisdombud.alumni.pojo.manage.BaseRegister;
+
+/**
+ * 校友注册表 ISrv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+public interface BaseRegisterSrv extends IBaseSrv<BaseRegister> {
+
+}

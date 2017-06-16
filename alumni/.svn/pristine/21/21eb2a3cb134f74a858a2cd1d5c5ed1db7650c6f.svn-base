@@ -1,0 +1,19 @@
+package com.wisdombud.alumni.dao.manage.impl;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Repository;
+
+import com.wisdombud.alumni.dao.manage.DicOverseaBranchDao;
+import com.wisdombud.alumni.pojo.dic.DicOverseaBranch;
+import common.toolkit.java.orm.hibernate.SimpleHibernateDao;
+
+/**
+ * 海外分会 DaoImpl. <br/>
+ *
+ * @author Administrator
+ *
+ */
+@Repository(value = "dicOverseaBranchDao")
+public class DicOverseaBranchDaoImpl extends SimpleHibernateDao<DicOverseaBranch, String> implements DicOverseaBranchDao {
+	private static final Logger LOGGER = Logger.getLogger(DicOverseaBranchDaoImpl.class);
+}

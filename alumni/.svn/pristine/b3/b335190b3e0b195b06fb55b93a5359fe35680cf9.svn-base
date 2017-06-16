@@ -1,0 +1,18 @@
+#信息发布管理,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,HOME_INFORMATION_RELEASE,;,,,,,,,
+CREATE TABLE ,HOME_INFORMATION_RELEASE,(,,,,,,,
+,ID,VARCHAR(36) ,NOT NULL,primary key,,,,,","
+,TITLE,VARCHAR(255) ,,,,,COMMENT ,标题',","
+,TYPESTR,VARCHAR(255) ,,,,,COMMENT ,类型',","
+,SUMMARY,text,,,,,COMMENT ,摘要',","
+,PUBLISHER,VARCHAR(255) ,,,,,COMMENT ,发布人',","
+,IS_ENABLE,int(1),,,,,COMMENT ,是否启用',","
+,IS_TOP,int(1),,,,,COMMENT ,是否置顶',","
+,VIEW_COUNT,int(10),,,,,COMMENT ,浏览次数',","
+,SOURCE,VARCHAR(255) ,,,,,COMMENT ,来源',","
+,IMG_ID,VARCHAR(36) ,,,,,COMMENT ,图片ID',","
+,VIDEO_ID,VARCHAR(36) ,,,,,COMMENT ,影片ID',","
+,CONTENT,longtext,,,,,COMMENT ,内容',","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,信息发布管理',;,,,,,,,

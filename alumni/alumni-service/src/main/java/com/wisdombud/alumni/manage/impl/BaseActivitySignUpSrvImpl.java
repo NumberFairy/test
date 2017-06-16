@@ -1,0 +1,118 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Query;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.enums.GenderEnum;
+import com.wisdombud.alumni.enums.IdentityEnum;
+import com.wisdombud.alumni.manage.BaseActivitySignUpSrv;
+import com.wisdombud.alumni.manage.BaseAlumniActivitySrv;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.manage.BaseActivitySignUp;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniActivity;
+import com.wisdombud.alumni.util.BeanUtils;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 报名情况表Srv. <br/>
+ *
+ * @author Administrator
+ *
+ */
+@Service(value = "baseActivitySignUpSrv")
+public class BaseActivitySignUpSrvImpl extends BaseSrvImpl<BaseActivitySignUp> implements BaseActivitySignUpSrv {
+
+	@Autowired
+	public DicCommonSrv dicCommonSrv;
+	@Autowired
+	public BaseAlumniActivitySrv baseAlumniActivitySrv;
+	@Autowired
+	private BaseAlumniSrv alumniSrv;
+
+	public BaseActivitySignUpSrvImpl() {
+	}
+
+	@Autowired
+	public BaseActivitySignUpSrvImpl(
+			@Qualifier(value = "baseActivitySignUpDao") CommonDao<BaseActivitySignUp, String> commonDao) {
+		super(commonDao);
+	}
+
+	private void fillName(List<BaseActivitySignUp> list) {
+		for (BaseActivitySignUp inst : list) {
+			fillName(inst);
+		}
+	}
+
+	private void fillName(BaseActivitySignUp entity) {
+		if (entity.getCollege() != null) {
+			entity.setCollegeName(dicCommonSrv.findById(DicCollege.class, entity.getCollege()).getCnName());
+		}
+		if (entity.getIdentity() != null) {
+			entity.setIdentityName(IdentityEnum.valueByIndex(entity.getIdentity()).getName());
+		}
+		if (entity.getGender() != null) {
+			entity.setGenderName(GenderEnum.valueByIndex(entity.getGender()).getName());
+		}
+	}
+
+	@Override
+	public void page(PageEntity<BaseActivitySignUp> pageEntity, Map<String, Param> params, List<Order> orders) {
+		super.page(pageEntity, params, orders);
+		List<BaseActivitySignUp> list = pageEntity.getResults();
+		this.fillName(list);
+	}
+
+	@Override
+	public BaseActivitySignUp find(String id) {
+		BaseActivitySignUp entity = super.find(id);
+		this.fillName(entity);
+		return entity;
+	}
+
+	@Override
+	public List<BaseAlumniActivity> findMyActivities(String id) {
+		List<BaseAlumniActivity> activities = new ArrayList<BaseAlumniActivity>();
+		if (StringUtils.isNotEmpty(id)) {
+			List<BaseActivitySignUp> activitySignUps = this.findBy("alumniId", id);
+			for (BaseActivitySignUp inst : activitySignUps) {
+				BaseAlumniActivity activity = baseAlumniActivitySrv.find(inst.getActivityId());
+				String queryString = "select count(*) from BASE_ACTIVITY_SIGN_UP where ACTIVITY_ID=\""
+						+ inst.getActivityId().toString() + "\"";
+				Query query = super.createQuery(queryString, false, null);
+				if (!query.list().isEmpty()) {
+					activity.setCount((BigInteger) query.list().get(0));
+				}
+				activities.add(activity);
+			}
+		}
+		return activities;
+	}
+
+	@Override
+	public void updateBaoming(String userId, String actId) {
+		BaseAlumni u = alumniSrv.find(userId);
+		BaseActivitySignUp up = new BaseActivitySignUp();
+		BeanUtils.copyProperties(u, up, "id");
+		up.setAlumniId(userId);
+		up.setActivityId(actId);
+		up.setAlumniName(u.getName());
+		save(up);
+	}
+}

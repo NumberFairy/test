@@ -1,0 +1,56 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Lists;
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.dao.manage.BaseRemindDao;
+import com.wisdombud.alumni.enums.AlumniIdentityEnum;
+import com.wisdombud.alumni.enums.GenderEnum;
+import com.wisdombud.alumni.enums.IdentityEnum;
+import com.wisdombud.alumni.enums.PoliticalStatusEnum;
+import com.wisdombud.alumni.manage.BaseActivitySignUpSrv;
+import com.wisdombud.alumni.manage.BaseAlumniImportSrv;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.manage.BaseIdentityRelationSrv;
+import com.wisdombud.alumni.pojo.dic.DicAlumniBranchIdentity;
+import com.wisdombud.alumni.pojo.dic.DicAlumniClubIdentity;
+import com.wisdombud.alumni.pojo.dic.DicAlumniIdentity;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicDegree;
+import com.wisdombud.alumni.pojo.dic.DicIndustry;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.pojo.manage.BaseActivitySignUp;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniImport;
+import com.wisdombud.alumni.pojo.manage.BaseIdentityRelation;
+import com.wisdombud.alumni.util.BeanUtils;
+import com.wisdombud.alumni.vo.Param;
+import com.wisdombud.alumni.vo.RemindVo;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 校友信息表Srv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Service(value = "baseAlumniImportSrv")
+public class BaseAlumniImportSrvImpl extends BaseSrvImpl<BaseAlumniImport> implements BaseAlumniImportSrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseAlumniImportSrvImpl.class);
+
+}

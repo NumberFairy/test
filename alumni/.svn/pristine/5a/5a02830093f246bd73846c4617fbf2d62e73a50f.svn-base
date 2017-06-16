@@ -1,0 +1,86 @@
+
+
+
+var actionPath = contextPath + "/school-key-alumni";
+$(function () {
+    loadData();
+
+    $(".table").on('click', '#removeId', function () {
+        var id = $(this).data('id');
+        alertify.confirm("确定要移除吗？", function (e) {
+            if (e) {
+                $.post(actionPath + "!delete", { 'id': id }, function (data) {
+                    if (data.success) {
+                        loadData();
+                        alertify.alert("移除成功");
+                    }
+                }, "json");
+                location.href = actionPath + "!hrefPage";
+            }
+            else {
+                return;
+            }
+        }, "json");
+    });
+
+    $("#btn-detail").click(function () {
+        if (!judgeCheckedOneId()) {
+            return;
+        }
+        location.href = actionPath + "!hrefDetail?id=" + getCheckedFirstId();
+    });
+
+    $("#btn-update").click(function () {
+        if (!judgeCheckedOneId()) {
+            return;
+        }
+        location.href = actionPath + "!hrefAddOrUpdate?entity.id=" + getCheckedFirstId();
+    });
+
+    $("#btn-email").click(function () {
+        var ids = getCheckedIds();
+        $.post(actionPath + "!forEmail?id=" + ids, function (data) {
+            if (data.success) {
+                $("#emailAddress").val(data.message);
+            }
+        }, "json");
+
+        $('#myModal').modal({
+            keyboard: false
+        });
+    });
+
+    $("#emailSubmit").click(function () {
+        var title = $('#title').val();
+        var email = $('#emailAddress').val();
+        var replyContent = $('#emailContent').val();
+        if (email != "" && replyContent != "") {
+            $.post(actionPath + "!sendMail", {
+                title: title,
+                email: email,
+                replyContent: replyContent
+            }, function (data) {
+                if (data.success) {
+                    alertify.alert("发送成功");
+
+                } else {
+                    alertify.alert("发送失败");
+                }
+                setTimeout(function () {
+                    location.href = actionPath + "!hrefPage";
+                }, 500);
+            }, "json");
+
+        } else {
+            alertify.alert('邮箱和回复内容不能为空');
+        }
+    });
+
+});
+
+function loadData() {
+    var options = {
+        url: actionPath + "!page"
+    };
+    loadPaginationData(options);
+}

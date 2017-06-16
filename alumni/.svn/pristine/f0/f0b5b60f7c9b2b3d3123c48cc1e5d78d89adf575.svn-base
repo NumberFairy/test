@@ -1,0 +1,17 @@
+package com.wisdombud.alumni.system;
+
+import java.util.List;
+
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.pojo.system.SecOper;
+
+public interface SecOperSrv extends IBaseSrv<SecOper> {
+
+	/**
+	 * 功能：根据用户ID查出可操作的菜单. <br/>
+	 * @author zxguan
+	 *
+	 */
+	List<SecOper> findOperListByUserId(String userId);
+
+}

@@ -1,0 +1,15 @@
+package com.wisdombud.alumni.manage;
+
+import com.wisdombud.alumni.common.IBaseSrv;
+
+import com.wisdombud.alumni.pojo.manage.BaseBranchRelation;
+
+/**
+ * 分会信息关联表 ISrv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+public interface BaseBranchRelationSrv extends IBaseSrv<BaseBranchRelation> {
+
+}

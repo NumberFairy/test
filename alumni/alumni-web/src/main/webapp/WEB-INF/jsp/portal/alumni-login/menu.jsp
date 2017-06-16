@@ -1,0 +1,61 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <div class="header">
+        <h1 class="logo">
+            <a href="/home" style="color:transparent;">
+                <img src="${contextPath}/resources/images/portal/logo.png">
+            </a>
+        </h1>
+    </div>
+    <div class="nav">
+        <div class="nav-con clearfix">
+            <ul class="login-msg floatR">
+                <li class="user-info">
+                    <a href="javascript:;" class="user-name">${sessionScope.UserSession.userName} </a>
+                    <ul class="ul-info">
+                        <li>
+                            <a href="${contextPath}/login!userExit">退出</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="sub-nav floatR module">
+                <input id="alumni-id" value="${sessionScope.UserSession.id}" type="text " class="hidden"> </input>
+                <li class="menu-item">
+                    <a class="menu-text" href="/alumni-user!execute">
+                   个人主页
+                </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-text" href="/alumni-user!opticalAxis">
+                    校友时光轴
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-text" href="/person-info!hrefAddOrUpdate">
+                    个人信息
+                </a>
+                </li>
+
+                <li class="menu-item">
+                    <a class="menu-text" href="/home!changePassword">
+                    修改密码
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a class="menu-text" href="/alumni-activity-apply!hrefPage">
+                    发布活动
+                    </a>
+                </li>
+                <li class=" menu-item ">
+                    <a class="menu-text " href="/home!hrefMyActivity">
+                        我报名的活动
+                    </a>
+                </li>
+                <li class="menu-item ">
+                    <a class="menu-text " href="/alumni-user!myAlumniAssociation">
+                     我的校友会
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>

@@ -1,0 +1,78 @@
+package com.wisdombud.alumni.interceptor;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.apache.struts2.StrutsStatics;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+import com.wisdombud.alumni.threadlocal.UserSession;
+import com.wisdombud.alumni.threadlocal.UserThreadLocal;
+
+import common.toolkit.java.constant.ResultConstant;
+
+/**
+ * ClassName: AuthorityInterceptor. <br/>
+ * Function: TODO <br/>
+ * date: 2014年7月1日 下午4:13:32 <br/>
+ *
+ * @author Ghlin
+ * @version
+ * @since JDK 1.6
+ */
+public class AuthorityInterceptor extends AbstractInterceptor {
+    private static final long   serialVersionUID    = 2115969028154887563L;
+    private static final Logger LOGGER              = Logger.getLogger(AuthorityInterceptor.class);
+    private static final int    AJAX_TIMEOUT_CODE   = 401;
+    private static final String AJAX_REQUEST_HEADER = "X-Requested-With";
+    private static final String MENU_NAME           = "menuName";
+
+    @Override
+    public String intercept(final ActionInvocation invocation) throws Exception {
+        final ActionContext context = invocation.getInvocationContext();
+        final UserSession userSession = (UserSession) ActionContext.getContext().getSession().get("UserSession");
+        final Map<String, Object> session = context.getSession();
+        final HttpServletRequest httpRequest = (HttpServletRequest) context.get(StrutsStatics.HTTP_REQUEST);
+        final HttpServletResponse httpResponse = (HttpServletResponse) context.get(StrutsStatics.HTTP_RESPONSE);
+
+        // 判断用户名是否为空
+        if (userSession == null) {
+            if ("XMLHttpRequest".equalsIgnoreCase(httpRequest.getHeader(AJAX_REQUEST_HEADER)) || httpRequest.getParameter("ajax") != null) {
+
+                LOGGER.info("session超时, requestHeader:" + httpRequest.getHeader(AJAX_REQUEST_HEADER));
+                // 如果是ajax请求响应头会有，x-requested-with
+                httpResponse.setStatus(AJAX_TIMEOUT_CODE);
+                httpResponse.setCharacterEncoding("UTF-8");
+                PrintWriter writer = null;
+                try {
+                    writer = httpResponse.getWriter();
+                    writer.write("");
+                    writer.flush();
+                } catch (IOException e) {
+                    LOGGER.error("请求异常", e);
+                } finally {
+                    if (null != writer) {
+                        writer.close();
+                        writer = null;
+                    }
+                }
+                return "";
+            } else {
+                return ResultConstant.TO_HOME;
+            }
+        } else {
+            // 正常调用
+            final UserSession us = (UserSession) session.get("UserSession");
+            UserThreadLocal.setUserSession(us);
+            return invocation.invoke();
+        }
+    }
+
+}

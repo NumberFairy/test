@@ -1,0 +1,301 @@
+package com.wisdombud.alumni.pojo.manage;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import com.wisdombud.alumni.pojo.base.UUIDReservePo;
+
+@Entity
+@Table(name = "BASE_ALUMNI_CLUB_APPLY")
+public class BaseAlumniClubApply extends UUIDReservePo {
+	private static final long serialVersionUID = 1L;
+
+	@Column(name = "ALUMNI_CLUB_ID")
+	private String alumniClubId;
+
+	@Column(name = "ALUMNI_ID")
+	private String alumniId;
+
+	@Column(name = "NAME")
+	private String name;
+
+	@Column(name = "CODE")
+	private String code;
+
+	@Column(name = "COLLEGE")
+	private Integer college;
+
+	@Column(name = "MAGOR")
+	private Integer magor;
+
+	@Column(name = "ENROLL_YEAR")
+	private Date enrollYear;
+
+	@Column(name = "STATUS")
+	private Integer status;
+
+	@Column(name = "AUDITIOR")
+	private String auditior;
+
+	@Column(name = "AUDIT_TIME")
+	private Date auditTime;
+
+	@Column(name = "AUDIT_OPITION")
+	private String auditOpition;
+
+	/**
+	 * 功能:get 校友会ID'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public String getAlumniClubId() {
+		return alumniClubId;
+	}
+
+	/**
+	 * 功能:set 校友会ID'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setAlumniClubId(String alumniClubId) {
+		this.alumniClubId = alumniClubId;
+	}
+
+	/**
+	 * 功能:get 校友ID<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public String getAlumniId() {
+		return alumniId;
+	}
+
+	/**
+	 * 功能:set 校友ID<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setAlumniId(String alumniId) {
+		this.alumniId = alumniId;
+	}
+
+	/**
+	 * 功能:get '校友名称'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * 功能:set '校友名称'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * 功能:get '学号/职工号'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public String getCode() {
+		return code;
+	}
+
+	/**
+	 * 功能:set '学号/职工号'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	/**
+	 * 功能:get '学院'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public Integer getCollege() {
+		return college;
+	}
+
+	/**
+	 * 功能:set '学院'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setCollege(Integer college) {
+		this.college = college;
+	}
+
+	/**
+	 * 功能:get '专业'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public Integer getMagor() {
+		return magor;
+	}
+
+	/**
+	 * 功能:set '专业'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setMagor(Integer magor) {
+		this.magor = magor;
+	}
+
+	/**
+	 * 功能:get '入学年份'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public Date getEnrollYear() {
+		return enrollYear;
+	}
+
+	/**
+	 * 功能:set '入学年份'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setEnrollYear(Date enrollYear) {
+		this.enrollYear = enrollYear;
+	}
+
+	/**
+	 * 功能:get '状态'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	/**
+	 * 功能:set '状态'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	/**
+	 * 功能:get '审核人'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public String getAuditior() {
+		return auditior;
+	}
+
+	/**
+	 * 功能:set '审核人'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setAuditior(String auditior) {
+		this.auditior = auditior;
+	}
+
+	/**
+	 * 功能:get '审核时间'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public Date getAuditTime() {
+		return auditTime;
+	}
+
+	/**
+	 * 功能:set '审核时间'<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setAuditTime(Date auditTime) {
+		this.auditTime = auditTime;
+	}
+
+	/**
+	 * 功能:get '审核意见''<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+
+	public String getAuditOpition() {
+		return auditOpition;
+	}
+
+	/**
+	 * 功能:set '审核意见''<br/>
+	 * date: <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setAuditOpition(String auditOpition) {
+		this.auditOpition = auditOpition;
+	}
+}

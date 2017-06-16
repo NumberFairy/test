@@ -1,0 +1,87 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.enums.AlumniNoticeEnum;
+import com.wisdombud.alumni.manage.BaseNoticeSrv;
+import com.wisdombud.alumni.manage.BaseNoticeTemplateSrv;
+import com.wisdombud.alumni.pojo.dic.DicNoticePattern;
+import com.wisdombud.alumni.pojo.dic.DicNoticeType;
+import com.wisdombud.alumni.pojo.manage.BaseNotice;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+	/**
+     * 校友通知表Srv. <br/>
+     * @author Administrator
+     
+     */
+@Service(value= "baseNoticeSrv")
+public class BaseNoticeSrvImpl extends BaseSrvImpl<BaseNotice> implements BaseNoticeSrv {
+	private static final Logger LOGGER = Logger.getLogger(BaseNoticeSrvImpl.class);
+	@Autowired
+	public DicCommonSrv	dicCommonSrv;
+	@Autowired
+	private BaseNoticeTemplateSrv	  noticeTemplateSrv;
+    public BaseNoticeSrvImpl(){}
+    
+	@Autowired
+	public BaseNoticeSrvImpl(@Qualifier(value = "baseNoticeDao") CommonDao<BaseNotice, String> commonDao) {
+		super(commonDao);
+	}
+	
+	private void fillName(List<BaseNotice> list) {
+		for (BaseNotice inst : list) {
+			fillName(inst);
+		}
+	}
+
+	private void fillName(BaseNotice entity) {
+		entity.setNoticeModeName((dicCommonSrv.findById(DicNoticePattern.class,entity.getNoticeMode()).getValue()));
+		entity.setNoticeTypeName((dicCommonSrv.findById(DicNoticeType.class,entity.getNoticeType()).getValue()));
+		entity.setNoticeTemplateName((noticeTemplateSrv.find(entity.getNoticeTemplate()).getTitle()));
+		if(entity.getStatus()!=null){
+			entity.setStatusName(AlumniNoticeEnum.valueByIndex(entity.getStatus()).getName());
+		}
+	}
+	
+	 @Override
+	public void page(PageEntity<BaseNotice> pageEntity, Map<String, Param> params, List<Order> orders) {
+		 super.page(pageEntity, params, orders);
+		 List<BaseNotice> list = pageEntity.getResults();
+			this.fillName(list);
+	}
+
+	@Override
+	public BaseNotice find(String id) {
+		BaseNotice entity=super.find(id);
+		this.fillName(entity);
+		return entity;
+	}
+
+	@Override
+	public void saveChangeStatus(String id) {
+		if(StringUtils.isNotBlank(id)){
+			BaseNotice entity=this.find(id);
+			if(entity.getStatus()==AlumniNoticeEnum.DISABLE.getValue()){
+				entity.setStatus(AlumniNoticeEnum.ENABLE.getValue());
+			}
+			else{
+				entity.setStatus(AlumniNoticeEnum.DISABLE.getValue());
+			}
+		}
+	}
+	
+}

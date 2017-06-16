@@ -1,0 +1,131 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.google.common.collect.Lists;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.manage.ImportExportSrv;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicPoliticalStatus;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniImport;
+
+public class ImportExportSrvImpl implements ImportExportSrv {
+
+	@Autowired
+	private DicCommonSrv dicSrv;
+
+	public int convertGender(String gender) {
+		if (null == gender) {
+			return 0;
+		}
+		if (gender.equals("女")) {
+			return 1;
+		}
+		return 0;
+	}
+
+	public String convertGender(int gender) {
+		return gender == 0 ? "男" : "女";
+	}
+
+	public int convertPoliticalStatus(String ps) {
+		String value = "";
+		if (null == ps) {
+			value = "群众";
+		} else if (ps.contains("预备")) {
+			value = "预备党员";
+		} else if (ps.contains("团")) {
+			value = "共青团员";
+		} else if (ps.contains("群众")) {
+			value = "群众";
+		} else if (ps.contains("党")) {
+			value = "党员";
+		} else {
+			value = "群众";
+		}
+		List<DicPoliticalStatus> list = this.dicSrv.findAll(DicPoliticalStatus.class);
+		for (DicPoliticalStatus inst : list) {
+			if (inst.getValue().equals(value)) {
+				return inst.getId();
+			}
+		}
+		return 4;// 群众
+	}
+
+	public String convertPoliticalStatus(int id) {
+		DicPoliticalStatus ret = this.dicSrv.findById(DicPoliticalStatus.class, id);
+		if (null == ret) {
+			return "群众";
+		} else {
+			return ret.getValue();
+		}
+	}
+
+	public int convertCollege(String college) {
+		List<DicCollege> list = this.dicSrv.findAll(DicCollege.class);
+		for (DicCollege inst : list) {
+			if (inst.getCnName().equals(college)) {
+				return inst.getId();
+			}
+		}
+		return list.get(0).getId();// 找不到默认返回第一个
+	}
+
+	public String convertCollege(int college) {
+		DicCollege ret = this.dicSrv.findById(DicCollege.class, college);
+		if (null == ret) {
+			return "地球科学与资源学院";
+		} else {
+			return ret.getCnName();
+		}
+	}
+
+	public int convertMajor(String major) {
+		List<DicSpecialty> list = this.dicSrv.findAll(DicSpecialty.class);
+		for (DicSpecialty inst : list) {
+			if (inst.getCnName().equals(major)) {
+				return inst.getId();
+			}
+		}
+		return list.get(0).getId();// 找不到默认返回第一个
+	}
+
+	public String convertMajor(int major) {
+		DicSpecialty ret = this.dicSrv.findById(DicSpecialty.class, major);
+		if (null == ret) {
+			return "地质学";
+		} else {
+			return ret.getCnName();
+		}
+	}
+
+	public BaseAlumniImport convert(BaseAlumni entity) {
+
+		return null;
+	}
+
+	public BaseAlumni convert(BaseAlumniImport entity) {
+		return null;
+	}
+
+	public List<BaseAlumniImport> convert2Export(List<BaseAlumni> entityList) {
+		List<BaseAlumniImport> retList = Lists.newArrayList();
+		for (BaseAlumni entity : entityList) {
+			retList.add(this.convert(entity));
+		}
+		return retList;
+	}
+
+	public List<BaseAlumni> convert2Base(List<BaseAlumniImport> entityList) {
+		List<BaseAlumni> retList = Lists.newArrayList();
+		for (BaseAlumniImport entity : entityList) {
+			retList.add(this.convert(entity));
+		}
+		return retList;
+	}
+
+}

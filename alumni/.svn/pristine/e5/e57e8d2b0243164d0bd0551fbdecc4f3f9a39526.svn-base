@@ -1,0 +1,9 @@
+package com.wisdombud.alumni.dao.system;
+
+import com.wisdombud.alumni.pojo.system.SecUser;
+
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+public interface SecUserDao extends CommonDao<SecUser, String> {
+
+}

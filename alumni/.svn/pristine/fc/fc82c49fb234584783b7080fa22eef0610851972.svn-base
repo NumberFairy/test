@@ -1,0 +1,33 @@
+package com.wisdombud.alumni.manage;
+
+import java.util.List;
+import java.util.Map;
+
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.pojo.dic.DicBasePo;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniBranch;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniBranchStaff;
+import com.wisdombud.alumni.pojo.manage.BaseBranchRelation;
+import com.wisdombud.alumni.vo.AlumniBranchVo;
+import com.wisdombud.alumni.vo.Param;
+import common.toolkit.java.entity.PageEntity;
+
+/**
+ * 校友分会表 ISrv. <br/>
+ *
+ * @author Administrator
+ *
+ */
+public interface BaseAlumniClubSrv extends IBaseSrv<BaseAlumniBranch> {
+
+	String fillAlumniBranchTypeStr(String type);
+
+	void page(PageEntity<DicBasePo> pageEntity, PageEntity<AlumniBranchVo> pageBranchVo, Map<String, Param> buildParams, String type);
+
+	void findMemberByBranch(PageEntity<BaseBranchRelation> pageMenber, Map<String, Param> params);
+
+	void deleteDicById(String branchId, String type);
+
+	void addOrUpdate(BaseAlumniBranch entity, List<BaseAlumniBranchStaff> list);
+
+}

@@ -1,0 +1,110 @@
+package com.wisdombud.alumni.actions.information;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.springframework.context.annotation.Scope;
+
+import com.wisdombud.alumni.threadlocal.UserSession;
+import com.wisdombud.alumni.threadlocal.UserThreadLocal;
+
+import common.toolkit.java.struts2.AbstractCommonAction;
+
+/**
+ * 功能: 登陆<br/>
+ * date: 2017-3-21 9:17:00 <br/>
+ *
+ * @author zxguan
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("prototype")
+@ParentPackage(value = "portal-default")
+@Namespace("/")
+public class LoginAction extends AbstractCommonAction {
+
+	private static final long serialVersionUID = 1L;
+
+	private String			  userName;
+	private String			  userppww;
+
+	public void login() {
+		// if (StringUtils.isBlank(this.userName) ||
+		// StringUtils.isBlank(this.userppww)) {
+		// sendFailMsg("", "用户名或密码为空");
+		// return;
+		// }
+		// SecUser user = userSrv.findUniqueBy("useriidd", this.userName);
+		// if (user == null) {
+		// sendFailMsg("", "用户名不存在");
+		// return;
+		// }
+		// if (!user.getUserppww().equals(StringUtil.encrypt(this.userppww))) {
+		// sendFailMsg("", "密码错误");
+		// return;
+		// }
+		// addSession(user);
+		// addCookie();
+		// sendSuccessMsg();
+	}
+
+	// private void addSession(final SecUser user) {
+	// ActionContext.getContext().getSession().put("loginname", user.getName());
+	// final UserSession userSession = new UserSession();
+	// userSession.setId(user.getId());
+	// userSession.setLoginName(user.getUseriidd());
+	// userSession.setUserName(user.getName());
+	// userSession.setSessionId(ServletActionContext.getRequest().getSession().getId());
+	// userSession.setDesignation(user.getDesignation());
+	// SecUser se = this.secUserSrv.findById(user.getId());
+	// if (se != null && CollectionUtils.isNotEmpty(se.getSecRoles())) {
+	// userSession.setSecRoles(se.getSecRoles());
+	// }
+	// ActionContext.getContext().getSession().put("UserSession", userSession);
+	// }
+
+	private void addCookie() {
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setCharacterEncoding("UTF-8");
+		Cookie userNamecookie = new Cookie("username", userName == null ? "" : userName);
+		Cookie passwordcookie = new Cookie("password", userppww == null ? "" : userppww);
+
+		// if (rememberme.equals(Constants.REMENBER_ME)) {
+		// passwordcookie.setMaxAge(60 * 60 * 24 * 7);
+		// userNamecookie.setMaxAge(60 * 60 * 24 * 7);
+		// } else {
+		// userNamecookie.setMaxAge(0);
+		// passwordcookie.setMaxAge(0);
+		// }
+		ServletActionContext.getResponse().addCookie(userNamecookie);
+		ServletActionContext.getResponse().addCookie(passwordcookie);
+		response.addCookie(userNamecookie);
+		response.addCookie(passwordcookie);
+	}
+
+	public String loginOut() {
+		UserSession session = UserThreadLocal.getUserSession();
+
+		return "tologin";
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getUserppww() {
+		return userppww;
+	}
+
+	public void setUserppww(String userppww) {
+		this.userppww = userppww;
+	}
+
+}

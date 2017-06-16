@@ -1,0 +1,28 @@
+package com.wisdombud.alumni.actions.personManage;
+
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.springframework.context.annotation.Scope;
+
+import common.toolkit.java.struts2.AbstractCommonAction;
+
+/**
+ * 功能：校友操作界面<br>
+ *
+ * @author zxguan
+ */
+@Scope("prototype")
+@ParentPackage(value = "struts-default-authority")
+@Namespace(value = "/")
+@Results({@Result(name = "alumni", location = "/WEB-INF/jsp/portal/alumni-login/personal-info.jsp")})
+public class AlumniAction extends AbstractCommonAction {
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	public String execute() throws Exception {
+		return "alumni";
+	}
+
+}

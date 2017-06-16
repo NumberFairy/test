@@ -1,0 +1,22 @@
+package com.wisdombud.alumni.manage;
+
+import java.io.File;
+import java.io.IOException;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+import jxl.write.WritableWorkbook;
+
+/**
+ * 生成校友通讯录校友
+ */
+public interface ExcelXiaoYouService {
+	
+	public int importExcel(File excelFile) throws IOException;
+	
+	void export(String ids, String filds, HSSFWorkbook wb);
+	void export(String ids, String filds, WritableWorkbook wb);
+	 
+	
+	int saveReal();
+}

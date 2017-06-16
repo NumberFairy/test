@@ -1,0 +1,47 @@
+/*------------------------------------------
+Template Name: AdminEx Dashboard
+Author: ThemeBucket
+-------------------------------------------*/
+body {
+    font-family: "Hiragino Sans GB", "Microsoft Yahei", SimSun, Arial, "Helvetica Neue", Helvetica;
+    color: #797979;
+    background:#eff0f4;
+    padding: 0px!important;
+    margin: 0px!important;
+    font-size: 14px;
+}
+input, select, textarea {
+    font-family:"Hiragino Sans GB", "Microsoft Yahei", SimSun, Arial, "Helvetica Neue", Helvetica;
+    color: #767676;
+}
+a {
+    color:#2795dc;
+}
+
+a:focus, a:active, a:hover {
+    outline: none;
+    -webkit-transition: all 0.3s;
+    -moz-transition: all 0.3s;
+    transition: all 0.3s;
+    color: #353F4F;
+}
+a, a:hover, a:focus {
+    text-decoration: none;
+    outline: none;
+}
+.mtop10 {
+    margin-top: 15px;
+}
+.mtb{
+    margin:15px 0;
+}
+.mlr{
+    margin:0 15px;
+}
+.mar{
+    margin:15px;
+}
+hr {
+    border-color: #ddd;
+}
+.cl:after,.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}.cl,.clearfix{zoom:1}

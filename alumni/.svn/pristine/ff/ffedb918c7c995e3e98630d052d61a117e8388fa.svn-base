@@ -1,0 +1,47 @@
+
+
+
+var actionPath = contextPath + "/school-key-alumni";
+$(function () {
+    loadData();
+
+    $(".table").on('click', '#removeId', function () {
+        var id = $(this).data('id');
+        alertify.confirm("确定要移除吗？", function (e) {
+            if (e) {
+                $.post(actionPath + "!delete", { 'id': id }, function (data) {
+                    if (data.success) {
+                        loadData();
+                        alertify.alert("移除成功");
+                    }
+                }, "json");
+                location.href = actionPath + "!hrefPage";
+            }
+            else {
+                return;
+            }
+        }, "json");
+    });
+
+    $("#btn-detail").click(function () {
+        if (!judgeCheckedOneId()) {
+            return;
+        }
+        location.href = actionPath + "!hrefDetail?id=" + getCheckedFirstId();
+    });
+
+    $("#btn-update").click(function () {
+        if (!judgeCheckedOneId()) {
+            return;
+        }
+        location.href = actionPath + "!hrefAddOrUpdate?entity.id=" + getCheckedFirstId();
+    });
+
+});
+
+function loadData() {
+    var options = {
+        url: actionPath + "!page"
+    };
+    loadPaginationData(options);
+}

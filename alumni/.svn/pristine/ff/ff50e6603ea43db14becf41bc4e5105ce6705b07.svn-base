@@ -1,0 +1,45 @@
+package com.wisdombud.alumni.actions.common;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.pojo.dic.DicDegree;
+import com.wisdombud.alumni.vo.DicCommonVo;
+
+import common.toolkit.java.entity.DateFormat;
+import common.toolkit.java.struts2.AbstractCommonAction;
+
+/**
+ * 功能: 字典<br/>
+ */
+@Scope("prototype")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+public class DicCommonAction extends AbstractCommonAction {
+	private static final long serialVersionUID = 1L;
+
+	@Autowired
+	private DicCommonSrv	  srv;
+
+	/**
+	 * @DES:专业字典
+	 * @autor:xiefei<br/>
+	 */
+	public void findAllDicDegree() {
+		List<DicDegree> list = srv.findAll(DicDegree.class);
+		List<DicCommonVo> dic = new ArrayList<>();
+		for (DicDegree d : list) {
+			dic.add(new DicCommonVo(d.getId(), d.getCnName()));
+		}
+		final Gson g = new GsonBuilder().setDateFormat(DateFormat.DateTime.getFormat()).create();
+		this.sendResponseMsg(g.toJson(dic));
+	}
+}

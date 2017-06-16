@@ -1,0 +1,88 @@
+<!--
+
+	校友管理中心--校友信息库
+    zxguan
+    20170328
+-->
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@include file="/WEB-INF/jsp/common/header.jsp"%>
+    <title>校友管理及分析系统</title>
+    </head>
+    <body class="gray-bg">
+        <div class="wrapper wrapper-content  animated fadeInRight">
+            <div class="row">
+                <div class="col-lg-10 col-lg-offset-1">
+                    <div class="ibox">
+                        <div class="ibox-title">
+                            <h5>xx分会管理--新增</h5>
+                            <div class="ibox-tools">
+                                <a class="btn  btn-default marr  btn-sm" href="javascript:void(0);" onclick="window.history.back();">
+                                    <i class="fa fa-reply"></i>&nbsp;返 回
+                                </a>
+                                <button class="btn  btn-sm btn-info" type="button" id="submit">
+                                <i class="fa fa-check"></i>&nbsp;提 交
+                            </div>
+                        </div>
+                        <div class="ibox-content">
+                            <div class="m-t">
+                                <form class="form-horizontal" id="baseInfoForm">
+                                    <div class="form-group">
+                                        <input type="hidden" name="entity.id" value="${entity.id}">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span>
+                                            ${entityConf.depotCode}
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="entity.depotCode" value="${entity.depotCode}" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span> ${entityConf.type}
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <select name="entity.type"  class="form-control">
+                                                <s:iterator value="dicDepotTypeList">
+                                                    <s:if test = "entity.type == id">
+                                                        <option value="${id}" selected>${value}</option>
+                                                    </s:if>
+                                                    <s:else>
+                                                        <option value="${id}">${value}</option>
+                                                    </s:else>
+                                                </s:iterator>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span>
+                                            ${entityConf.name}
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="entity.name" value="${entity.name}" placeholder="请输入${entityConf.name}" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                            <span class="star">*</span>
+                                            ${entityConf.location}
+                                        </label>
+                                        <div class="col-sm-6">
+                                            <input type="text" name="entity.location" value="${entity.location}" placeholder="请输入${entityConf.location}" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="hr-line-dashed"></div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+<%@ include file="/WEB-INF/jsp/common/js-container.jsp"%>
+<script type="text/javascript" src="${contentPath}/resources/js/alumni-branch-manage/create.js"></script>
+</html>

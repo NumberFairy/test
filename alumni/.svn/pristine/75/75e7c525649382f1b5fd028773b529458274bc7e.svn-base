@@ -1,0 +1,75 @@
+/**
+ * 校友会管理--分会管理
+ * hmguo@wisdombud.com
+ * 20170308
+ * */
+
+var actionPath = contextPath + "/alumni-club";
+var $baseInfoForm;
+$(function() {
+    validator();
+
+    $("#btn-submit").click(function() {
+        var bv = $baseInfoForm.data('bootstrapValidator');
+        bv.validate();
+        if (bv.isValid()) {
+            var entity = $("#baseInfoForm").serialize();
+            $.post(actionPath + "!addOrUpdate", entity, function(data) {
+                if (data.success) {
+                    window.history.back();
+                }
+            }, "json");
+        }
+    });
+})
+
+function validator() {
+    $baseInfoForm = $('#baseInfoForm');
+    $baseInfoForm.bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+            "entity.name": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.huizhang": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+//            "entity.technicalCheckPerson": {
+//                trigger: "blur",
+//                validators: {
+//                    notEmpty: {
+//                        message: '请填写'
+//                    }
+//                }
+//            },
+//            "entity.purchaseCheckTime": {
+//                trigger: "blur",
+//                validators: {
+//                    notEmpty: {
+//                        message: '请填写'
+//                    }
+//                }
+//            },
+//            "entity.technicalCheckTime": {
+//                trigger: "blur",
+//                validators: {
+//                    notEmpty: {
+//                        message: '请填写'
+//                    }
+//                }
+//            },
+        }
+
+    });
+}

@@ -1,0 +1,48 @@
+/**
+ * 校友管理中心--校友信息库
+ * zxguan@wisdombud.com
+ * 20170328
+ * */
+
+var actionPath = contextPath + "/alumni";
+var $baseInfoForm;
+var $productInListForm;
+var cList = [];
+$(function() {
+    validator();
+
+    $("#btn-submit").click(function() {
+        var bv = $baseInfoForm.data('bootstrapValidator');
+        bv.validate();
+        if (bv.isValid()) {
+            var entity = $("#form-all").serialize();
+            $.post(actionPath + "!addOrUpdate", entity, function(data) {
+                if (data.success) {
+                    location.href = actionPath + "!hrefPage";
+                }
+            }, "json");
+        }
+    });
+
+});
+
+
+function validator() {
+    $baseInfoForm = $('#form-all');
+    $baseInfoForm.bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+            "entity.name": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            
+        }
+
+    });
+}

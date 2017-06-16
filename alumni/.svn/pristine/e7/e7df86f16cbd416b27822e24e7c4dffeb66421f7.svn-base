@@ -1,0 +1,263 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <%@include file="/WEB-INF/jsp/common/portal-header.jsp"%>
+        <link href="${contextPath}/resources/css/plugins/bootstrap.min.css" rel="stylesheet">
+        <title>地质大学校友管理系统</title>
+        <style>
+            span.star {
+                color: red;
+                padding: 0 10px;
+                vertical-align: middle;
+            }
+            
+            .form-horizontal .control-label {
+                text-align: right;
+                margin-bottom: 0;
+                padding-top: 7px;
+            }
+            
+            .col-sm-3 {
+                width: 25%;
+                float: left;
+            }
+            
+            .col-sm-7 {
+                width: 58.33333333%;
+                float: left;
+            }
+        </style>
+        </head>
+
+        <body>
+            <%@include file="menu.jsp"%>
+                <!--内容部分-->
+                <div class="main-form clearfix">
+                    <form class="form-horizontal bv-form">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">
+                                <span class="star">*</span>姓名：
+                            </label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入姓名">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label"><span class="star">*</span>性别：</label>
+                            <div class="col-sm-7" style="padding-left:0;">
+                                <div class="checkbox checkbox-success checkbox-inline">
+                                    <input type="radio" id="male" name="" value="0" checked="">
+                                    <label for="male">男</label>
+                                </div>
+                                <div class="checkbox checkbox-success checkbox-inline">
+                                    <input type="radio" id="female" name="" value="1">
+                                    <label for="female">女</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">
+                                <span class="star">*</span>
+                                身份：
+                            </label>
+                            <div class="col-sm-7" style="padding-left:0;">
+                                <div class="col-sm-3">
+                                    <div class="radio radio-info">
+                                        <input type="radio" name="" id="radio9" value="0">
+                                        <label for="radio9">
+                                            在校生
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="radio radio-info">
+                                        <input type="radio" name="" id="radio10" value="1">
+                                        <label for="radio10">
+                                            校友
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="radio radio-info">
+                                        <input type="radio" name="" id="radio10" value="2">
+                                        <label for="radio10">
+                                            教职工
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">
+                                <span class="star">*</span>
+                                学号/职工号：
+                            </label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入学号/职工号">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">
+                                <span class="star">*</span>出生日期：
+                            </label>
+                            <div class="col-sm-7">
+                                <input class="form-control" name="" value="" placeholder="请选择出生日期">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">
+                                <span class="star">*</span>
+                                入学年份/入职年份：
+                            </label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入入学年份/入职年份">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday" class="control-label col-sm-3">
+					            <span class="star">*</span>院系：</label>
+                            <div class="col-sm-7">
+                                <select name="" id="college" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3"><span class="star">*</span>专业：</label>
+                            <div class="col-sm-7">
+                                <select name="" class="form-control"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday" class="control-label col-sm-3">籍贯：</label>
+                            <div class="col-sm-7">
+                                <select name="" class="form-control" style="width:320px"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">政治面貌：</label>
+                            <div class="col-sm-7">
+                                <select class="form-control" name=""></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">微信：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入微信">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">微信昵称：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入微信昵称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">QQ：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入QQ">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">手机：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入手机">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">永久通讯地址：：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入所在地">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3"> 邮箱：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入邮箱">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">最高学历：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入最高学历">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">班级名称：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入班级名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">辅导员/导师：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入辅导员/导师">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday" class="control-label col-sm-3">行业：</label>
+                            <div class="col-sm-7">
+                                <select class="form-control" name=""></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">所在单位：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入所在单位">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday" class="control-label col-sm-3"><span class="star">*</span>单位所在省/市：</label>
+                            <div class="col-sm-7">
+                                <select class="form-control" id="province" name="" style="width:320px"></select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday" class="control-label col-sm-3">单位地址：</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="" class="form-control" value="" placeholder="请单位地址"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday" class="control-label col-sm-3">办公电话：</label>
+                            <div class="col-sm-7">
+                                <input type="text" name="" class="form-control" value="" placeholder="请输入办公电话"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">部门：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="请输入部门">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">
+                                <span class="star">*</span>职务：
+                            </label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" name="" value="" placeholder="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday" class="control-label col-sm-3"><span class="star">*</span>职级：</label>
+                            <div class="col-sm-7">
+                                <input type="text" class="form-control" placeholder="请输入职级" name="" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">备注：</label>
+                            <div class="col-sm-7">
+                                <textarea class="form-control" rows="3" name="" placeholder="请输入备注"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-3">备注2：</label>
+                            <div class="col-sm-7">
+                                <textarea class="form-control" rows="3" name="" placeholder="请输入备注2"></textarea>
+                            </div>
+                        </div>
+                        <div align="center">
+                            <button type="submit" class="btn btn-primary">保存</button>
+                        </div>
+                    </form>
+                </div>
+                <!--内容部分end-->
+                <%@include file="/WEB-INF/jsp/common/js-portal-container.jsp"%>
+                    <%@include file="/WEB-INF/jsp/common/portal-footer.jsp"%>
+        </body>
+
+        </html>

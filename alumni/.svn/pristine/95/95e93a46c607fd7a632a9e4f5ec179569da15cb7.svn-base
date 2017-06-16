@@ -1,0 +1,20 @@
+package com.wisdombud.alumni.quartz.srv;
+
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
+
+/**
+ * 生日祝福祝福
+ * 
+ * @author xiefei
+ */
+@Component
+public class BirthDayQuartz {
+	private static final Logger LOGGER = Logger.getLogger(BirthDayQuartz.class);
+
+	public void doJob() {
+		LOGGER.info("***BirthDay Quartz Start***");
+		System.err.println("1");
+	}
+
+}

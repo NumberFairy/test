@@ -1,0 +1,31 @@
+package com.wisdombud.alumni.manage.impl;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.manage.DicCollegeBranchSrv;
+import com.wisdombud.alumni.pojo.dic.DicCollegeBranch;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 学院分会Srv. <br/>
+ *
+ * @author Administrator
+ *
+ */
+@Service(value = "dicCollegeBranchSrv")
+public class DicCollegeBranchSrvImpl extends BaseSrvImpl<DicCollegeBranch> implements DicCollegeBranchSrv {
+
+	private static final Logger LOGGER = Logger.getLogger(DicCollegeBranchSrvImpl.class);
+
+	public DicCollegeBranchSrvImpl() {
+	}
+
+	@Autowired
+	public DicCollegeBranchSrvImpl(@Qualifier(value = "dicCollegeBranchDao") CommonDao<DicCollegeBranch, String> commonDao) {
+		super(commonDao);
+	}
+}

@@ -1,0 +1,73 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.dao.manage.BaseBranchRelationDao;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.manage.BaseBranchRelationSrv;
+import com.wisdombud.alumni.pojo.manage.BaseBranchRelation;
+import com.wisdombud.alumni.threadlocal.UserSession;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 分会信息关联表Srv. <br/>
+ *
+ * @author Administrator
+ *
+ */
+@Service(value = "baseBranchRelationSrv")
+public class BaseBranchRelationSrvImpl extends BaseSrvImpl<BaseBranchRelation> implements BaseBranchRelationSrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseBranchRelationSrvImpl.class);
+
+	@Autowired
+	private BaseBranchRelationDao dao;
+	@Autowired
+	private BaseAlumniSrv alumniSrv;
+
+	public BaseBranchRelationSrvImpl() {
+	}
+
+	@Autowired
+	public BaseBranchRelationSrvImpl(@Qualifier(value = "baseBranchRelationDao") CommonDao<BaseBranchRelation, String> commonDao) {
+		super(commonDao);
+	}
+
+	@Override
+	public void addBranchRelation(String chapterStr, String collegeStr, String overseaStr, String industryStr, UserSession userSession) {
+		List<String> branchList = Arrays.asList(this.transformStr(chapterStr, collegeStr, overseaStr, industryStr).split(","));
+		String userId = userSession.getId();
+		for (String branchId : branchList) {
+			BaseBranchRelation entity = new BaseBranchRelation();
+			entity.setAlumniId(userId);
+			entity.setBranchId(branchId);
+			dao.save(entity);
+		}
+	}
+
+	private String transformStr(String chapterStr, String collegeStr, String overseaStr, String industryStr) {
+		String str = "";
+		if (StringUtils.isNotBlank(chapterStr)) {
+			str += chapterStr + ",";
+		}
+		if (StringUtils.isNotBlank(collegeStr)) {
+			str += collegeStr + ",";
+		}
+		if (StringUtils.isNotBlank(overseaStr)) {
+			str += overseaStr + ",";
+		}
+		if (StringUtils.isNotBlank(industryStr)) {
+			str += industryStr;
+		}
+		return str;
+	}
+
+}

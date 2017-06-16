@@ -1,0 +1,13 @@
+#校友通知表,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,BASE_NOTICE,;,,,,,,,
+CREATE TABLE ,BASE_NOTICE,(,,,,,,,
+,ID,VARCHAR(36) ,NOT NULL,primary key,,,,,","
+,NOTICE_TITLE,VARCHAR(36) ,,,,,COMMENT ,'名称',","
+,NOTICE_TYPE,VARCHAR(36) ,,,,,COMMENT ,'通知类型',","
+,NOTICE_MODE,VARCHAR(36) ,,,,,COMMENT ,'通知方式',","
+,NOTICE_TEMPLATE,VARCHAR(36) ,,,,,COMMENT ,'通知模板',","
+,PERSON,VARCHAR(36) ,,,,,COMMENT ,'创建人',","
+,STATUS,INT(1) ,,,,,COMMENT ,'状态0：停用1：启用',","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,'校友通知表',;,,,,,,,

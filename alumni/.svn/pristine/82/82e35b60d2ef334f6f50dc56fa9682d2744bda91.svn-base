@@ -1,0 +1,193 @@
+<!--
+
+	门户菜单管理--信息发布管理
+	zxguan
+	20170408
+-->
+
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@include file="/WEB-INF/jsp/common/header.jsp"%>
+<title>校友管理及分析系统</title>
+<link href="${contentPath}/js-lib/kindeditor-4.1.10/themes/default/default.css" rel="stylesheet">
+</head>
+
+<body class="gray-bg">
+    <div class="wrapper wrapper-content  animated fadeInRight">
+        <div class="row">
+            <div class="col-lg-10 col-lg-offset-1">
+                <div class="ibox">
+                    <div class="ibox-title">
+                        <h5>信息发布管理</h5>
+                        <div class="ibox-tools">
+                            <button class="btn  btn-sm btn-info" type="button" id="btn-submit"> <i class="fa fa-check"></i>&nbsp;提 交 </button>
+                            <a class="btn  btn-default marr  btn-sm" href="javascript:;" onclick="window.history.back();">
+                                <i class="fa fa-reply"></i>&nbsp;返 回
+                            </a>
+                        </div>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="m-t">
+                            <form class="form-horizontal" id="baseInfoForm">
+                                <input type="hidden" name="entity.id" value="${entity.id}">
+                                <input type="hidden" name="entity.type" value="${type}">
+                                <div class="clearfix">
+                                    <div id="div-type" class="form-group">
+                                        <label class="col-sm-3 control-label">
+                                           <span class="star">*</span> 类别:
+                                       </label>
+                                       <div class="col-sm-6">
+                                        <input type="hidden" id="typestr" value="${entity.typestr}">
+                                        <select id="select-type" name="entity.typestr" class="form-control select-width select-type chosen-select" multiple="multiple" data-placeholder="请选择发布类型">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">
+                                       <span class="star">*</span> 标题:
+                                   </label>
+                                   <div class="col-sm-6">
+                                    <input type="text" name="entity.title" value="${entity.title}" placeholder="请输入标题" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">
+                                   <span class="star">*</span> 发布人:
+                               </label>
+                               <div class="col-sm-6">
+                                <input type="text" name="entity.publisher" value="${entity.publisher}" placeholder="请输入发布人" class="form-control">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">
+                               <span class="star">*</span> 摘要:
+                           </label>
+                           <div class="col-sm-6">
+                             <textarea name="entity.summary" rows=" 4"class="form-control" placeholder="请输入摘要" >${entity.summary}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group" hidden>
+                        <label class="col-sm-3 control-label">
+                          <span class="star"></span> 来源:
+                      </label>
+                      <div class="col-sm-6">
+                        <input type="text" name="entity.source" value="${entity.source}" placeholder="请输入来源" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">
+                      <span class="star"></span> 创建时间:
+                  </label>
+                  <div class="col-sm-6">
+                    <input type="text" name="entity.createTime" value="<s:date name='entity.createTime' format='yyyy-MM-dd HH:mm:ss'/>" placeholder="请选择创建时间" class="form-control form_time">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label">
+                   <span class="star">*</span> 是否启用:
+               </label>
+               <div class="col-sm-6">
+                <div class="checkbox checkbox-success checkbox-inline">
+                <input type="radio" id="isEnableYes" name="entity.isEnable" value="1" <s:if test="null == entity || entity.isEnable == 1">checked</s:if> >
+                    <label for="isEnableYes">是</label>
+                </div>
+                <div class="checkbox checkbox-success checkbox-inline">
+                    <input type="radio" id="isEnableNo" name="entity.isEnable" value="0" 
+                    <s:if test="entity.isEnable == 0">checked</s:if> >
+                    <label for="isEnableNo">否</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label">
+               <span class="star">*</span> 是否置顶:
+           </label>
+           <div class="col-sm-6">
+            <div class="checkbox checkbox-success checkbox-inline">
+                <input type="radio" id="isTopYes" name="entity.isTop" value="1" 
+                <s:if test="entity.isTop == 1">checked</s:if> >
+                <label for="isTopYes">是</label>
+            </div>
+            <div class="checkbox checkbox-success checkbox-inline">
+                <input type="radio" id="isTopNo" name="entity.isTop" value="0" 
+                <s:if test="entity ==null || entity.isTop == 0">checked</s:if>>
+                <label for="isTopNo">否</label>
+            </div>
+        </div>
+    </div>
+    <div id="div-img" class="form-group" hidden>
+        <label class="col-sm-3 control-label">
+            图片:
+       </label>
+       <div class="col-sm-6">
+        <div class="col-sm-10" style="padding-left:0;">
+            <input type="file" id="imgUpload" name="upload" class="hidden">
+            <input type="hidden" id="imgId" name="entity.imgId" value="${entity.imgId}">
+            <input type="text" id="imgName" name="entity.imgName" value="${entity.imgName}" placeholder="请上传附件" class="form-control">
+        </div>
+        <div class="col-sm-2">
+            <button type="button" id="btnImgUpLoad" class="btn btn-sm btn-info">上传</button>
+        </div>
+    </div>
+</div>
+<div id="div-video" class="form-group" hidden>
+    <label class="col-sm-3 control-label">
+       上传视频:
+  </label>
+  <div class="col-sm-6">
+    <div class="col-sm-10" style="padding-left:0;">
+        <input type="file" id="videoUpload" name="upload" class="hidden">
+        <input type="hidden" id="videoId" name="entity.videoId" value="${entity.videoId}">
+        <input type="text" id="videoName" name="entity.videoName" value="${entity.videoName}" placeholder="请上传附件" class="form-control">
+    </div>
+    <div class="col-sm-2">
+        <button type="button" id="btnVideoUpLoad" class="btn btn-sm btn-info">上传</button>
+    </div>
+</div>
+</div>
+<div id="div-file" class="form-group" hidden>
+    <label class="col-sm-3 control-label">
+       附件:
+  </label>
+  <div class="col-sm-6">
+    <div class="col-sm-10" style="padding-left:0;">
+        <input type="file" id="fileUpload" name="upload" class="hidden">
+        <input type="hidden" id="fileId" name="entity.fileId" value="${entity.fileId}">
+        <input type="text" id="fileName" name="entity.fileName" value="${entity.fileName}" placeholder="请上传附件" class="form-control">
+    </div>
+    <div class="col-sm-2">
+        <button type="button" id="btnFileUpLoad" class="btn btn-sm btn-info">上传</button>
+    </div>
+</div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label"><span
+     class="star">*</span>内容:</label>
+     <div class="col-sm-9">
+        <div id="kindeditor-div">
+            <script id="editor_id" name="entity.content" type="text/plain">${entity.content}</script>
+            <!--<textarea id="editor_id" name="entity.content">${entity.content}</textarea>-->
+        </div>
+    </div>
+</div>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+<%@ include file="/WEB-INF/jsp/common/js-container.jsp"%>
+<!-- 配置文件 -->
+<script type="text/javascript" src="${contextPath}/js-lib/UEditor/ueditor.config.js"></script>
+<!-- 编辑器源码文件 -->
+<script type="text/javascript" src="${contextPath}/js-lib/UEditor/ueditor.all.js"></script>
+<!--<script type="text/javascript" src="${contextPath}/js-lib/kindeditor-4.1.10/kindeditor.js"></script>-->
+<script type="text/javascript" src="${contentPath}/resources/js/gateway-menu-manage/home-information-release/create.js"></script>
+<script>
+    var id = '${id}';
+    var typestr = '${entity.typestr}';
+</script>
+
+</html>

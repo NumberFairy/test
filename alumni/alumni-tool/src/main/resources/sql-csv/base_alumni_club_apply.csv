@@ -1,0 +1,18 @@
+#校友入会申请表,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,base_alumni_club_apply,;,,,,,,,
+CREATE TABLE ,base_alumni_club_apply,(,,,,,,,
+,ID,VARCHAR(36) ,NOT NULL,primary key,,,,,","
+,ALUMNI_CLUB_ID,VARCHAR(36) ,,,,,COMMENT ,校友会ID',","
+,ALUMNI_ID,VARCHAR(36) ,,,,,COMMENT ,校友ID,","
+,NAME,VARCHAR(100),,,,,COMMENT ,'校友名称',","
+,CODE,VARCHAR(36),,,,,COMMENT ,'学号/职工号',","
+,COLLEGE,int(2),,,,,COMMENT ,'学院',","
+,MAGOR,int(4),,,,,COMMENT ,'专业',","
+,ENROLL_YEAR,datetime,,,,,COMMENT ,'入学年份',","
+,STATUS,int(1),,,,,COMMENT ,'状态',","
+,AUDITIOR,VARCHAR(100),,,,,COMMENT ,'审核人',","
+,AUDIT_TIME,datetime,,,,,COMMENT ,'审核时间',","
+,AUDIT_OPITION,VARCHAR(255),,,,,COMMENT ,'审核意见'',","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,'校友入会申请表',;,,,,,,,

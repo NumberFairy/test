@@ -1,0 +1,32 @@
+package com.wisdombud.alumni.manage.impl;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.manage.BaseRegisterSrv;
+import com.wisdombud.alumni.pojo.manage.BaseRegister;
+
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 校友注册表Srv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Service(value = "baseRegisterSrv")
+public class BaseRegisterSrvImpl extends BaseSrvImpl<BaseRegister> implements BaseRegisterSrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseRegisterSrvImpl.class);
+
+	public BaseRegisterSrvImpl() {
+	}
+
+	@Autowired
+	public BaseRegisterSrvImpl(@Qualifier(value = "baseRegisterDao") CommonDao<BaseRegister, String> commonDao) {
+		super(commonDao);
+	}
+}

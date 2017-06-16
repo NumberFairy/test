@@ -1,0 +1,93 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.enums.GenderEnum;
+import com.wisdombud.alumni.enums.IdentityEnum;
+import com.wisdombud.alumni.enums.PoliticalStatusEnum;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicDegree;
+import com.wisdombud.alumni.pojo.dic.DicIndustry;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 校友信息表Srv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Service(value = "baseAlumniSrv")
+public class BaseAlumniSrvImpl extends BaseSrvImpl<BaseAlumni> implements BaseAlumniSrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseAlumniSrvImpl.class);
+	@Autowired
+	public DicCommonSrv dicCommonSrv;
+
+	public BaseAlumniSrvImpl() {
+	}
+
+	@Autowired
+	public BaseAlumniSrvImpl(@Qualifier(value = "baseAlumniDao") CommonDao<BaseAlumni, String> commonDao) {
+		super(commonDao);
+	}
+
+	private void fillName(List<BaseAlumni> list) {
+		for (BaseAlumni inst : list) {
+			fillName(inst);
+		}
+	}
+
+	private void fillName(BaseAlumni entity) {
+		if (entity.getCollege() != null) {
+			entity.setCollegeName(dicCommonSrv.findById(DicCollege.class, entity.getCollege()).getCnName());
+		}
+		if (entity.getIdentity() != null) {
+			entity.setIdentityName(IdentityEnum.valueByIndex(entity.getIdentity()).getName());
+		}
+		if (entity.getGender() != null) {
+			entity.setGenderName(GenderEnum.valueByIndex(entity.getGender()).getName());
+		}
+		if (entity.getPoliticalStatus() != null) {
+			entity.setPoliticalStatusName(PoliticalStatusEnum.valueByIndex(entity.getPoliticalStatus()).getName());
+		}
+		if (entity.getMajor() != null) {
+			entity.setMagorName(dicCommonSrv.findById(DicSpecialty.class, entity.getMajor()).getCnName());
+		}
+		if (entity.getHighestEducation() != null) {
+			entity.setHighestEducationName(
+					dicCommonSrv.findById(DicDegree.class, entity.getHighestEducation()).getCnName());
+		}
+		if (entity.getIndustry() != null) {
+			entity.setIndustryName(dicCommonSrv.findById(DicIndustry.class, entity.getIndustry()).getValue());
+		}
+	}
+
+	@Override
+	public void page(PageEntity<BaseAlumni> pageEntity, Map<String, Param> params, List<Order> orders) {
+		super.page(pageEntity, params, orders);
+		List<BaseAlumni> list = pageEntity.getResults();
+		this.fillName(list);
+	}
+
+	@Override
+	public BaseAlumni find(String id) {
+		BaseAlumni entity = super.find(id);
+		this.fillName(entity);
+		return entity;
+	}
+}

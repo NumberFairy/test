@@ -1,0 +1,14 @@
+package com.wisdombud.alumni.manage;
+
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.pojo.manage.BaseMessageBoard;
+
+/**
+ * 留言表 ISrv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+public interface BaseMessageBoardSrv extends IBaseSrv<BaseMessageBoard> {
+
+}

@@ -1,0 +1,15 @@
+var actionPath = contextPath + "/alumni-activity-apply";
+
+$(function() {
+    $.post(actionPath + "!activityAuditPage", function(data) {
+        var h = template("gridTpl", { 'results': data });
+        $("#gridBody").html(h);
+    }, 'json')
+
+    $("#detail").click(function() {
+        if (!judgeCheckedOneId()) {
+            return;
+        }
+        location.href = actionPath + "!hrefActivityAuditDetail?id=" + getCheckedFirstId();
+    });
+});

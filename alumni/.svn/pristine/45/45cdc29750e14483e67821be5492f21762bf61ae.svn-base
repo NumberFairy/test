@@ -1,0 +1,96 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.enums.AuditEnum;
+import com.wisdombud.alumni.enums.GenderEnum;
+import com.wisdombud.alumni.manage.BaseAlumniClubApplySrv;
+import com.wisdombud.alumni.manage.BaseAlumniClubSrv;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.manage.BaseBranchRelationSrv;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniBranchApply;
+import com.wisdombud.alumni.pojo.manage.BaseBranchRelation;
+import com.wisdombud.alumni.vo.Param;
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 校友入会申请表Srv. <br/>
+ *
+ * @author Administrator
+ *
+ */
+@Service(value = "baseAlumniClubApplySrv")
+public class BaseAlumniClubApplySrvImpl extends BaseSrvImpl<BaseAlumniBranchApply> implements BaseAlumniClubApplySrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseAlumniClubApplySrvImpl.class);
+
+	@Autowired
+	private BaseAlumniSrv alumniSrv;
+	@Autowired
+	private BaseAlumniClubSrv clubSrv;
+	@Autowired
+	private BaseBranchRelationSrv relationSrv;
+	@Autowired
+	private DicCommonSrv dicSrv;
+
+	public BaseAlumniClubApplySrvImpl() {
+	}
+
+	@Autowired
+	public BaseAlumniClubApplySrvImpl(
+			@Qualifier(value = "baseAlumniClubApplyDao") CommonDao<BaseAlumniBranchApply, String> commonDao) {
+		super(commonDao);
+	}
+
+	@Override
+	public void page(PageEntity<BaseAlumniBranchApply> pageEntity, Map<String, Param> params, List<Order> orders) {
+		super.page(pageEntity, params, orders);
+		List<BaseAlumniBranchApply> list = pageEntity.getResults();
+		for (BaseAlumniBranchApply apply : list) {
+			BaseAlumni alumni = alumniSrv.find(apply.getAlumniId());
+			apply.setGenderStr(GenderEnum.valueByIndex(alumni.getGender()).getName());
+			apply.setBranchName(clubSrv.find(apply.getBranchId()).getName());
+			DicCollege college = dicSrv.findById(DicCollege.class, alumni.getCollege());
+			apply.setCollegeStr(college.getCnName());
+			DicSpecialty major = dicSrv.findById(DicSpecialty.class, alumni.getMajor());
+			apply.setMagorStr(major.getCnName());
+			apply.setCompany(alumni.getCompany());
+			apply.setPost(alumni.getPost());
+			apply.setAuditStatus(AuditEnum.valueByIndex(apply.getStatus()).getName());
+		}
+	}
+
+	@Override
+	public void savePassFlowStatus(String id) {
+		BaseAlumniBranchApply entity = this.find(id);
+		entity.setStatus(AuditEnum.ACCEPT.getValue());
+		entity.setCreateTime(new Date());
+		this.save(entity);
+		BaseBranchRelation relation = new BaseBranchRelation();
+		relation.setAlumniId(entity.getAlumniId());
+		relation.setBranchId(entity.getBranchId());
+		relation.setCreateTime(new Date());
+		relationSrv.save(relation);
+	}
+
+	@Override
+	public void saveUnpassFlowStatus(String id) {
+		BaseAlumniBranchApply entity = this.find(id);
+		entity.setStatus(AuditEnum.NOTACCEPT.getValue());
+		this.save(entity);
+	}
+}

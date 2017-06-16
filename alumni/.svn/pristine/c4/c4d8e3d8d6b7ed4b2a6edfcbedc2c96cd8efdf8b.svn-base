@@ -1,0 +1,43 @@
+package com.wisdombud.alumni.system.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Lists;
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.pojo.system.SecOper;
+import com.wisdombud.alumni.pojo.system.SecRole;
+import com.wisdombud.alumni.system.SecOperSrv;
+import com.wisdombud.alumni.system.SecRoleSrv;
+import com.wisdombud.alumni.system.SecUserSrv;
+
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+@Service(value = "secOperSrv")
+public class SecOperSrvImpl extends BaseSrvImpl<SecOper> implements SecOperSrv {
+
+	@Autowired
+	private SecUserSrv userSrv;
+	@Autowired
+	private SecRoleSrv roleSrv;
+
+	public SecOperSrvImpl() {
+	}
+
+	@Autowired
+	public SecOperSrvImpl(@Qualifier(value = "secOperDao") CommonDao<SecOper, String> commonDao) {
+		super(commonDao);
+	}
+
+	@Override
+	public List<SecOper> findOperListByUserId(String userId) {
+		List<SecOper> operList = Lists.newArrayList();
+		SecRole role = roleSrv.find(userId);
+		operList.addAll(role.getSecOpers());
+		return operList;
+	}
+
+}

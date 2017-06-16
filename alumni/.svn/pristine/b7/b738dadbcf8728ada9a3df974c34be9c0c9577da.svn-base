@@ -1,0 +1,115 @@
+package com.wisdombud.alumni.actions.information;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Results;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+
+import com.wisdombud.alumni.actions.base.AbstractCrudAction;
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.constants.Constants;
+import com.wisdombud.alumni.manage.BaseMessageBoardSrv;
+import com.wisdombud.alumni.manage.HomeInformationReleaseSrv;
+import com.wisdombud.alumni.pojo.manage.BaseMessageBoard;
+import com.wisdombud.alumni.pojo.manage.HomeInformationRelease;
+import com.wisdombud.alumni.system.HomeMenuSrv;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+
+/**
+ * @author xiefei
+ *         门户，微信，使用的接口
+ */
+@Scope("prototype")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({})
+public class HomeApiAction extends AbstractCrudAction<HomeInformationRelease> {
+	private static final long		  serialVersionUID = 1L;
+
+	@Autowired
+	private HomeMenuSrv				  homeMenuSrv;
+	@Autowired
+	private HomeInformationReleaseSrv homeInformationReleaseSrv;
+	@Autowired
+	private BaseMessageBoardSrv		  baseMessageBoardSrv;
+
+	private Integer					  menuId;
+
+	public HomeApiAction(@Qualifier(value = "homeInformationReleaseSrv") IBaseSrv<HomeInformationRelease> baseSrv) {
+		super(baseSrv);
+	}
+
+	/**
+	 * 新闻类
+	 * 
+	 * @author xiefei
+	 */
+	public void pageHomeInfo() {
+		PageEntity<HomeInformationRelease> pageEntity = getPage();
+		List<Order> orders = new ArrayList<Order>();
+		orders.add(Order.desc("isTop"));
+		orders.add(Order.desc("createTime"));
+		homeInformationReleaseSrv.page(pageEntity, buildParams(), orders);
+		sendResponseMsg(pageEntity);
+	}
+
+	/**
+	 * 留言板
+	 * 
+	 * @author xiefei
+	 */
+	public void pageMessageBoard() {
+		PageEntity<BaseMessageBoard> pageEntity = getPage();
+		List<Order> orders = new ArrayList<Order>();
+		orders.add(Order.desc("createTime"));
+		Map<String, Param> parm = new HashMap<String, Param>();
+		parm.put("status", Param.eq(Constants.AUDIT_RESULT_PASS));
+		baseMessageBoardSrv.page(pageEntity, parm, orders);
+		sendResponseMsg(pageEntity);
+	}
+
+	/**
+	 * 详情
+	 * 
+	 * @author xiefei
+	 */
+	public void detail() {
+		if (StringUtils.isBlank(id)) {
+			sendFailMsg("", "");
+			return;
+		}
+		sendResponseMsg(homeInformationReleaseSrv.find(id));
+	}
+
+	private <R> PageEntity<R> getPage() {
+		this.limit = this.limit == 0 ? Constants.DEFUALT_PAGESIZE : this.limit;
+		return new PageEntity<>(start, limit);
+	}
+
+	@Override
+	protected Map<String, Param> buildParams() {
+		Map<String, Param> parm = new HashMap<String, Param>();
+		parm.put("typestr", Param.like(menuId + ""));
+		parm.put("isEnable", Param.eq(Constants.YES));
+		return parm;
+	}
+
+	public Integer getMenuId() {
+		return menuId;
+	}
+
+	public void setMenuId(Integer menuId) {
+		this.menuId = menuId;
+	}
+}

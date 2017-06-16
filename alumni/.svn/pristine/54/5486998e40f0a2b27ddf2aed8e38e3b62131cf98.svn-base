@@ -1,0 +1,151 @@
+package com.wisdombud.alumni.actions.personManage;
+
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.wisdombud.alumni.actions.base.AbstractCrudAction;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicDegree;
+import com.wisdombud.alumni.pojo.dic.DicIndustry;
+import com.wisdombud.alumni.pojo.dic.DicPoliticalStatus;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+
+/**
+ * 功能: 校友信息表<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ *
+ * @author robot
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("prototype")
+@ParentPackage(value = "struts-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "toAddOrUpdate", location = "/WEB-INF/jsp/portal/alumni-login/person-info.jsp"), })
+public class PersonInfoAction extends AbstractCrudAction<BaseAlumni> {
+	private static final long		serialVersionUID = 1L;
+	@Autowired
+	public DicCommonSrv				dicCommonSrv;
+	@Autowired
+	private BaseAlumniSrv			alumniSrv;
+
+	public List<DicPoliticalStatus>	dicPoliticalStatusList;
+	public List<DicCollege>			dicCollegeList;
+	public List<DicSpecialty>		dicSpecialtyList;
+	public List<DicDegree>			dicDegreeList;
+	public List<DicIndustry>		dicIndustryList;
+
+	public PersonInfoAction(@Qualifier(value = "baseAlumniSrv") IBaseSrv<BaseAlumni> baseSrv) {
+		super(baseSrv);
+	}
+
+	private void initData() {
+		dicPoliticalStatusList = dicCommonSrv.findAll(DicPoliticalStatus.class);
+		dicCollegeList = dicCommonSrv.findAll(DicCollege.class);
+		if (dicCollegeList != null && dicCollegeList.size() > 0) {
+			dicSpecialtyList = alumniSrv.findAllCollegeSpecialty(dicCollegeList.get(0).getId());
+		}
+		dicDegreeList = dicCommonSrv.findAll(DicDegree.class);
+		dicIndustryList = dicCommonSrv.findAll(DicIndustry.class);
+	}
+
+	@Override
+	public String hrefAddOrUpdate() {
+		// UserSession session = UserThreadLocal.getUserSession();
+		this.initData();
+		return "toAddOrUpdate";
+	}
+
+	public void findEntity() {
+		this.initData();
+		if (StringUtils.isNotBlank(this.id)) {
+			entity = baseSrv.find(this.id);
+			this.sendResponseMsg(entity);
+		}
+	}
+
+	public void findCollege() {
+		dicCollegeList = dicCommonSrv.findAll(DicCollege.class);
+		final Gson g = new GsonBuilder().create();
+		this.sendResponseMsg(g.toJson(dicCollegeList));
+	}
+
+	public void findSpecialty() {
+		dicSpecialtyList = alumniSrv.findAllCollegeSpecialty(Integer.parseInt(id));
+		final Gson g = new GsonBuilder().create();
+		this.sendResponseMsg(g.toJson(dicSpecialtyList));
+	}
+
+	public void findDegree() {
+		dicDegreeList = dicCommonSrv.findAll(DicDegree.class);
+		final Gson g = new GsonBuilder().create();
+		this.sendResponseMsg(g.toJson(dicDegreeList));
+	}
+
+	public void findIndustry() {
+		dicIndustryList = dicCommonSrv.findAll(DicIndustry.class);
+		final Gson g = new GsonBuilder().create();
+		this.sendResponseMsg(g.toJson(dicIndustryList));
+	}
+
+	public void findPoliticalStatus() {
+		dicPoliticalStatusList = dicCommonSrv.findAll(DicPoliticalStatus.class);
+		final Gson g = new GsonBuilder().create();
+		this.sendResponseMsg(g.toJson(dicPoliticalStatusList));
+	}
+
+	public List<DicPoliticalStatus> getDicPoliticalStatusList() {
+		return dicPoliticalStatusList;
+	}
+
+	public void setDicPoliticalStatusList(List<DicPoliticalStatus> dicPoliticalStatusList) {
+		this.dicPoliticalStatusList = dicPoliticalStatusList;
+	}
+
+	public List<DicCollege> getDicCollegeList() {
+		return dicCollegeList;
+	}
+
+	public void setDicCollegeList(List<DicCollege> dicCollegeList) {
+		this.dicCollegeList = dicCollegeList;
+	}
+
+	public List<DicSpecialty> getDicSpecialtyList() {
+		return dicSpecialtyList;
+	}
+
+	public void setDicSpecialtyList(List<DicSpecialty> dicSpecialtyList) {
+		this.dicSpecialtyList = dicSpecialtyList;
+	}
+
+	public List<DicDegree> getDicDegreeList() {
+		return dicDegreeList;
+	}
+
+	public void setDicDegreeList(List<DicDegree> dicDegreeList) {
+		this.dicDegreeList = dicDegreeList;
+	}
+
+	public List<DicIndustry> getDicIndustryList() {
+		return dicIndustryList;
+	}
+
+	public void setDicIndustryList(List<DicIndustry> dicIndustryList) {
+		this.dicIndustryList = dicIndustryList;
+	}
+
+}

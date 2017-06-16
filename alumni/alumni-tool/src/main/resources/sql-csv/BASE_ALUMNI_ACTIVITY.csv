@@ -1,0 +1,17 @@
+#校友活动表,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,BASE_ALUMNI_ACTIVITY,;,,,,,,,
+CREATE TABLE ,BASE_ALUMNI_ACTIVITY,(,,,,,,,
+,ID,VARCHAR(36) ,NOT NULL,primary key,,,,,","
+,TITLE,VARCHAR(100),,,,,COMMENT ,'标题',","
+,PERSON,VARCHAR(100),,,,,COMMENT ,'发布人',","
+,PLACE,VARCHAR(100),,,,,COMMENT ,'活动地点',","
+,IS_TOP,int(1),,,,,COMMENT ,'是否置顶',","
+,IS_SIGN_UP,int(1),,,,,COMMENT ,'是否允许报名',","
+,IS_QIYONG,int(1),,,,,COMMENT ,'是否启用',","
+,APPLICY_PERSON,VARCHAR(100),,,,,COMMENT ,'申请人',","
+,START_TIME,datetime,,,,,COMMENT ,'活动开始时间',","
+,END_TIME,datetime,,,,,COMMENT ,'活动结束时间',","
+,CONTENT,longtext,,,,,COMMENT ,'内容',","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,'校友活动表',;,,,,,,,

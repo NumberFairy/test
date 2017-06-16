@@ -1,0 +1,125 @@
+/*
+分配权限
+cczhao
+2017/04/13
+*/		
+		
+		var setting = {
+			check: {
+				enable: true
+			},
+			data: {
+				simpleData: {
+					enable: true
+				}
+			}
+		};
+
+		var zNodes =[
+			{ id:1000, pId:0, name:"我的办公桌", open:true},
+			{ id:1001, pId:1000, name:"我的办公桌"},
+			{ id:2000, pId:0, name:"流程审核", open:true},
+			{ id:2001, pId:2000, name:"校友注册审核"},
+            { id:2002, pId:2000, name:"活动审核"},
+            { id:2003, pId:2000, name:"校友入会审核"},
+			{ id:3000, pId:0, name:"校友管理中心", open:true},
+			{ id:3001, pId:3000, name:"学院重点校友"},
+            { id:3002, pId:3000, name:"学校重点校友"},
+            { id:3003, pId:3000, name:"联络管理员"},
+            { id:4000, pId:0, name:"校友分会", open:true},
+            { id:4001, pId:4000, name:"地方分会管理"},
+			{ id:4002, pId:4000, name:"院系分会管理"},
+            { id:4003, pId:4000, name:"海外分会管理"},
+            { id:4004, pId:4000, name:"行内分会管理"},
+            { id:5000, pId:0, name:"校友服务管理", open:true},
+			{ id:5001, pId:5000, name:"校友通知"},
+            { id:5002, pId:5000, name:"模版管理"},
+            { id:5003, pId:5000, name:"校友登记"},
+            { id:6000, pId:0, name:"校友活动管理", open:true},
+			{ id:6001, pId:6000, name:"校友活动"},
+            { id:7000, pId:0, name:"留言板管理", open:true},
+			{ id:7001, pId:7000, name:"留言板"},
+            { id:8000, pId:0, name:"门户菜单管理", open:true},
+            { id:8001, pId:8000, name:"微信轮播图片管理"},
+			{ id:8002, pId:8000, name:"信息发布管理"},
+            { id:8003, pId:8000, name:"门户菜单管理"},
+            { id:8004, pId:8000, name:"轮播图片管理"},
+            { id:8005, pId:8000, name:"友情链接信息管理"},
+            { id:9000, pId:0, name:"系统管理", open:true},
+            { id:9001, pId:9000, name:"微信轮播图片管理"},
+			{ id:9002, pId:9000, name:"角色管理"},
+            { id:9003, pId:9000, name:"修改密码"},
+            { id:9004, pId:9000, name:"学院专业字典维护"},
+		];
+
+        
+		var operTree;
+		$(document).ready(function(){
+			$.fn.zTree.init($("#operTree"), setting, zNodes);
+			operTree = $.fn.zTree.getZTreeObj("operTree");
+			$.fn.zTree.init($("#tree"), setting, zNodes);
+			//保存
+			$('#subForm').click(function(){
+				var nodes = operTree.getCheckedNodes(true);
+				var ids = getSelected();
+				 if(nodes.length > 0){
+                     //ERROR
+					$.post("sec-oper!saveRoleOper",
+						{ roleId:"1001",operIdArray: ids },
+						function(data){
+							alertify.alert("权限分配完成！");
+						},"json");
+				 }else{
+				    alertify.alert("请先分配权限！");
+				 }
+			});
+		});
+		//获取勾选的节点id
+		function getSelected(){
+			var ids = "";
+			var nodes = operTree.getCheckedNodes(true);
+
+			if(nodes.length > 0){
+				for(var i = 0 , j = nodes.length ; i < j ; i++){
+					if(nodes[i].id=="0"){
+						continue;
+					}
+					ids +=(nodes[i].id + ",");
+				}
+			}
+			if(ids!=""){
+				ids = ids.substring(0,ids.length -1 );
+			}
+
+			return ids;
+		}
+		
+		// var code;
+		
+		// function setCheck() {
+		// 	var zTree = $.fn.zTree.getZTreeObj("operTree"),
+		// 	py = $("#py").attr("checked")? "p":"",
+		// 	sy = $("#sy").attr("checked")? "s":"",
+		// 	pn = $("#pn").attr("checked")? "p":"",
+		// 	sn = $("#sn").attr("checked")? "s":"",
+		// 	type = { "Y":py + sy, "N":pn + sn};
+		// 	zTree.setting.check.chkboxType = type;
+		// 	showCode('setting.check.chkboxType = { "Y" : "' + type.Y + '", "N" : "' + type.N + '" };');
+		// }
+		// function showCode(str) {
+		// 	if (!code) code = $("#code");
+		// 	code.empty();
+		// 	code.append("<li>"+str+"</li>");
+		// }
+		
+		// $(document).ready(function(){
+		// 	$.fn.zTree.init($("#operTree"), setting, zNodes);
+		// 	setCheck();
+		// 	$("#py").bind("change", setCheck);
+		// 	$("#sy").bind("change", setCheck);
+		// 	$("#pn").bind("change", setCheck);
+		// 	$("#sn").bind("change", setCheck);
+		// });
+
+
+        

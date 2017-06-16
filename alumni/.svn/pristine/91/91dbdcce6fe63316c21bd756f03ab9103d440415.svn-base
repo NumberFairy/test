@@ -1,0 +1,7 @@
+
+
+var actionPath = contextPath + "/college-key-alumni";
+$(function () {
+    
+
+});

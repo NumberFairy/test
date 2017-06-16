@@ -1,0 +1,10 @@
+package com.wisdombud.alumni.manage;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+
+/**
+ * 生成校友通讯录校友
+ */
+public interface ExcelXiaoYouService {
+	void export(String ids, String filds, HSSFWorkbook wb);
+}

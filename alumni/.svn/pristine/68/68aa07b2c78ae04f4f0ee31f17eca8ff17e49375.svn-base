@@ -1,0 +1,39 @@
+// main:main.less
+.martb{
+    margin:15px;
+}
+.mart{
+    margin-top:15px;
+}
+.marb{
+    margin-bottom:15px!important;
+}
+.marl{
+    margin-right:15px;
+}
+.marr{
+    margin-left:15px;
+}
+.mar0{
+    margin-bottom:0!important;
+}
+.text-l{
+    text-align:left!important;
+}
+.lable-l{
+    float:left!important;
+}
+.bs-checkbox{
+    text-align:center;
+}
+.pagination{
+    margin:0;
+}
+.select-width{
+    min-width:200px!important
+}
+.star{
+    color: red;
+    padding: 0 10px;
+    vertical-align: middle;
+}

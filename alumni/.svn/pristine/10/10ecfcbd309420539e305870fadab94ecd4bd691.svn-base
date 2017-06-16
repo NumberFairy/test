@@ -1,0 +1,72 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<script type="text/html" id="header-tpl">
+ <h2 class="title-4">{{title}}</h2>
+ <s:if test="menuId==80">
+ <button type="button" id="liuyan">留言</button>
+</s:if>
+</script>
+<script type="text/html" id="detail-header-tpl">
+ <h2 class="title-4">{{title}}</h2>
+</script>
+<!-- 留言板模版 -->
+<script type="text/html" id="msg-tpl">
+   {{each results as v}}
+   <dl>
+    <dt>
+        {{#v.createTime | dateTitle}}
+    </dt>
+    <dd class="content">
+        <a href="javascript:;">{{v.title}}</a>
+        <p class="abstract">{{v.message}}</p>
+        {{if v.isReply==1}}
+        {{v.replyContent}}
+        {{/if}}
+    </dd>
+</dl>
+{{/each}}
+</script>
+<script type="text/html" id="list-tpl">
+    {{if results.length<1}}
+    <dl>未找到数据</dl>
+    {{/if}}
+    {{each results as v}}
+    <dl class="clearfix">
+        <dt>{{#v.createTime | dateTitle}}</dt>
+        <dd class="content">
+            <a href="/home!load?id={{v.id}}&menuId=${menuId}">{{v.title}}</a>
+            <p class="abstract">{{v.publisher}}</p>
+            <p class="abstract">{{v.summary}}</p>
+        </dd>
+    </dl>
+    {{/each}}
+</script>
+
+<script type="text/html" id="detail-tpl">
+    <h3 class="articel-title">{{title}}</h3>
+    <div class="sub-tit">
+        发布人：{{publisher}}&nbsp;&nbsp;&nbsp;&nbsp;发布日期：{{createTime}}
+    </div>
+    <div class="article-content">
+        {{if imgId}}
+        <div align="center">
+            <img style="width:900px" src="/gridfs-download?f_id={{imgId}}" alt="">
+        </div>
+        <br>
+        {{/if}}
+        {{#content}}
+        {{if videoId}}
+        <div align="center">
+            <video id="really-cool-video" class="video-js vjs-default-skin" controls preload="auto" poster="http://video-js.zencoder.com/oceans-clip.png" data-setup='{}'>
+                <source src="http://localhost:8080/gridfs-download?f_id={{videoId}}" type='video/webm'>
+                <source src="http://localhost:8080/gridfs-download?f_id={{videoId}}" type='video/mp4'>
+            </video>
+                </div>
+                {{/if}}
+
+                {{if fileId}}
+                <div>
+                    <a href="/gridfs-download?f_id={{fileId}}">下载附件</a>
+                </div>
+                {{/if}}
+            </div>
+        </script>

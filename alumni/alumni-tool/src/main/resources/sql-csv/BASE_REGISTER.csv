@@ -1,0 +1,38 @@
+#校友注册表,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,BASE_REGISTER,;,,,,,,,
+CREATE TABLE ,BASE_REGISTER,(,,,,,,,
+,ID,VARCHAR(36) ,NOT NULL,primary key,,,,,","
+,LOGIN_NAME,VARCHAR(100) ,,,,,COMMENT ,登录名',","
+,PASSWORD,VARCHAR(36) ,,,,,COMMENT ,密码',","
+,NAME,VARCHAR(100) ,,,,,COMMENT ,姓名',","
+,IDENTITY,int(1) ,,,,,COMMENT ,身份',","
+,CODE,VARCHAR(36) ,,,,,COMMENT ,学号/职工号',","
+,GENDER,int(1) ,,,,,COMMENT ,性别',","
+,BIRTH_DATE,datetime,,,,,COMMENT ,出生日期',","
+,NATIVEs,VARCHAR(100) ,,,,,COMMENT ,籍贯',","
+,POLITICAL,int(1) ,,,,,COMMENT ,政治面貌',","
+,WECHAT_ID,VARCHAR(36) ,,,,,COMMENT ,微信',","
+,WECHAT_NAME,VARCHAR(100) ,,,,,COMMENT ,微信昵称',","
+,QQ,VARCHAR(36),,,,,COMMENT ,QQ',","
+,PHONE,VARCHAR(36),,,,,COMMENT ,手机号',","
+,ADDRESS,VARCHAR(100) ,,,,,COMMENT ,永久通讯地址',","
+,EMAIL,VARCHAR(36),,,,,COMMENT ,邮箱',","
+,ENROLL_YEAR,datetime,,,,,COMMENT ,入学年份',","
+,COLLEGE,int(2) ,,,,,COMMENT ,院系',","
+,MAGOR,int(4) ,,,,,COMMENT ,专业',","
+,CLASS_NAME,VARCHAR(100) ,,,,,COMMENT ,班级名称',","
+,HIGHEST_EDUCATION,int(1) ,,,,,COMMENT ,最高学历',","
+,TEACHER,VARCHAR(100) ,,,,,COMMENT ,辅导员/导师',","
+,INDUSTRY,int(4) ,,,,,COMMENT ,行业',","
+,COMPANY,VARCHAR(100),,,,,COMMENT ,所在单位',","
+,COMPANY_CITY,VARCHAR(100),,,,,COMMENT ,单位所在省/市',","
+,COMPANY_ADDRESS,VARCHAR(100),,,,,COMMENT ,单位地址',","
+,OFFICE_TELEPHONE,VARCHAR(36),,,,,COMMENT ,办公电话',","
+,DEPARTMENT,VARCHAR(100),,,,,COMMENT ,部门',","
+,POST,VARCHAR(100),,,,,COMMENT ,职务',","
+,TITLE,VARCHAR(100),,,,,COMMENT ,职称',","
+,REMARK1,VARCHAR(255),,,,,COMMENT ,备注1',","
+,REMARK2,VARCHAR(255),,,,,COMMENT ,备注2',","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,校友注册表',;,,,,,,,

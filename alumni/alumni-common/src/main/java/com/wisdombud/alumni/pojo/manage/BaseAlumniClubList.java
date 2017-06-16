@@ -1,0 +1,431 @@
+package com.wisdombud.alumni.pojo.manage;
+
+import java.util.Date;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.wisdombud.alumni.pojo.base.UUIDReservePo;
+
+@Entity
+@Table(name= "VIEW_ALUMNI_BRANCH_LIST")
+public class BaseAlumniClubList extends UUIDReservePo{
+private static final long serialVersionUID = 1L;
+
+	@Column(name= "NAME")
+	private String name;
+
+	@Column(name= "TYPE")
+	private Integer type;
+
+	@Column(name= "HUIZHANG")
+	private String huizhang;
+
+	@Column(name= "CHANGWUFUHUIZHANG")
+	private String changwufuhuizhang;
+
+	@Column(name= "FUHUIZHANG")
+	private String fuhuizhang;
+
+	@Column(name= "MISHUZHANG")
+	private String mishuzhang;
+
+	@Column(name= "CHANGWUFUMISHUZHANG")
+	private String changwufumishuzhang;
+
+	@Column(name= "FUMISHUZHANG")
+	private String fumishuzhang;
+
+	@Column(name= "CHANGWULISHI")
+	private String changwulishi;
+
+	@Column(name= "LISHI")
+	private String lishi;
+
+	@Transient
+	private String liaisonStr;
+
+	@OneToMany(cascade=CascadeType.DETACH,fetch=FetchType.LAZY)
+    @JoinColumn(name="BRANCH_ID")
+	private Set<BaseAlumniLiaison> liaisons;
+
+	@Column(name= "MEMBER_NUM")
+	private Integer memberNum;
+
+	@Column(name= "WECHAT_ID")
+	private String wechatId;
+
+	@Column(name= "EMAIL")
+	private String email;
+
+	@Column(name= "ADDRESS")
+	private String address;
+
+	@Column(name= "ESTABLISHED_TIME")
+	private Date establishedTime;
+
+	@Column(name= "INTRODUCTION ")
+	private String introduction ;
+
+
+	/**
+	 * 功能:get 校友会名称'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public String getName(){
+		return name;
+	}
+
+	/**
+	 * 功能:set 校友会名称'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setName(String name){
+		this.name = name;
+	}
+
+	/**
+	 * 功能:get '类型'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public Integer getType(){
+		return type;
+	}
+
+	/**
+	 * 功能:set '类型'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setType(Integer type){
+		this.type = type;
+	}
+
+	/**
+	 * 功能:get '会长'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public String getHuizhang(){
+		return huizhang;
+	}
+
+	/**
+	 * 功能:set '会长'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setHuizhang(String huizhang){
+		this.huizhang = huizhang;
+	}
+
+	/**
+	 * 功能:get '常务副会长'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public String getChangwufuhuizhang(){
+		return changwufuhuizhang;
+	}
+
+	/**
+	 * 功能:set '常务副会长'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setChangwufuhuizhang(String changwufuhuizhang){
+		this.changwufuhuizhang = changwufuhuizhang;
+	}
+
+	/**
+	 * 功能:get '副会长'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public String getFuhuizhang(){
+		return fuhuizhang;
+	}
+
+	/**
+	 * 功能:set '副会长'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setFuhuizhang(String fuhuizhang){
+		this.fuhuizhang = fuhuizhang;
+	}
+
+	/**
+	 * 功能:get '秘书长'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public String getMishuzhang(){
+		return mishuzhang;
+	}
+
+	/**
+	 * 功能:set '秘书长'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setMishuzhang(String mishuzhang){
+		this.mishuzhang = mishuzhang;
+	}
+
+	/**
+	 * 功能:get '常务副秘书长'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public String getChangwufumishuzhang(){
+		return changwufumishuzhang;
+	}
+
+	/**
+	 * 功能:set '常务副秘书长'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setChangwufumishuzhang(String changwufumishuzhang){
+		this.changwufumishuzhang = changwufumishuzhang;
+	}
+
+	/**
+	 * 功能:get '副秘书长'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public String getFumishuzhang(){
+		return fumishuzhang;
+	}
+
+	/**
+	 * 功能:set '副秘书长'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setFumishuzhang(String fumishuzhang){
+		this.fumishuzhang = fumishuzhang;
+	}
+
+	/**
+	 * 功能:get '常务理事'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public String getChangwulishi(){
+		return changwulishi;
+	}
+
+	/**
+	 * 功能:set '常务理事'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setChangwulishi(String changwulishi){
+		this.changwulishi = changwulishi;
+	}
+
+	/**
+	 * 功能:get '理事'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public String getLishi(){
+		return lishi;
+	}
+
+	/**
+	 * 功能:set '理事'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setLishi(String lishi){
+		this.lishi = lishi;
+	}
+
+	public String getLiaisonStr() {
+		return liaisonStr;
+	}
+
+	public void setLiaisonStr(String liaisonStr) {
+		this.liaisonStr = liaisonStr;
+	}
+
+	public Set<BaseAlumniLiaison> getLiaisons() {
+		return liaisons;
+	}
+
+	public void setLiaisons(Set<BaseAlumniLiaison> liaisons) {
+		this.liaisons = liaisons;
+	}
+
+	/**
+	 * 功能:get '成员数'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public Integer getMemberNum(){
+		return memberNum;
+	}
+
+	/**
+	 * 功能:set '成员数'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setMemberNum(Integer memberNum){
+		this.memberNum = memberNum;
+	}
+
+	/**
+	 * 功能:get '微信号'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public String getWechatId(){
+		return wechatId;
+	}
+
+	/**
+	 * 功能:set '微信号'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setWechatId(String wechatId){
+		this.wechatId = wechatId;
+	}
+
+	/**
+	 * 功能:get '成立时间'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public Date getEstablishedTime(){
+		return establishedTime;
+	}
+
+	/**
+	 * 功能:set '成立时间'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setEstablishedTime(Date establishedTime){
+		this.establishedTime = establishedTime;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	/**
+	 * 功能:get '简介'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	*/
+
+	public String getIntroduction (){
+		return introduction ;
+	}
+
+	/**
+	 * 功能:set '简介'<br/>
+	 * date:  <br/>
+	 *
+	 * @author
+	 * @return
+	 */
+	public void setIntroduction (String introduction ){
+		this.introduction  = introduction ;
+	}
+}

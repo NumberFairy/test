@@ -1,0 +1,14 @@
+package com.wisdombud.alumni.dao.manage;
+
+import com.wisdombud.alumni.pojo.dic.DicOverseaBranch;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 海外分会 Dao. <br/>
+ *
+ * @author Administrator
+ *
+ */
+public interface DicOverseaBranchDao extends CommonDao<DicOverseaBranch, String> {
+
+}

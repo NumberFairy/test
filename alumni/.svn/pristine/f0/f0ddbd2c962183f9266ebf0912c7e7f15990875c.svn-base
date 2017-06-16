@@ -1,0 +1,121 @@
+// main:main.less
+.martb{
+    margin:15px;
+}
+.mart{
+    margin-top:15px;
+}
+.marb{
+    margin-bottom:15px!important;
+}
+.marl{
+    margin-right:15px;
+}
+.marr{
+    margin-left:15px;
+}
+.mar0{
+    margin-bottom:0!important;
+}
+.text-l{
+    text-align:left!important;
+}
+.lable-l{
+    float:left!important;
+}
+.bs-checkbox{
+    text-align:center;
+}
+.pagination{
+    margin:0;
+}
+.star{
+    color: red;
+    padding: 0 10px;
+    vertical-align: middle;
+}
+/*menu样式reset*/
+.nav-header{
+    padding:8px;
+}
+.admin-logo{
+    max-width:100%;
+}
+/*查询form 样式reset*/
+@media screen and (min-width: 768px) {
+    .form-inline .label-reset{
+         text-align:right;
+    }
+    .fixed-height {
+        height:40px;
+        overflow: hidden;
+    }
+     .advanced-query{
+        padding-right:200px;
+    }
+}
+@media screen and (min-width:768px)and(max-width:1366px) {
+    .form-inline .label-reset {
+        min-width:132px;
+    }
+}
+
+.form-inline .select-reset,
+.form-inline .input-reset
+    {
+    width:280px;
+}
+@media screen and (max-width: 768px) {
+    .fixed-height {
+        height:60px;
+        overflow: hidden;
+    }
+   .form-inline .select-reset,
+   .form-inline .input-reset
+    {
+        width:100%;
+    }
+}
+@media screen and (min-width:1366px)and(max-width:1920px) {
+ .form-inline .label-reset{
+    min-width:173px;
+    }
+}
+
+
+/*溢出显示省略号*/
+.ellipsis{
+    max-width:300px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}
+/*查询样式重写*/
+.sl-item{
+    position:relative;
+}
+.sl-item{
+    background-color: #f6f8f8;
+    border-bottom: 1px solid #f3f3f3;
+    padding:10px 0 0px 0;
+    font-size:14px;
+}
+.sl-item .sl-item-option, 
+.sl-item .sl-item-shouqi {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    line-height: 24px;
+    color:#23b7e5;
+}
+.sl-item .sl-item-shouqi {
+    bottom:20px;
+}
+.sl-item .sl-item-option {
+    top:10px;
+}
+.btn-search-parent{
+    position: absolute;
+    top:10px;
+    right: 145px;
+}

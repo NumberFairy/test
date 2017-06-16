@@ -1,0 +1,71 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Maps;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.manage.CollgeManageSrv;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicDegree;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.vo.ZTreeVo;
+
+@Service
+public class CollgeManageSrvSrvImpl implements CollgeManageSrv {
+	@Autowired
+	private DicCommonSrv srv;
+
+	private Map<Integer, String> degrees;
+
+	private Map<Integer, String> getDegreeMap(List<DicDegree> list){
+		Map<Integer, String> map=Maps.newHashMap();
+		for(DicDegree inst : list){
+			if(inst.getId()!=null&&!map.containsKey(inst.getId())){
+				map.put(inst.getId(), inst.getCnName());
+			}
+		}
+		return map;
+	}
+	@Override
+	public List<ZTreeVo> buildCollegeTree() {
+		List<DicDegree> dicDegreeList=srv.findAll(DicDegree.class);
+		degrees = this.getDegreeMap(dicDegreeList);
+		List<DicCollege> colleges =srv.findAll(DicCollege.class);
+		List<ZTreeVo> list = new ArrayList<>();
+		for (DicCollege v : colleges) {
+			ZTreeVo vo = new ZTreeVo();
+			vo.setId(v.getId());
+			vo.setpId(0);
+			vo.setRight(true);
+			vo.setParent(true);
+			vo.setOpen(false);
+			vo.setName(v.getCnName());
+			vo.setEnName(v.getEnName());
+			list.add(vo);
+			list.addAll(buildChildren(v.getId()));
+		}
+		return list;
+	}
+
+	private List<ZTreeVo> buildChildren(Integer collegeId) {
+		List<DicSpecialty> specialtys = srv.findAllCollegeSpecialty(collegeId);
+		List<ZTreeVo> list = new ArrayList<>();
+		for (DicSpecialty v : specialtys) {
+			ZTreeVo vo = new ZTreeVo();
+			vo.setId(v.getId());
+			vo.setpId(collegeId);
+			vo.setRight(true);
+			String degree = degrees.get(v.getDegreeId());
+			vo.setName(v.getCnName() + (StringUtils.isNotBlank(degree) ? ("(" + degree + ")") : ""));
+			list.add(vo);
+		}
+		return list;
+	}
+
+}

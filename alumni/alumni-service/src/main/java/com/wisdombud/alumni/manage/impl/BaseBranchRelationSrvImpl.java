@@ -1,0 +1,102 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.dao.manage.BaseBranchRelationDao;
+import com.wisdombud.alumni.enums.AuditEnum;
+import com.wisdombud.alumni.manage.BaseAlumniClubApplySrv;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.manage.BaseBranchRelationSrv;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniBranchApply;
+import com.wisdombud.alumni.pojo.manage.BaseBranchRelation;
+import com.wisdombud.alumni.threadlocal.UserSession;
+
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 分会信息关联表Srv. <br/>
+ *
+ * @author Administrator
+ *
+ */
+@Service(value = "baseBranchRelationSrv")
+public class BaseBranchRelationSrvImpl extends BaseSrvImpl<BaseBranchRelation> implements BaseBranchRelationSrv {
+
+	@Autowired
+	private BaseBranchRelationDao dao;
+	@Autowired
+	private BaseAlumniSrv alumniSrv;
+	@Autowired
+	private BaseAlumniClubApplySrv clubApplySrv;
+
+	public BaseBranchRelationSrvImpl() {
+	}
+
+	@Autowired
+	public BaseBranchRelationSrvImpl(
+			@Qualifier(value = "baseBranchRelationDao") CommonDao<BaseBranchRelation, String> commonDao) {
+		super(commonDao);
+	}
+
+	@Override
+	public void addBranchRelation(String chapterStr, String collegeStr, String overseaStr, String industryStr,
+			UserSession userSession) {
+		List<String> branchList = Arrays
+				.asList(this.transformStr(chapterStr, collegeStr, overseaStr, industryStr).split(","));
+		String userId = userSession.getId();
+		for (String branchId : branchList) {
+			BaseBranchRelation entity = new BaseBranchRelation();
+			entity.setAlumniId(userId);
+			entity.setBranchId(branchId);
+			dao.save(entity);
+		}
+	}
+
+	private String transformStr(String chapterStr, String collegeStr, String overseaStr, String industryStr) {
+		StringBuilder str = new StringBuilder();
+		if (StringUtils.isNotBlank(chapterStr)) {
+			str.append(chapterStr).append(",");
+		}
+		if (StringUtils.isNotBlank(collegeStr)) {
+			str.append(collegeStr).append(",");
+		}
+		if (StringUtils.isNotBlank(overseaStr)) {
+			str.append(overseaStr).append(",");
+		}
+		if (StringUtils.isNotBlank(industryStr)) {
+			str.append(industryStr).append(",");
+		}
+		if (str.toString().endsWith(",")) {
+			return str.substring(0, str.lastIndexOf(","));
+		}
+		return str.toString();
+	}
+
+	@Override
+	public void addJoinInBranchApply(String chapterStr, String collegeStr, String overseaStr, String industryStr,
+			UserSession userSession) {
+		List<String> branchList = Arrays
+				.asList(this.transformStr(chapterStr, collegeStr, overseaStr, industryStr).split(","));
+		BaseAlumni alumni = alumniSrv.find(userSession.getId());
+		for (String branchId : branchList) {
+			BaseAlumniBranchApply apply = new BaseAlumniBranchApply();
+			apply.setBranchId(branchId);
+			apply.setAlumniId(alumni.getId());
+			apply.setName(alumni.getName());
+			apply.setCode(alumni.getCode());
+			apply.setCollege(alumni.getCollege());
+			apply.setMagor(alumni.getMajor());
+			apply.setEnrollYear(alumni.getEnrollYear());
+			apply.setStatus(AuditEnum.NOTAUDIT.getValue());
+			clubApplySrv.save(apply);
+		}
+	}
+}

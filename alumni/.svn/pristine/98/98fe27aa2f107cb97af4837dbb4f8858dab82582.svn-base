@@ -1,0 +1,15 @@
+package com.wisdombud.alumni.dao.system.impl;
+
+import org.springframework.stereotype.Repository;
+import com.wisdombud.alumni.dao.system.HomeMenuDao;
+import com.wisdombud.alumni.pojo.system.HomeMenu;
+import common.toolkit.java.orm.hibernate.SimpleHibernateDao;
+
+/**
+ * 门户菜单 . <br/>
+ * 
+ * @author xiefei
+ */
+@Repository(value = "homeMenuDao")
+public class HomeMenuDaoImpl extends SimpleHibernateDao<HomeMenu, String> implements HomeMenuDao {
+}

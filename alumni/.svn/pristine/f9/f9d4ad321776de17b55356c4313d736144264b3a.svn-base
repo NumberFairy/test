@@ -1,0 +1,33 @@
+package com.wisdombud.alumni.dao.manage;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.criterion.Order;
+
+import com.wisdombud.alumni.pojo.dic.DicChapterBranch;
+import com.wisdombud.alumni.pojo.dic.DicCollegeBranch;
+import com.wisdombud.alumni.pojo.dic.DicIndustryBranch;
+import com.wisdombud.alumni.pojo.dic.DicOverseaBranch;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniBranch;
+import com.wisdombud.alumni.vo.Param;
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+	/**
+     * 校友分会表 Dao. <br/>
+     * @author Administrator
+
+     */
+public interface BaseAlumniClubDao extends CommonDao<BaseAlumniBranch, String> {
+
+	void pageChapterByHql(PageEntity<DicChapterBranch> pageEntity, Map<String, Param> params, List<Order> buildOrder, String type);
+
+	void pageCollegeByHql(PageEntity<DicCollegeBranch> pageEntity, Map<String, Param> params, List<Order> buildOrder, String type);
+
+	void pageOverseaByHql(PageEntity<DicOverseaBranch> pageEntity, Map<String, Param> params, List<Order> buildOrder, String type);
+
+	void pageIndustryByHql(PageEntity<DicIndustryBranch> pageEntity, Map<String, Param> params, List<Order> buildOrder, String type);
+
+	void deleteDicById(String branchId, String type);
+
+}

@@ -1,0 +1,153 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.constants.Constants;
+import com.wisdombud.alumni.dao.manage.BaseAlumniActivityDao;
+import com.wisdombud.alumni.enums.YesOrNoEnum;
+import com.wisdombud.alumni.manage.BaseActivitySignUpSrv;
+import com.wisdombud.alumni.manage.BaseAlumniActivitySrv;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.pojo.manage.BaseActivitySignUp;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniActivity;
+import com.wisdombud.alumni.pojo.manage.HomeInformationRelease;
+import com.wisdombud.alumni.pojo.system.PublicUser;
+import com.wisdombud.alumni.system.PublicUserSrv;
+import com.wisdombud.alumni.threadlocal.UserSession;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 校友活动表Srv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Service(value = "baseAlumniActivitySrv")
+public class BaseAlumniActivitySrvImpl extends BaseSrvImpl<BaseAlumniActivity> implements BaseAlumniActivitySrv {
+
+	@Autowired
+	public BaseActivitySignUpSrv signUpSrv;
+	@Autowired
+	public BaseAlumniSrv alumniSrv;
+	@Autowired
+	private PublicUserSrv userSrv;
+	@Autowired
+	private BaseAlumniActivityDao dao;
+	@Autowired
+	private BaseAlumniActivityDao alumniActivityDao;
+
+	public BaseAlumniActivitySrvImpl() {
+	}
+
+	@Autowired
+	public BaseAlumniActivitySrvImpl(
+			@Qualifier(value = "baseAlumniActivityDao") CommonDao<BaseAlumniActivity, String> commonDao) {
+		super(commonDao);
+	}
+
+	private void fillName(List<BaseAlumniActivity> list) {
+		for (BaseAlumniActivity inst : list) {
+			fillName(inst);
+		}
+	}
+
+	private void fillName(BaseAlumniActivity entity) {
+		if (entity.getIsQiYong() != null) {
+			entity.setIsQiYongName(YesOrNoEnum.valueByIndex(entity.getIsQiYong()).getName());
+		}
+		if (entity.getIsSignUp() != null) {
+			entity.setIsSignUpName(YesOrNoEnum.valueByIndex(entity.getIsSignUp()).getName());
+		}
+		if (entity.getIsTop() != null) {
+			entity.setIsTopName(YesOrNoEnum.valueByIndex(entity.getIsTop()).getName());
+		}
+		if (entity.getApplicyPerson() != null) {
+			PublicUser user = userSrv.find(entity.getApplicyPerson());
+			if (user != null) {
+				entity.setApplicyPersonName(user.getLoginName());
+			}
+		}
+		if (entity.getPerson() != null) {
+			PublicUser user = userSrv.find(entity.getPerson());
+			if (user != null) {
+				entity.setPersonName(user.getLoginName());
+			}
+		}
+	}
+
+	@Override
+	public void page(PageEntity<BaseAlumniActivity> pageEntity, Map<String, Param> params, List<Order> orders) {
+		alumniActivityDao.page(pageEntity, params, orders);
+		List<BaseAlumniActivity> list = pageEntity.getResults();
+		this.fillName(list);
+	}
+
+	@Override
+	public BaseAlumniActivity find(String id) {
+		BaseAlumniActivity entity = super.find(id);
+		this.fillName(entity);
+		return entity;
+	}
+
+	@Override
+	public BaseAlumni findAlumni(String signUpId) {
+		BaseActivitySignUp entity = signUpSrv.find(signUpId);
+		if (StringUtils.isBlank(entity.getAlumniId())) {
+			return null;
+		}
+		return alumniSrv.find(entity.getAlumniId());
+	}
+
+	@Override
+	public void pageHomeActive(PageEntity<HomeInformationRelease> pageEntity, String menuId) {
+		dao.pageHomeActive(pageEntity, menuId);
+	}
+
+	/**
+	 * @DES:判断是否允许报名
+	 * @autor:xiefei<br/>
+	 */
+	public int isApply(BaseAlumniActivity v) {
+		int isSignUp = 0;
+		Date now = new Date();
+		UserSession session = (UserSession) ActionContext.getContext().getSession().get("UserSession");
+		if (v != null && v.getIsSignUp() == Constants.YES) {
+			// 校友活动报名要判断报名时间
+			if (v.getApplyStartTime() != null && v.getApplyEndTime() != null && v.getApplyStartTime().before(now)
+					&& v.getApplyEndTime().after(now)) {
+				isSignUp = 1;
+			}
+			// 校友自己发布的活动不能自己报名
+			if (session != null) {
+				// 判断报名之后不能再报名，提示已报名
+				Map<String, Object> map = new HashMap<>();
+				map.put("activityId", v.getId());
+				map.put("alumniId", session.getId());
+				List<BaseActivitySignUp> list = signUpSrv.findBy(map);
+				if (CollectionUtils.isNotEmpty(list)) {
+					isSignUp = 2;
+				}
+				if (session.getId().equals(v.getPerson())) {
+					isSignUp = 0;
+				}
+			}
+		}
+		return isSignUp;
+	}
+}

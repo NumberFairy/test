@@ -1,0 +1,12 @@
+package com.wisdombud.alumni.dao.system.impl;
+
+import org.springframework.stereotype.Repository;
+
+import com.wisdombud.alumni.dao.system.SecRoleDao;
+import com.wisdombud.alumni.pojo.system.SecRole;
+import common.toolkit.java.orm.hibernate.SimpleHibernateDao;
+
+@Repository(value = "secRoleDao")
+public class SecRoleDaoImpl extends SimpleHibernateDao<SecRole, String> implements SecRoleDao {
+
+}

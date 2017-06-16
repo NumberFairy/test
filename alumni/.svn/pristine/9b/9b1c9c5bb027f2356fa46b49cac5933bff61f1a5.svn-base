@@ -1,0 +1,222 @@
+package com.wisdombud.alumni.actions.manage;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+
+import com.google.common.collect.Maps;
+import com.wisdombud.alumni.actions.base.AbstractCrudAction;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.constants.Constants;
+import com.wisdombud.alumni.manage.BaseAlumniBranchStaffSrv;
+import com.wisdombud.alumni.manage.BaseAlumniClubSrv;
+import com.wisdombud.alumni.manage.BaseBranchRelationSrv;
+import com.wisdombud.alumni.pojo.dic.DicAlumniBranchIdentity;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniBranch;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniBranchStaff;
+import com.wisdombud.alumni.pojo.manage.BaseBranchRelation;
+import com.wisdombud.alumni.util.GsonUtil;
+import com.wisdombud.alumni.vo.AlumniBranchVo;
+import com.wisdombud.alumni.vo.CommonResult;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+
+/**
+ * 功能: 校友分会表<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ *
+ * @author zxguan
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("prototype")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "toAddOrUpdate", location = "/WEB-INF/jsp/alumni-club-manage/create.jsp"),
+		   @Result(name = "toDetail", location = "/WEB-INF/jsp/alumni-club-manage/detail.jsp"),
+		   @Result(name = "toPage", location = "/WEB-INF/jsp/alumni-club-manage/page.jsp"),
+		   @Result(name = "toMember", location = "/WEB-INF/jsp/alumni-club-manage/member.jsp")})
+public class AlumniClubAction extends AbstractCrudAction<BaseAlumniBranch> {
+
+	private static final long serialVersionUID = 1L;
+
+	@Autowired
+	private BaseAlumniClubSrv srv;
+	@Autowired
+	private DicCommonSrv dicSrv;
+	@Autowired
+	private BaseAlumniBranchStaffSrv staffSrv;
+	@Autowired
+	private BaseBranchRelationSrv memberSrv;
+
+	private String type;
+	private String typeStr;
+	private String branchId;
+
+	private PageEntity<AlumniBranchVo> pageBranchVo;
+	private PageEntity<BaseBranchRelation> pageMenber;
+	private List<DicAlumniBranchIdentity> identityList;
+	private List<BaseAlumniBranchStaff> staffList;
+
+
+	public AlumniClubAction(@Qualifier(value = "baseAlumniClubSrv") IBaseSrv<BaseAlumniBranch> baseSrv) {
+		super(baseSrv);
+	}
+
+	@Override
+	public String hrefPage() {
+		this.setTypeStr(srv.fillAlumniBranchTypeStr(type));
+		return super.hrefPage();
+	}
+
+	@Override
+	public void page() {
+		if (this.isAjaxRequest()) {
+			this.limit = this.limit == 0 ? Constants.DEFUALT_PAGESIZE : this.limit;
+			pageBranchVo = new PageEntity<>(start, limit);
+    		srv.page(pageBranchVo, super.buildParams(), super.buildOrder(), type);
+    		sendResponseMsg(pageBranchVo);
+		}
+	}
+
+	@Override
+	public String hrefAddOrUpdate() {
+		this.setTypeStr(srv.fillAlumniBranchTypeStr(type));
+		if (StringUtils.isNotBlank(id)) {
+			entity = srv.find(id);
+		}
+		return super.hrefAddOrUpdate();
+	}
+
+	public void findIdentity() {
+		if (this.isAjaxRequest()) {
+			identityList = dicSrv.findAll(DicAlumniBranchIdentity.class);
+			sendResponseMsg(identityList);
+		}
+	}
+
+	@Override
+	public void addOrUpdate() {
+ 		if (isAjaxRequest()) {
+			List<BaseAlumniBranchStaff> list = GsonUtil.jsonToArrayList(jsonListEntity, BaseAlumniBranchStaff.class);
+			srv.addOrUpdate(entity, list, type, branchId);
+			sendSuccessMsg();
+		}
+	}
+
+	@Override
+	public String hrefDetail() {
+		this.setTypeStr(srv.fillAlumniBranchTypeStr(type));
+		staffList = staffSrv.findLeaders(this.buildParams(), super.buildOrder());
+		return super.hrefDetail();
+	}
+
+	@Override
+	protected Map<String, Param> buildParams() {
+		Map<String, Param> params = Maps.newHashMap();
+		if (StringUtils.isNotBlank(branchId)) {
+			params.put("branchId", Param.eq(branchId));
+		}
+		return params;
+	}
+
+	public String hrefMember() {
+		this.setTypeStr(srv.fillAlumniBranchTypeStr(type));
+		return "toMember";
+	}
+
+	public void pageMember(){
+		if (isAjaxRequest() && StringUtils.isNotBlank(id)) {
+			this.limit = this.limit == 0 ? Constants.DEFUALT_PAGESIZE : this.limit;
+			pageMenber = new PageEntity<>(start, limit);
+			srv.findMemberByBranch(pageMenber, this.buildMemberParams());
+			sendResponseMsg(pageMenber);
+		}
+	}
+
+	@Override
+	public void delete() {
+		if (isAjaxRequest() && StringUtils.isNotBlank(this.id)) {
+			srv.deleteById(this.id);
+			srv.deleteDicById(branchId, type);
+			staffSrv.deleteBy("branchId", branchId);
+			memberSrv.deleteBy("branchId", branchId);
+			CommonResult result = new CommonResult(CommonResult.SUCCESS);
+			this.sendResponseMsg(result);
+		}
+	}
+
+	protected Map<String, Param> buildMemberParams() {
+		Map<String, Param> params = Maps.newHashMap();
+		if (StringUtils.isNotBlank(id)) {
+			params.put("branchId", Param.eq(id));
+		}
+		return params;
+	}
+
+	public String getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(String branchId) {
+		this.branchId = branchId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getTypeStr() {
+		return typeStr;
+	}
+
+	public void setTypeStr(String typeStr) {
+		this.typeStr = typeStr;
+	}
+
+	public PageEntity<AlumniBranchVo> getPageBranchVo() {
+		return pageBranchVo;
+	}
+
+	public void setPageBranchVo(PageEntity<AlumniBranchVo> pageBranchVo) {
+		this.pageBranchVo = pageBranchVo;
+	}
+
+	public PageEntity<BaseBranchRelation> getPageMenber() {
+		return pageMenber;
+	}
+
+	public void setPageMenber(PageEntity<BaseBranchRelation> pageMenber) {
+		this.pageMenber = pageMenber;
+	}
+
+	public List<DicAlumniBranchIdentity> getIdentityList() {
+		return identityList;
+	}
+
+	public void setIdentityList(List<DicAlumniBranchIdentity> identityList) {
+		this.identityList = identityList;
+	}
+
+	public List<BaseAlumniBranchStaff> getStaffList() {
+		return staffList;
+	}
+
+	public void setStaffList(List<BaseAlumniBranchStaff> staffList) {
+		this.staffList = staffList;
+	}
+}

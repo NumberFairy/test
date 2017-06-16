@@ -1,0 +1,5 @@
+var alumniId = $("#alumni-id").val();
+$.post(contextPath + "home!myActivity?id=" + alumniId, function(data) {
+    var h = template("gridTpl", { 'results': data });
+    $("#list-body").html(h);
+}, 'json')

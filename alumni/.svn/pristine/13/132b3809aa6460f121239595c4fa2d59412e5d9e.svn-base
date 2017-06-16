@@ -1,0 +1,12 @@
+package com.wisdombud.alumni.dao.system.impl;
+
+import org.springframework.stereotype.Repository;
+
+import com.wisdombud.alumni.dao.system.SecOperDao;
+import com.wisdombud.alumni.pojo.system.SecOper;
+import common.toolkit.java.orm.hibernate.SimpleHibernateDao;
+
+@Repository(value = "secOperDao")
+public class SecOperDaoImpl extends SimpleHibernateDao<SecOper, String> implements SecOperDao {
+
+}

@@ -1,0 +1,42 @@
+
+
+var actionPath = contextPath + "/alumni-liaison";
+var $baseInfoForm;
+$(function () {
+
+    validator();
+
+    $("#btn-submit").click(function () {
+        var bv = $baseInfoForm.data('bootstrapValidator');
+        bv.validate();
+        if (bv.isValid()) {
+            var entity = $("#form-all").serialize();
+            $.post(actionPath + "!update", entity, function (data) {
+                    if (data.success) {
+                        location.href = actionPath + "!hrefPage";
+                    }
+                }, "json");
+        }
+    });
+
+});
+
+function validator() {
+    $baseInfoForm = $('#form-all');
+    $baseInfoForm.bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+            "entity.name": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+
+        }
+
+    });
+}

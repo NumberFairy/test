@@ -1,0 +1,370 @@
+package com.wisdombud.alumni.actions.personManage;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.wisdombud.alumni.actions.base.AlumniBaseAction;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.enums.GenderEnum;
+import com.wisdombud.alumni.enums.IdentityEnum;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.manage.BaseTimelineSrv;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicDegree;
+import com.wisdombud.alumni.pojo.dic.DicIndustry;
+import com.wisdombud.alumni.pojo.dic.DicPoliticalStatus;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+
+/**
+ * 功能: 校友信息表<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ *
+ * @author robot
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("prototype")
+@ParentPackage(value = "struts-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "toAddOrUpdate", location = "/WEB-INF/jsp/portal/alumni-login/person-info.jsp"), })
+public class PersonInfoAction extends AlumniBaseAction<BaseAlumni> {
+	private static final long		serialVersionUID = 1L;
+	@Autowired
+	public DicCommonSrv				dicCommonSrv;
+	@Autowired
+	private BaseAlumniSrv			alumniSrv;
+	@Autowired
+	private BaseTimelineSrv			timelineSrv;
+
+	public List<DicPoliticalStatus>	dicPoliticalStatusList;
+	public List<DicCollege>			dicCollegeList;
+	public List<DicSpecialty>		dicSpecialtyList;
+	public List<DicDegree>			dicDegreeList;
+	public List<DicIndustry>		dicIndustryList;
+
+	public PersonInfoAction(@Qualifier(value = "baseAlumniSrv") IBaseSrv<BaseAlumni> baseSrv) {
+		super(baseSrv);
+	}
+
+	private void initData() {
+		dicPoliticalStatusList = dicCommonSrv.findAll(DicPoliticalStatus.class);
+		dicCollegeList = dicCommonSrv.findAll(DicCollege.class);
+		if (dicCollegeList != null && dicCollegeList.size() > 0) {
+			dicSpecialtyList = alumniSrv.findAllCollegeSpecialty(dicCollegeList.get(0).getId());
+		}
+		dicDegreeList = dicCommonSrv.findAll(DicDegree.class);
+		dicIndustryList = dicCommonSrv.findAll(DicIndustry.class);
+	}
+
+	@Override
+	public String hrefAddOrUpdate() {
+		// UserSession session = UserThreadLocal.getUserSession();
+		return "toAddOrUpdate";
+	}
+
+	@Override
+	protected void update() {
+		if (entity != null && entity.getId() != null) {
+			BaseAlumni alumniEntity = this.baseSrv.find(entity.getId());
+			if (alumniEntity != null) {
+				Map<String, String> params = getFieldValue(entity, alumniEntity);
+				String content = this.GetVal(params);
+				timelineSrv.saveOrUpdate(content, alumniEntity.getId());
+			}
+		}
+		super.update();
+	}
+
+	public String GetVal(Map<String, String> map) {
+		List<String> list = Lists.newArrayList();
+		for (Entry<String, String> entry : map.entrySet()) {
+			switch (entry.getKey()) {
+				case "name":
+					list.add("姓名修改为" + entry.getValue());
+					break;
+				case "gender":
+					String str = GenderEnum.valueByIndex(Integer.parseInt(entry.getValue())).getName();
+					list.add("性别修改为" + str);
+					break;
+				case "identity":
+					String str2 = IdentityEnum.valueByIndex(Integer.parseInt(entry.getValue())).getName();
+					list.add("身份修改为" + str2);
+					break;
+				case "code":
+					list.add("学号/职工号修改为" + entry.getValue());
+					break;
+				case "birthDate":
+					list.add("出生日期修改为" + entry.getValue());
+					break;
+				case "enrollYear":
+					list.add("入学年份/入职年份修改为" + entry.getValue());
+					break;
+				case "college":
+					DicCollege college = dicCommonSrv.findById(DicCollege.class, Integer.parseInt(entry.getValue()));
+					if (college != null) {
+						list.add("院系修改为" + college.getCnName());
+					}
+					break;
+				case "major":
+					DicSpecialty specialty =
+							dicCommonSrv.findById(DicSpecialty.class, Integer.parseInt(entry.getValue()));
+					if (specialty != null) {
+						list.add("专业修改为" + specialty.getCnName());
+					}
+					break;
+				case "nativeStr":
+					list.add("籍贯修改为" + entry.getValue());
+					break;
+				case "politicalStatus":
+					DicPoliticalStatus politicalStatus =
+							dicCommonSrv.findById(DicPoliticalStatus.class, Integer.parseInt(entry.getValue()));
+					if (politicalStatus != null) {
+						list.add("政治面貌修改为" + politicalStatus.getValue());
+					}
+					break;
+				case "wechatId":
+					list.add("微信修改为" + entry.getValue());
+					break;
+				case "wechatName":
+					list.add("微信昵称修改为" + entry.getValue());
+					break;
+				case "qq":
+					list.add("QQ修改为" + entry.getValue());
+					break;
+				case "phone":
+					list.add("手机修改为" + entry.getValue());
+					break;
+				case "address":
+					list.add("永久通讯地址修改为" + entry.getValue());
+					break;
+				case "email":
+					list.add("邮箱修改为" + entry.getValue());
+					break;
+				case "highestEducation":
+					DicDegree degree = dicCommonSrv.findById(DicDegree.class, Integer.parseInt(entry.getValue()));
+					if (degree != null) {
+						list.add("最高学历修改为" + degree.getCnName());
+					}
+					break;
+				case "className":
+					list.add("班级名称修改为" + entry.getValue());
+					break;
+				case "teacher":
+					list.add("辅导员/导师修改为" + entry.getValue());
+					break;
+				case "industry":
+					DicIndustry entity = dicCommonSrv.findById(DicIndustry.class, Integer.parseInt(entry.getValue()));
+					if (entity != null) {
+						list.add("行业修改为" + entity.getValue());
+					}
+					break;
+				case "company":
+					list.add("所在单位修改为" + entry.getValue());
+					break;
+				case "companyCityStr":
+					list.add("单位所在省/市修改为" + entry.getValue());
+					break;
+				case "companyAddress":
+					list.add("单位地址修改为" + entry.getValue());
+					break;
+				case "officePhone":
+					list.add("办公电话修改为" + entry.getValue());
+					break;
+				case "department":
+					list.add("部门修改为" + entry.getValue());
+					break;
+				case "post":
+					list.add("职务修改为" + entry.getValue());
+					break;
+				case "title":
+					list.add("职称修改为" + entry.getValue());
+					break;
+				case "remark1":
+					list.add("备注1修改为" + entry.getValue());
+					break;
+				case "remark2":
+					list.add("备注2修改为" + entry.getValue());
+					break;
+			}
+		}
+		String str = String.join(" ; ", list);
+		return str;
+	}
+
+	public Method getMethod(BaseAlumni baseAlumni, Field field) {
+		Method m = null;
+		String name = field.getName();
+		name = name.substring(0, 1).toUpperCase() + name.substring(1);
+		try {
+			m = baseAlumni.getClass().getMethod("get" + name);
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		}
+		return m;
+	}
+
+	public Map<String, String> getFieldValue(BaseAlumni now, BaseAlumni old) {
+		Map<String, String> params = Maps.newHashMap();
+		Field[] nowFields = now.getClass().getDeclaredFields();
+		Field[] oldFields = old.getClass().getDeclaredFields();
+		try {
+			for (int i = 1; i < nowFields.length; i++) {
+				if (nowFields[i].getName().equals(oldFields[i].getName())) {
+					String type = nowFields[i].getGenericType().toString();
+					Method nowMethod = getMethod(now, nowFields[i]);
+					Method oldMethod = getMethod(old, oldFields[i]);
+					if (nowFields[i].getName().equals("label")) {
+					}
+					if (nowMethod == null && oldMethod == null) {
+						continue;
+					}
+					if (type.equals("class java.lang.String")) {
+						String newVal = (String) nowMethod.invoke(now);
+						String oldVal = (String) oldMethod.invoke(old);
+						if (StringUtils.isNotBlank(newVal) && (!newVal.equals(oldVal))) {
+							params.put(nowFields[i].getName(), newVal);
+						}
+					} else if (type.equals("class java.lang.Integer")) {
+						Integer newVal = (Integer) nowMethod.invoke(now);
+						Integer oldVal = (Integer) oldMethod.invoke(old);
+						if (newVal != null && (!newVal.equals(oldVal))) {
+							params.put(nowFields[i].getName(), newVal.toString());
+						}
+					} else if (type.equals("class java.lang.Boolean")) {
+						Boolean newVal = (Boolean) nowMethod.invoke(now);
+						Boolean oldVal = (Boolean) oldMethod.invoke(old);
+						if (newVal != null && (!newVal.equals(oldVal))) {
+							params.put(nowFields[i].getName(), newVal.toString());
+						}
+					} else if (type.equals("class java.util.Date")) {
+						Date newVal = (Date) nowMethod.invoke(now);
+						Date oldVal = (Date) oldMethod.invoke(old);
+						if (newVal != null && (!newVal.equals(oldVal))) {
+							params.put(nowFields[i].getName(), (new SimpleDateFormat("yyyy-MM-dd")).format(newVal));
+						}
+					} else if (type.equals("class java.lang.Double")) {
+						Double newVal = (Double) nowMethod.invoke(now);
+						Double oldVal = (Double) oldMethod.invoke(old);
+						if (newVal != null && (!newVal.equals(oldVal))) {
+							params.put(nowFields[i].getName(), newVal.toString());
+						}
+					}
+				}
+			}
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
+
+		return params;
+	}
+
+	public void findEntity() {
+		this.initData();
+		if (StringUtils.isNotBlank(this.id)) {
+			entity = baseSrv.find(this.id);
+			this.sendResponseMsg(entity);
+		}
+	}
+
+	public void findCollege() {
+		dicCollegeList = dicCommonSrv.findAll(DicCollege.class);
+		final Gson g = new GsonBuilder().create();
+		this.sendResponseMsg(g.toJson(dicCollegeList));
+	}
+
+	public void findSpecialty() {
+		if (id != null) {
+			dicSpecialtyList = alumniSrv.findAllCollegeSpecialty(Integer.parseInt(id));
+			final Gson g = new GsonBuilder().create();
+			this.sendResponseMsg(g.toJson(dicSpecialtyList));
+		}
+	}
+
+	public void findDegree() {
+		dicDegreeList = dicCommonSrv.findAll(DicDegree.class);
+		final Gson g = new GsonBuilder().create();
+		this.sendResponseMsg(g.toJson(dicDegreeList));
+	}
+
+	public void findIndustry() {
+		dicIndustryList = dicCommonSrv.findAll(DicIndustry.class);
+		final Gson g = new GsonBuilder().create();
+		this.sendResponseMsg(g.toJson(dicIndustryList));
+	}
+
+	public void findPoliticalStatus() {
+		dicPoliticalStatusList = dicCommonSrv.findAll(DicPoliticalStatus.class);
+		final Gson g = new GsonBuilder().create();
+		this.sendResponseMsg(g.toJson(dicPoliticalStatusList));
+	}
+
+	public List<DicPoliticalStatus> getDicPoliticalStatusList() {
+		return dicPoliticalStatusList;
+	}
+
+	public void setDicPoliticalStatusList(List<DicPoliticalStatus> dicPoliticalStatusList) {
+		this.dicPoliticalStatusList = dicPoliticalStatusList;
+	}
+
+	public List<DicCollege> getDicCollegeList() {
+		return dicCollegeList;
+	}
+
+	public void setDicCollegeList(List<DicCollege> dicCollegeList) {
+		this.dicCollegeList = dicCollegeList;
+	}
+
+	public List<DicSpecialty> getDicSpecialtyList() {
+		return dicSpecialtyList;
+	}
+
+	public void setDicSpecialtyList(List<DicSpecialty> dicSpecialtyList) {
+		this.dicSpecialtyList = dicSpecialtyList;
+	}
+
+	public List<DicDegree> getDicDegreeList() {
+		return dicDegreeList;
+	}
+
+	public void setDicDegreeList(List<DicDegree> dicDegreeList) {
+		this.dicDegreeList = dicDegreeList;
+	}
+
+	public List<DicIndustry> getDicIndustryList() {
+		return dicIndustryList;
+	}
+
+	public void setDicIndustryList(List<DicIndustry> dicIndustryList) {
+		this.dicIndustryList = dicIndustryList;
+	}
+
+}

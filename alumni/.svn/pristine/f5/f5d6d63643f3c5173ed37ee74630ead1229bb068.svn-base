@@ -1,0 +1,150 @@
+/**
+*  注册
+*  xiefei 
+* */
+$(function() {
+    init();
+    validator();
+
+    $("#user-btn").click(function() {
+        var alumniId=   getCheckedIds("#user-model");
+        if(alumniId.length!=1){
+            alertify.alert("选择一条记录！");
+            return;
+        }
+        var userId=  $("#id").val();
+        $.post("/login!updateRegister",{'alumnid':alumniId[0],'id':userId},function(data){
+            if(data){
+                alertify.alert("提交成功,您的校友信息将以当前为准，请等待管理员审核！",function(){
+                    top.location.href="/home";
+                });
+            }
+        },'json')
+    });
+    $("#user-btn-no").click(function() {
+        alertify.alert("提交成功，请等待管理员审核！",function(){
+             top.location.href="/home";
+        });
+    });
+
+
+    $('#submt').click(function() {
+      var bv = $("#info-form").data('bootstrapValidator');
+      bv.validate();
+      if (!bv.isValid()) {
+        return;
+    }
+    var parm=$("#info-form").serialize();
+    $.post("/login!saveRegister",parm,function(data){
+        if(data.success ){
+            if(data.data.length>0){
+                $("#id").val(data.message);
+                $("#title").empty().text("查询到校友信息库存在"+data.data.length+"条相似校友信息，请选择哪条是您的记录？");
+                var h= template("gridTpl", data);
+                $("#gridBody").html(h);
+                $("#user-model").modal();
+                return;
+            }
+            alertify.alert("提交成功，请等待管理员审核！");
+            return;
+        }
+         alertify.alert("提交失败!");
+    },'json')
+});
+
+});
+
+function init(){
+    //院系字典
+    creatDicOption("college-sel","/dic-common!findAllCollege");
+    //专业院字典
+    creatDicOption("major-sel","/dic-common!findAllCollegeSpecialty",{'id':30100});
+    $('#college-sel').change(function(event) {
+     creatDicOption("major-sel","/dic-common!findAllCollegeSpecialty",{'id':$(this).val()});
+ });
+    creatDicOption("politicalStatus","/dic-common!findPoliticalStatus");  //政治面貌字典
+    creatDicOption("industryId","/dic-common!findDicIndustry");    //行业
+    creatDicOption("educationId","/dic-common!findAllDicDegree");//学历
+    //绑定地区选择插件
+    $(".address").districtpicker({
+        url: contextPath + '/dic-common!findAllDistricts',
+        level: 3,
+        global: true,//是否有国家
+    });
+
+}
+
+function validator() {
+    $('#info-form').bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+            "register.name": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+
+            "register.password": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    },
+                    stringLength: {
+                     min: 6,
+                     max: 30,
+                     message: '密码过于简单'
+                 },
+                 identical: {
+                     field: 'passwordRe',
+                     message: '密码不一致！'
+                 }
+             }
+         },
+         "passwordRe": {
+            trigger: "blur",
+            validators: {
+                notEmpty: {
+                    message: '请填写'
+                },
+                identical: {
+                 field: 'register.password',
+                 message: '密码不一致！'
+             }
+         }
+     },
+
+     "register.code": {
+        trigger: "blur",
+        validators: {
+            notEmpty: {
+                message: '请填写'
+            }
+        }
+    },
+    "register.enrollYear": {
+        trigger: "blur",
+        validators: {
+            notEmpty: {
+                message: '请填写'
+            }
+        }
+    },
+    "register.email": {
+        trigger: "blur",
+        validators: {
+            notEmpty: {
+                message: '请填写您的邮箱'
+            },
+            emailAddress: {
+                message: '请输入正确的邮箱'
+            }
+        }
+    },
+}
+});
+}

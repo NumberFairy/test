@@ -1,0 +1,61 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.Date;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.xmlbeans.impl.tool.Extension.Param;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.google.common.collect.Maps;
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.enums.YesOrNoEnum;
+import com.wisdombud.alumni.manage.BaseTimelineSrv;
+import com.wisdombud.alumni.pojo.manage.BaseTimeline;
+
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 校友成长时光轴Srv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Service(value = "baseTimelineSrv")
+public class BaseTimelineSrvImpl extends BaseSrvImpl<BaseTimeline> implements BaseTimelineSrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseTimelineSrvImpl.class);
+
+	public BaseTimelineSrvImpl() {
+	}
+
+	@Autowired
+	public BaseTimelineSrvImpl(@Qualifier(value = "baseTimelineDao") CommonDao<BaseTimeline, String> commonDao) {
+		super(commonDao);
+	}
+
+	@Override
+	public void saveOrUpdate(String content,String alumniId) {
+		if(StringUtils.isNotBlank(alumniId)){
+			BaseTimeline entity=entity2Val(content,alumniId);
+			super.save(entity);
+		}
+	}
+	
+	private BaseTimeline entity2Val(String content,String alumniId){
+		BaseTimeline entity=new BaseTimeline();
+		
+		entity.setAlumniId(alumniId);
+		entity.setTitle("基本信息修改");
+		entity.setContent(content);
+		entity.setCreateTime(new Date());
+		entity.setLastUpdate(new Date());
+		entity.setStatus(YesOrNoEnum.NO.getValue());
+		return entity;
+	}
+
+	
+}

@@ -1,0 +1,13 @@
+#校友登记表,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,base_ALUMNI_enroll,;,,,,,,,
+CREATE TABLE ,base_ALUMNI_enroll,(,,,,,,,
+,ID,VARCHAR(36) ,NOT NULL,primary key,,,,,","
+,enroll_type,VARCHAR(50) ,,,,,COMMENT ,'登记类型',","
+,START_TIME,datetime,,,,,COMMENT ,'开始时间',","
+,END_TIME,datetime,,,,,COMMENT ,'结束时间',","
+,PLACE,VARCHAR(100),,,,,COMMENT ,'地点',","
+,people,VARCHAR(100),,,,,COMMENT ,'参与人',","
+,CONTENT,VARCHAR(255),,,,,COMMENT ,'内容',","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,'校友登记表',;,,,,,,,

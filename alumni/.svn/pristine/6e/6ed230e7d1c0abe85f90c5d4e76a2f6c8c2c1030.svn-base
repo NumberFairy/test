@@ -1,0 +1,63 @@
+package com.wisdombud.alumni.actions.manage;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+
+import com.google.common.collect.Maps;
+import com.wisdombud.alumni.actions.base.AbstractCrudAction;
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.constants.Constants;
+import com.wisdombud.alumni.enums.AlumniIdentityEnum;
+import com.wisdombud.alumni.manage.BaseAlumniLiaisonSrv;
+import com.wisdombud.alumni.manage.BaseIdentityRelationSrv;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseIdentityRelation;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+
+/**
+ * 功能: 学校重点校友<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ * 
+ * @author robot
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("prototype")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "toAddOrUpdate", location = "/WEB-INF/jsp/alumni-manage-center/college-core-alumni/create.jsp"),
+		   @Result(name = "toDetail", location = "/WEB-INF/jsp/alumni-manage-center/college-core-alumni/detail.jsp"),
+		   @Result(name = "toPage", location = "/WEB-INF/jsp/alumni-manage-center/college-core-alumni/page.jsp") })
+public class CollegeKeyAlumniAction extends AbstractCrudAction<BaseIdentityRelation> {
+	private static final long serialVersionUID = 1L;
+	@Autowired
+	public BaseIdentityRelationSrv	identityRelationSrv;
+	
+	public CollegeKeyAlumniAction(@Qualifier(value = "baseIdentityRelationSrv") IBaseSrv<BaseIdentityRelation> baseSrv) {
+		super(baseSrv);
+	}
+
+	@Override
+	protected List<Order> buildOrder() {
+		return super.buildOrder();
+	}
+
+	@Override
+	protected Map<String, Param> buildParams() {
+		Map<String, Param> params=Maps.newHashMap();
+		params.put("alumniIdentityId", Param.eq(AlumniIdentityEnum.COLLEGE_KEY_ALUMNI.getValue()));
+		return params;
+	}
+
+}

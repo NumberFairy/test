@@ -1,0 +1,81 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <%@include file="/WEB-INF/jsp/common/header.jsp"%>
+        <title>校友管理及分析系统</title>
+        </head>
+
+        <body class="gray-bg">
+            <div class="wrapper wrapper-content  animated fadeInRight">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-title">
+                                <h5>校友入会审核</h5>
+                            </div>
+                            <div class="ibox-content">
+                                <form class="form-horizontal clearfix">
+                                    <div class="input-group col-sm-4">
+                                        <input placeholder="请输入关键字" type="text" class="form-control" name="entity.name">
+                                        <span class="input-group-btn">
+                                            <button type="button" id="btn-search" class="btn btn-info">查询</button>
+                                        </span>
+                                    </div>
+                                </form>
+                                <table class="table  table-bordered table-hover content">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                姓名
+                                            </th>
+                                            <th>
+                                                性别
+                                            </th>
+                                            <th>
+                                                申请校友会
+                                            </th>
+                                            <th>入学年份</th>
+                                            <th>院系</th>
+                                            <th>专业</th>
+                                            <th>公司</th>
+                                            <th>职务</th>
+                                            <th>申请时间</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="gridBody">
+                                        <tr>
+                                            <td>一起玩吧</td>
+                                            <td>阿花</td>
+                                            <td>2012-01-12</td>
+                                            <td>2012-03-09</td>
+                                            <td>2012-01-09</td>
+                                            <td>审核人</td>
+                                            <td>2012-01-09</td>
+                                            <td>审核人</td>
+                                            <td>2012-01-09</td>
+                                            <td>
+                                                <a href="javascript:;" class="btn  btn-success mar0 btn-xs"> 
+                                                    通过
+                                                </a>
+                                                <a href="javascript:;" class="btn  btn-danger mar0 btn-xs">
+                                                    不通过
+                                                </a>
+                                                <a href="/alumni-club-apply!toAlumniClubDetail" class="btn  btn-info mar0 btn-xs">
+                                                    查看
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div align="right">
+                                    <ul class="pagination" id="pageUl">
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </body>
+        <%@ include file="/WEB-INF/jsp/common/js-container.jsp"%>
+
+            </html>

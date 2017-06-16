@@ -1,0 +1,83 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <%@include file="/WEB-INF/jsp/common/portal-header.jsp"%>
+        <title>地质大学校友管理系统</title>
+        </head>
+
+        <body>
+            <%@include file="/WEB-INF/jsp/common/portal-menu.jsp"%>
+                <!--内容部分-->
+                <div class="main clearfix">
+                    <div class="article-main">
+                        <%@include file="/WEB-INF/jsp/common/list-menu-left.jsp"%>
+                            <div class="article-right floatR">
+                                <h2 class="title-4">通知公告</h2>
+                                <div class="column-list">
+                                    <dl>
+                                        <dt>
+                                            3月
+                                                <span>23</span>
+                                            2017
+                                            </dt>
+                                        <dd class="content">
+                                            <a href="home!detail">asd</a>
+                                            <p class="abstract">asd</p>
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>
+                                            3月
+                                                <span>23</span>
+                                            2017
+                                            </dt>
+                                        <dd class="content">
+                                            <a href="javascript:;">asd</a>
+                                            <p class="abstract">asd</p>
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>
+                                            3月
+                                                <span>23</span>
+                                            2017
+                                            </dt>
+                                        <dd class="content">
+                                            <a href="javascript:;">asd</a>
+                                            <p class="abstract">asd</p>
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>
+                                            3月
+                                                <span>23</span>
+                                            2017
+                                            </dt>
+                                        <dd class="content">
+                                            <a href="javascript:;">asd</a>
+                                            <p class="abstract">asd</p>
+                                        </dd>
+                                    </dl>
+                                    <dl>
+                                        <dt>
+                                            3月
+                                                <span>23</span>
+                                            2017
+                                            </dt>
+                                        <dd class="content">
+                                            <a href="javascript:;">asd</a>
+                                            <p class="abstract">asd</p>
+                                        </dd>
+                                    </dl>
+                                    <div class="page">
+                                        <a href="#" id="firstPage">首页</a> <a href="#" id="perfPage" style="display: none;">上一页</a> <a href="#" id="nextPage">下一页</a> <a href="#" id="lastPage">最后一页</a>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                <!--内容部分end-->
+                 <%@include file="/WEB-INF/jsp/common/js-portal-container.jsp"%>
+                <%@include file="/WEB-INF/jsp/common/portal-footer.jsp"%>
+               
+        </body>
+
+        </html>

@@ -1,0 +1,120 @@
+<!--
+
+用户管理
+zxguan
+20170321
+
+-->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+    <%@include file="/WEB-INF/jsp/common/header.jsp"%>
+        </head>
+
+        <body class="gray-bg">
+            <div class="wrapper wrapper-content  animated fadeInRight">
+                <div class="row">
+                    <div class="col-lg-10 col-lg-offset-1">
+                        <div class="ibox">
+                            <div class="ibox-title">
+                                <h5>用户管理</h5>
+                                <div class="form-group">
+                                    <div align="right">
+                                        <a type="button" id="btn-submit" class="btn btn-sm btn-info" class="btn btn-primary btn-xs"> <i class="fa fa-check"></i>&nbsp;提交
+                                        </a>
+                                        <a class="btn  btn-default marr  btn-sm" href="javascript:void(0);" onclick="window.history.back();">
+                                            <i class="fa fa-reply"></i>&nbsp;返 回
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ibox-content">
+                                <div class="m-t">
+                                    <form class="form-horizontal" id="baseInfoForm">
+                                        <input type="hidden" name="entity.id" value="${entity.id}">
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label"> 
+										<span class="star">*</span>用户名：
+									</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" name="entity.loginName" placeholder="请输入登录名" class="form-control" value="${entity.loginName}" autocomplete="off">
+                                            </div>
+                                        </div>
+                                        <s:if test="entity==null">
+                                            <div class="form-group">
+                                                <label class="col-sm-3 control-label"> 
+													<span class="star">*</span>密码：
+												</label>
+                                                <div class="col-sm-6">
+                                                    <input type="password" name="entity.pwd" placeholder="请输入密码" class="form-control" value="${entity.pwd}" autocomplete="off">
+                                                </div>
+                                            </div>
+                                        </s:if>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label"> 
+										<span class="star">*</span>姓名：
+									</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" name="entity.name" placeholder="请输入姓名" class="form-control" value="${entity.name}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label"> 
+										<span class="star">*</span>性别：
+									</label>
+                                            <div class="col-sm-8">
+                                                <div class="checkbox checkbox-success checkbox-inline">
+                                                    <s:if test="entity== null || entity.gender == 1">
+                                                        <input type="radio" id="man" name="entity.gender" value="1" checked>
+                                                    </s:if>
+                                                    <s:else>
+                                                        <input type="radio" id="man" name="entity.gender" value="1">
+                                                    </s:else>
+                                                    <label for="man">男</label>
+                                                </div>
+                                                <div class="checkbox checkbox-success checkbox-inline">
+                                                    <s:if test="entity.gender == 0">
+                                                        <input type="radio" id="woman" name="entity.gender" value="0" checked>
+                                                    </s:if>
+                                                    <s:else>
+                                                        <input type="radio" id="woman" name="entity.gender" value="0">
+                                                    </s:else>
+                                                    <label for="woman">女</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">
+										<span class="star">*</span>手机：
+									</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" name="entity.mobile" placeholder="请输入手机" class="form-control" value="${entity.mobile}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label">
+										固定电话：
+									</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" name="entity.tel" placeholder="请输入固定电话" class="form-control" value="${entity.tel}">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-3 control-label"> 
+										<span class="star">*</span>邮箱：
+									</label>
+                                            <div class="col-sm-6">
+                                                <input type="text" name="entity.email" placeholder="请输入邮箱" class="form-control" value="${entity.email}">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </body>
+        <%@ include file="/WEB-INF/jsp/common/js-container.jsp"%>
+            <script type="text/javascript" src="${contentPath}/resources/js/system/user-manage/create.js"></script>
+
+            </html>

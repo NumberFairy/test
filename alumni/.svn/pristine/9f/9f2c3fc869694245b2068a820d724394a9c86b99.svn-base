@@ -1,0 +1,241 @@
+/**
+ * 学院字典管理
+ */
+ var rMenu=$("#rMenu");
+ var actionPath = "/college-manage";
+ $(function () {
+ 	buildTree();
+ 	$(".add-college").click(function(){
+ 		hideRMenu();
+ 		$('#college-title').text('新增学院');
+ 		show(true);
+ 	})
+ 	$(".add-spelity").click(function(){
+ 		hideRMenu();
+ 		var parent= findSel();
+ 		if(!parent){
+ 			return;
+ 		}
+ 		if(parent.pid){
+ 			alertify.alert("请选中学院!");
+ 			return;
+ 		}
+ 		show(false);
+ 		creatDicOption('degreeId','/dic-common!findAllDicDegree');
+ 		$("input[name='specialty.collegeId']").val(parent.id);
+ 		$('#specialty-title').text('新增专业');
+ 	})
+
+ 	$('.delete').click(function(){
+ 		hideRMenu();
+ 		del();
+ 	})
+
+ 	$('.modify').click(function(){
+ 		hideRMenu();
+ 		var node= findSel();
+ 		if(!parent){
+ 			return;
+ 		}
+ 		modify(node);
+ 	})
+
+ 	$("#college-btn").click(function(){
+ 		var bv = $('#college-form').data('bootstrapValidator');
+ 		bv.validate();
+ 		if(!bv.isValid()){
+ 			return;
+ 		}
+ 		$.post(actionPath+'!saveOrUpdate',$('#college-form').serialize(),function(data){
+ 			if(data.success){
+ 				alertify.alert("操作成功",function(){
+ 					buildTree();
+ 					$("#collegeModal").modal('hide');
+ 				});
+ 			}
+ 			else{
+ 				alertify.alert("操作失败");
+ 			}
+ 		},'json')
+
+ 	})
+ 	$("#specialty-btn").click(function(){
+ 		var bv = $('#specialty-form').data('bootstrapValidator');
+ 		bv.validate();
+ 		if(!bv.isValid()){
+ 			return;
+ 		}
+
+ 		$.post(actionPath+'!saveOrUpdate',$('#specialty-form').serialize(),function(data){
+ 			if(data.success){
+ 				alertify.alert("操作成功",function(){
+ 					buildTree();
+ 					$("#specialtyModal").modal('hide');
+ 				});
+ 			}
+ 			else{
+ 				alertify.alert("操作失败");
+ 			}
+ 		},'json')
+ 	})
+
+ });
+
+ function buildTree() {
+ 	var setting = { 
+ 		data: {
+ 			simpleData: { 
+ 				enable: true,
+ 			}
+ 		},
+ 		callback: {
+ 			onMouseDown: onBodyMouseDown,
+ 			onRightClick: OnRightClick
+ 		}
+ 	};
+ 	$.post(actionPath+"!tree", {}, function(data) {
+ 		$.fn.zTree.init($("#tree"), setting, data);
+ 	},"json");
+ }
+
+ function OnRightClick(event, treeId, treeNode) {  
+ 	var zTree = $.fn.zTree.getZTreeObj("tree");
+ 	zTree.selectNode(treeNode);
+ 	showRMenu(event.clientX, event.clientY);  
+ }  
+ function showRMenu(x, y) {  
+ 	$("#rMenu").show();  
+    rMenu.css({"top":y+"px", "left":x+"px", "visibility":"visible"}); //设置右键菜单的位置、可见  
+    $("#tree").bind("mousedown", onBodyMouseDown);  
+}  
+function hideRMenu() {  
+    if (rMenu) rMenu.css({"visibility": "hidden"}); //设置右键菜单不可见  
+    $("#tree").unbind("mousedown", onBodyMouseDown);  
+}  
+function onBodyMouseDown(event){  
+	if (!(event.target.id == "rMenu" || $(event.target).parents("#rMenu").length>0)) {  
+		rMenu.css({"visibility" : "hidden"});  
+	}  
+}
+function del(){
+	var node= findSel();
+	if(!node){
+		return;
+	}
+	alertify.confirm("确定要删除吗？",  function (e){
+		if(!e){
+			return;
+		}        
+		$.post(actionPath+'!del', node, function(data) {
+			if(data.success){
+				buildTree();
+				alertify.alert("操作成功");
+			}else{
+				alertify.alert("操作失败");
+			}
+		},'json');
+	})
+}
+
+function show(isCollege){	
+	if(isCollege){
+		$('#college-form')[0].reset();
+		var v=$("#college-form").data('bootstrapValidator')
+		if(v){
+			v.destroy();
+		}
+		validatorCollege();
+		$("#collegeModal").modal();
+		$("#specialtyModal").modal('hide');
+	}else{
+		$('#specialty-form')[0].reset();
+		var v=$("#specialty-form").data('bootstrapValidator')
+		if(v){
+			v.destroy();
+		}
+		validatorSpecialty();
+		$("#specialtyModal").modal();
+		$("#collegeModal").modal('hide');
+	}
+}
+function validatorCollege() {
+	$('#college-form').bootstrapValidator({
+		excluded: [':disabled', ':hidden', ':not(:visible)'],
+		live: 'enabled',
+		fields: {
+			"college.cnName": {
+				trigger: "blur",
+				validators: {
+					notEmpty: {
+						message: '请填写'
+					}
+				}
+			},
+			"college.enName": {
+				trigger: "blur",
+				validators: {
+					notEmpty: {
+						message: '请填写'
+					}
+				}
+			}
+		}
+	});
+}
+function validatorSpecialty() {
+	$('#specialty-form').bootstrapValidator({
+		excluded: [':disabled', ':hidden', ':not(:visible)'],
+		live: 'enabled',
+		fields: {
+			"specialty.cnName": {
+				trigger: "blur",
+				validators: {
+					notEmpty: {
+						message: '请填写'
+					}
+				}
+			},
+			"specialty.degreeId": {
+				trigger: "blur",
+				validators: {
+					notEmpty: {
+						message: '请选择'
+					}
+				}
+			}
+		}
+	});
+}
+function findSel(){
+	var zTree = $.fn.zTree.getZTreeObj("tree");
+	var parent= zTree.getSelectedNodes();
+	if(parent.length!=1){
+		alertify.alert("请选中一条记录！");
+		return;
+	}
+	return {
+		id:parent[0].id,
+		pid:parent[0].pId,
+		cnName:parent[0].name,
+		enName:parent[0].enName,
+		degreeId:parent[0].degreeId
+	}
+}
+
+function modify(node){
+	if(!node.pid){
+		show(true);
+		$('#college-title').text('修改学院');
+		$("input[name='college.id']").val(node.id);
+		$("input[name='college.cnName']").val(node.cnName);
+		$("input[name='college.enName']").val(node.enName);
+	}else{
+		show(false);
+		$('#specialty-title').text('修改专业');
+		$("input[name='specialty.id']").val(node.id);
+		$("input[name='specialty.collegeId']").val(node.pid);
+		$("input[name='specialty.degreeId']").val(node.degreeId);
+		$("input[name='specialty.cnName']").val(node.cnName);
+		creatDicOption('degreeId','/dic-common!findAllDicDegree','',node.degreeId);
+	}
+}

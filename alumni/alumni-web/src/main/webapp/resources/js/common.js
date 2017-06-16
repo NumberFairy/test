@@ -1,0 +1,524 @@
+/**
+ * 创建option
+ */
+ function creatOption(data, divID, selected,notall, allValue) {
+   if (data !== null && data.length > 0) {
+    var html = "";
+    if (!notall) {
+    	var value = typeof allValue == 'undefined' ? '' : allValue;
+        html+="<option value='" + value + "'>全部</option>";
+    }
+    $.each(data, function (i, value) {
+        if (value.id == selected) {
+            html += "<option value='" + value.id + "' selected='true'>" +
+            value.value + "</option>";
+        } else {
+            html += "<option value='" + value.id + "'>" + value.value +
+            "</option>";
+        }
+    });
+    $("#" + divID).html(html);
+}
+
+}
+
+/**
+ * 创建查库下拉
+ */
+ function creatDicOption(divID, url, params, selected, callback, allValue) {
+    $.post(url, params, function(data) {
+        creatOption(data, divID, selected, '', allValue)
+
+        if (callback && typeof callback == "function") {
+            callback(data, selected);
+        }
+    }, "json");
+}
+
+function dicSelect(divID, selected, method, callback, notall) {
+    var $wrapper = divID;
+    if ($.type(divID) === "string") {
+        $wrapper = $("#" + divID);
+    }
+    $.post("../common/dic-common!" + method + ".action", {}, function(data) {
+        if (!notall) {
+            $wrapper.append(
+                "<option value=''>全部</option>");
+        }
+
+        if (data && data.length > 0) {
+            $.each(data, function(i, value) {
+                if (value.id == selected) {
+                    $wrapper.append(
+                        "<option value='" + value.id + "' selected='true'>" + value.value + "</option>");
+                } else {
+                    $wrapper.append(
+                        "<option value='" + value.id + "'>" + value.value + "</option>");
+                }
+            });
+        }
+
+        if (callback && typeof callback == "function") {
+            $wrapper.selectpicker();
+            callback(data, selected);
+        } else if (callback && typeof callback == "object") {
+            $wrapper.selectpicker(callback);
+        } else {
+            $wrapper.selectpicker('refresh');
+        }
+    }, "json");
+}
+
+function creatAjaxOption(divID, url, params, selected, optVal, optText,
+    callback) {
+    optVal = optVal || "id";
+    optText = optText || "value";
+    $.post(url, params, function(data) {
+        if (data !== null && data.length > 0) {
+            var html = "";
+            $.each(data, function(i, value) {
+                if (value[optVal] == selected) {
+                    html += "<option value='" + value[optVal] +
+                    "' selected='true'>" + value[optText] +
+                    "</option>";
+                } else {
+                    html += "<option value='" + value[optVal] + "'>" +
+                    value[optText] + "</option>";
+                }
+            });
+            $("#" + divID).html(html);
+        }
+
+        if (callback && typeof callback == "function") {
+            callback(data, selected);
+        }
+    }, "json");
+}
+
+/**
+ * 创建部门下拉框 divID---select的ID selected---选中项的ID，如果没有，则默认第一项选中
+ */
+ function createDeptSelect(divID, selected) {
+    $.post(contextPath + 'dic-common!findAllDept.action', {
+    }, function(data) {
+        if (data && data.length > 0) {
+          var html = "";
+          $.each(data, function(i, value) {
+           if (value.id == selected) {
+               html += "<option value='" + value.id + "' selected>" + value.name + "</option>";
+           } else {
+               html += "<option value='" + value.id + "'>" + value.name + "</option>";
+           }
+       });
+          $("#" + divID).html(html);
+      }
+  }, "json");
+}
+
+// 同步ajax请求
+function ajaxSync(url, params, callback, dataType, type) {
+    $.ajax({
+        url: url,
+        async: false, // 同步
+        data: params,
+        dataType: dataType || 'json',
+        type: type || 'GET',
+        cache: false
+    }).success(function(data, textStatus, jqXHR) {
+        callback.call(this, data, textStatus, jqXHR);
+    });
+}
+
+function bigFormSubmit(url, formSerialize, JsonListEntity, successMsg, failMsg) {
+    $.ajax({
+        url: url,
+        dataType: "json",
+        method: 'post',
+        data: formSerialize + "&jsonListEntity=" + JsonListEntity
+    }).success(function(data) {
+        alertSuccessMsg(successMsg);
+    }).fail(function(data) {
+        alertFailMsg(failMsg);
+    });
+}
+
+function alertSuccessMsg(msg) {
+    alertify.alert(msg, function(e) {
+        window.history.back();
+    });
+}
+
+function alertFailMsg(msg) {
+    alertify.alert(msg, function(e) {});
+}
+
+function multiFormSubmit(option) {// url, formSerialize, JsonListEntity,
+									// successMsg, failMsg
+                                   if (option && option.url && option.queryParam) {
+                                      $.ajax({
+                                         url: option.url,
+                                         dataType: "json",
+                                         method: 'post',
+                                         data: option.queryParam
+                                     }).success(function(data) {
+                                         alertSuccessMsg(option.successMsg || "保存成功!");
+                                     }).fail(function(data) {
+                                         alertFailMsg(option.failMsg || "保存失败!");
+                                     });
+                                 }
+                             }
+
+/**
+ * 根据字典表填充text
+ */
+ function dicParagraph(divID, selected, url, params) {
+    $.post(url, params, function(data) {
+        if (data !== null && data.length > 0) {
+            $.each(data, function(i, value) {
+                if (value.id == selected) {
+                    $("#" + divID).text(value.value);
+                    return false;
+                }
+            });
+        }
+    }, "json");
+}
+
+/**
+ * [loadPaginationData 加载分页]
+ */
+ function loadPaginationData(options) {
+    var appendElement = (options && options.appendElement) ? options.appendElement : "gridBody";
+    var templateId = (options && options.templateId) ? options.templateId : "gridTpl";
+    var pageUl = (options && options.pageUl) ? options.pageUl : "pageUl";
+    $.ajax({
+        url: options.url,
+        dataType: "json",
+        method: 'post',
+        data: options.queryParams
+    }).then(function(data) {
+        var h = template(templateId, data);
+        $('#' + appendElement).html(h);
+        /* 重新设置分页 */
+        $("#" + pageUl).bootstrapPaginator({
+            currentPage: 1,
+            totalPages: data.totalPages,
+            ajaxOption: {
+                url: options.url,
+                pageSize: data.pageSize,
+                appendElement: appendElement,
+                templateId: templateId,
+                otherParams: options.queryParams,
+                funSub : options.funSub
+            }
+        });
+        if (options.loaded && typeof options.loaded == "function") {
+            options.loaded.call($('#' + appendElement), data);
+        }
+
+    });
+}
+
+/**
+ * 得到id字符串
+ */
+ function getCheckedIds(selector) {
+    var $childChecks = $('.child', selector || document);
+    var idList = [];
+    $.each($childChecks, function(i, dom) {
+        if ($(dom).prop("checked")) {
+            idList.push($(dom).val());
+        }
+    });
+    return idList;
+}
+
+/**
+ * 得到选中框的索引
+ */
+ function getCheckedIndexs(selector) {
+    var $childChecks = $('.child', selector || document);
+    var indexs = [];
+    $.each($childChecks, function(i, dom) {
+        if ($(dom).prop("checked")) {
+            indexs.push(i);
+        }
+    });
+    return indexs;
+}
+
+
+/**
+ * 得到选中的第一个索引
+ */
+ function getCheckedFirstIndex(selector) {
+    var indexs = getCheckedIndexs(selector);
+    return indexs[0];
+}
+
+
+/**
+ * 得到选中的第一个id字符串
+ */
+ function getCheckedFirstId(selector) {
+    var idList = getCheckedIds(selector);
+    return idList[0];
+}
+
+/**
+ * 用于查看、修改等单条数据操作
+ */
+ function judgeCheckedOneId(selector) {
+    var id_array = getCheckedIds(selector);
+    if (id_array.length != 1) {
+        alertify.alert("请选中一条数据！");
+        return false;
+    }
+    return true;
+}
+/**
+ * 用于删除等批量操作数据
+ */
+ function judgeCheckedIds(selector) {
+    var id_array = getCheckedIds(selector);
+    if (id_array.length == 0) {
+        alertify.alert("请选中数据！");
+        return false;
+    }
+    return true;
+}
+
+$('.check-all').click(function() {
+    var childChecks = $('.child');
+    if ($(this).prop("checked")) {
+        $.each(childChecks, function(i, dom) {
+            $(dom).prop("checked", true);
+        });
+    } else {
+        $.each(childChecks, function(i, dom) {
+            $(dom).prop("checked", false);
+        });
+    }
+});
+
+/**
+ * 多个table时选中方法
+ *
+ * @param selector
+ */
+ function multiCheck(selector) {
+    $('.multi-check-all', selector || document).click(function() {
+        var childChecks = $('.child', selector || document);
+        if ($(this).prop("checked")) {
+            $.each(childChecks, function(i, dom) {
+                $(dom).prop("checked", true);
+            });
+        } else {
+            $.each(childChecks, function(i, dom) {
+                $(dom).prop("checked", false);
+            });
+        }
+    });
+}
+
+$("table.click-tr>tbody").on("click", "tr", function(e) {
+    if ($(e.target).attr('type') == "checkbox") {
+        e.stopPropagation();
+    } else {
+        var checkboxs = $(this).find(":checkbox");
+        checkboxs.prop("checked", !checkboxs.prop("checked"));
+    }
+});
+
+
+// 去掉文本标签
+// {{#jobinfo.info | removeTag}}
+template.helper('removeTag', function(data) {
+    return data.replace(/<[^>]+>/g, "");
+});
+
+template.helper('dateFormat', function(date, format) {
+    if (date === undefined || !date) {
+        return;
+    }
+    date = date.replace(/-/g, "/"); // 解决ie 只支持'2016/05/19 14:00:00'格式
+    date = new Date(date); // 新建日期对象
+
+    /* 日期字典 */
+    var map = {
+        "M": date.getMonth() + 1, // 月份
+        "d": date.getDate(), // 日
+        "h": date.getHours(), // 小时
+        "m": date.getMinutes(), // 分
+        "s": date.getSeconds(), // 秒
+        "q": Math.floor((date.getMonth() + 3) / 3), // 季度
+        "S": date.getMilliseconds()
+            // 毫秒
+        };
+        if (!format) {
+            format = "yyyy-MM-dd hh:mm:ss";
+        }
+        /* 正则替换 */
+        format = format.replace(/([yMdhmsqS])+/g, function(all, t) {
+            var v = map[t];
+            if (v !== undefined) {
+                if (all.length > 1) {
+                    v = '0' + v;
+                    v = v.substr(v.length - 2);
+                }
+                return v;
+            } else if (t === 'y') {
+                return (date.getFullYear() + '').substr(4 - all.length);
+            }
+            return all;
+        });
+
+        /* 返回自身 */
+        return format;
+    });
+
+/**
+ * @name 深拷贝
+ * @param oldEntity
+ * @param newEntity
+ * @returns newEntity
+ * @example var a={'a':'a'};var b={}; copyPro(a,b);b={'a':'a'}
+ */
+ function copyPro(oldEntity, newEntity) {
+   var newEntity = newEntity || {};
+   for (var i in oldEntity) {
+      if (typeof oldEntity[i] === 'object') {
+         newEntity[i] = (oldEntity[i].constructor === Array) ? [] : {};
+         copyPro(oldEntity[i], newEntity[i]);
+     } else {
+         newEntity[i] = oldEntity[i];
+     }
+ }return newEntity;
+}
+
+/**
+ * 将以参数separator分割的字符串转为驼峰形式
+ * 默认‘-’分割*/
+ function transformStr2Camel(str, separator){
+   var camelStr = '';
+   var arr = str.split(separator || '-');
+   $.each(arr, function(i, obj){
+      if (i==0) {
+         camelStr += obj;
+         return;
+     }
+     camelStr += obj.substring(0, 1).toUpperCase() + obj.substring(1);
+ });
+   return camelStr;
+}
+
+/**
+ * 上传文件到mongo
+ */
+ function uploadFile(options){
+   options = options || {};
+   options.btnId = options.btnId || "btnUpLoad";
+   options.fileId = options.fileId || "upload";
+   options.subfix =  options.subfix || ['jpg', 'jpeg', 'png', 'bmp'];
+   options.subfixTip =  options.subfixTip || "请选择图片文件！";
+   $(document).on('change', '#' + options.fileId, function(e){
+      _doUpload(options);
+  });
+   $(document).on("click", '#' + options.btnId,function() {
+      $('#' + options.fileId).click();
+  });
+}
+
+function _doUpload(options){
+    // 包括.的后缀名
+    var d = /\.[^\.]+$/.exec($("#"+options.fileId).val());
+    d = d[0].toLowerCase();
+    var idx = options.subfix.indexOf(d.substring(1,d.length));
+    if (idx == -1) {
+        alertify.alert(options.subfixTip);
+        return;
+    }
+    $.ajaxFileUpload({
+		 url: '/gridfs-upload',		//用于文件上传的服务器端请求地址
+		 secureuri: false, 	//是否需要安全协议，一般设置为false
+		 fileElementId: options.fileId, 	//文件上传域的ID
+		 dataType: 'json', 	//返回值类型 一般设置为json
+		 success: function(data, status) {//服务器成功响应处理函数
+            if (options.successCall && typeof options.successCall == 'function') {
+				 options.successCall.call($(this), data, status);;//data.info --> fileId
+                } else {
+                   alertify.alert("上传成功!");
+               }
+           },
+		 error: function(data, status, e) { //服务器响应失败处理函数
+            alertify.alert(e + "");
+        }
+    });
+}
+
+function buildUeditor(id){
+   //http://fex.baidu.com/ueditor/#start-toolbar
+   //http://fex.baidu.com/ueditor/#start-config
+    var editor = UE.getEditor(id || 'editor_id',{
+        toolbars: [[
+        'fullscreen','source', 'undo', 'redo', '|',
+        'bold', 'italic', 'underline', 'fontborder', 'strikethrough', 'superscript', 'subscript', 'removeformat', 'formatmatch', 'autotypeset', 'blockquote', 'pasteplain', '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+        'touppercase', 'tolowercase', '|',
+        'customstyle', 'paragraph', 'fontfamily', 'fontsize', '|',
+        'directionalityltr', 'directionalityrtl', 'indent', '|',
+        'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
+        'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
+        'link', 'unlink', 'anchor', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+        'simpleupload', 'insertimage', 'emotion', 'insertvideo', 'attachment', 'map', 'insertframe', 'insertcode', 'pagebreak', 'template', 'background', '|',
+        'horizontal', 'date', 'time', 'spechars', 'wordimage', '|',
+        'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
+        'print', 'preview', 'searchreplace', 'drafts', 'help'
+    ]],
+        elementPathEnabled: false, //是否启用元素路径，默认是显示
+        initialFrameWidth: 956, //初始化编辑器宽度，默认1000
+        initialFrameHeight: 500 //编辑器拖动时最小高度，默认220
+    });
+
+    return editor;
+}
+
+(function($) {
+    $.getUrlParam = function(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return unescape(r[2]);
+        return null;
+    }
+})(jQuery);
+
+/**
+ * 多选下拉
+ */
+function multipleSel(sel_id,url,idArray,isAll) {
+    var array=[];
+    if(idArray){
+        array=idArray.split(',');
+    }
+    $.ajax({
+        url: url,
+        type: 'get',
+        dataType: 'json'
+    }).done(function(data) {
+        var options = "";
+        if(isAll){
+            options += "<option>未选择</option>";
+        }
+        $.each(data, function(index, val) {
+            if (array && array.indexOf(val.id + "") != -1) {
+                options += "<option value='" + val.id + "' selected='selected'>" + val.value + "</option>"
+            } else {
+                options += "<option value='" + val.id + "'>" + val.value + "</option>"
+            }
+        });
+        $("#"+sel_id).empty();
+        $("#"+sel_id).append(options).chosen({
+            enable_split_word_search: true,
+            no_results_text: '未找到数据'
+        });
+    });
+}

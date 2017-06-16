@@ -1,0 +1,107 @@
+package com.wisdombud.alumni.pojo.system;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.wisdombud.alumni.pojo.base.UUIDBasePo;
+
+@Entity
+@Table(name = "SEC_USER")
+public class SecUser extends UUIDBasePo {
+	private static final long serialVersionUID = 1L;
+
+	public static final Short IS_ADMINISTRATOR_NO = 0;
+	public static final Short IS_ADMINISTRATOR_YES = 1;
+	public static final String DEFAULT_PASSWORD = "000000";
+
+	@Column(name = "NAME")
+	private String name;
+	
+	@Transient
+	private String loginName;
+	
+	@Transient
+	private String pwd;
+	
+	@Column(name = "GENDER")
+	private int gender;
+	
+	@Column(name = "TEL")
+	private String tel;
+	
+	@Column(name = "MOBILE")
+	private String mobile;
+	
+	@Column(name = "EMAIL")
+	private String email;
+
+	@Column(name = "IS_ADMIN")
+	private Short isAdmin;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
+
+	public String getPwd() {
+		return pwd;
+	}
+
+	public void setPwd(String pwd) {
+		this.pwd = pwd;
+	}
+
+	public int getGender() {
+		return gender;
+	}
+
+	public void setGender(int gender) {
+		this.gender = gender;
+	}
+
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Short getIsAdmin() {
+		return isAdmin;
+	}
+
+	public void setIsAdmin(Short isAdmin) {
+		this.isAdmin = isAdmin;
+	}
+
+}

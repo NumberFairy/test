@@ -1,0 +1,72 @@
+package com.wisdombud.alumni.actions.manage;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.wisdombud.alumni.actions.base.AbstractCrudAction;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.common.EmailSrv;
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.manage.BaseIdentityRelationSrv;
+import com.wisdombud.alumni.pojo.dic.DicAlumniBranchIdentity;
+import com.wisdombud.alumni.pojo.dic.DicAlumniClubIdentity;
+import com.wisdombud.alumni.pojo.dic.DicAlumniIdentity;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicDegree;
+import com.wisdombud.alumni.pojo.dic.DicIndustry;
+import com.wisdombud.alumni.pojo.dic.DicPoliticalStatus;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniImport;
+import com.wisdombud.alumni.pojo.manage.BaseIdentityRelation;
+import com.wisdombud.alumni.vo.Param;
+
+/**
+ * 功能: 校友信息表<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ *
+ * @author robot
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("prototype")
+@ParentPackage(value = "struts-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "toAddOrUpdate", location = "/WEB-INF/jsp/alumni-manage-center/alumni-info-note/create.jsp"),
+		   @Result(name = "toDetail", location = "/WEB-INF/jsp/alumni-manage-center/alumni-info-note/detail.jsp"),
+		   @Result(name = "toPage", location = "/WEB-INF/jsp/alumni-manage-center/alumni-info-note/page.jsp"),
+		   @Result(name = "toAlumniRegisterAudit", location = "/WEB-INF/jsp/flow-audit/alumni-register-audit/page.jsp"),
+		   @Result(name = "toAlumniRegisterDetail", location = "/WEB-INF/jsp/flow-audit/alumni-register-audit/detail.jsp"),
+		  })
+public class AlumniImportAction extends AbstractCrudAction<BaseAlumniImport> {
+
+	private static final long			 serialVersionUID = 1L;
+
+	public AlumniImportAction(@Qualifier(value = "baseAlumniImportSrv") IBaseSrv<BaseAlumniImport> baseSrv) {
+		super(baseSrv);
+	}
+
+	@Override
+	protected List<Order> buildOrder() {
+		return super.buildOrder();
+	}
+
+	@Override
+	protected Map<String, Param> buildParams() {
+		return super.buildParams();
+	}
+}

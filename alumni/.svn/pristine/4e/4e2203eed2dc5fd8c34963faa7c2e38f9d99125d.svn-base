@@ -1,0 +1,184 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.enums.GenderEnum;
+import com.wisdombud.alumni.enums.IdentityEnum;
+import com.wisdombud.alumni.enums.PoliticalStatusEnum;
+import com.wisdombud.alumni.manage.BaseAlumniSrv;
+import com.wisdombud.alumni.manage.BaseIdentityRelationSrv;
+import com.wisdombud.alumni.pojo.dic.DicAlumniBranchIdentity;
+import com.wisdombud.alumni.pojo.dic.DicAlumniClubIdentity;
+import com.wisdombud.alumni.pojo.dic.DicAlumniIdentity;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.dic.DicDegree;
+import com.wisdombud.alumni.pojo.dic.DicIndustry;
+import com.wisdombud.alumni.pojo.dic.DicSpecialty;
+import com.wisdombud.alumni.pojo.manage.BaseAlumni;
+import com.wisdombud.alumni.pojo.manage.BaseIdentityRelation;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 校友信息表Srv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Service(value = "baseAlumniSrv")
+public class BaseAlumniSrvImpl extends BaseSrvImpl<BaseAlumni> implements BaseAlumniSrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseAlumniSrvImpl.class);
+	@Autowired
+	public DicCommonSrv dicCommonSrv;
+	@Autowired
+	public BaseIdentityRelationSrv identityRelationSrv;
+
+	public BaseAlumniSrvImpl() {
+	}
+
+	@Autowired
+	public BaseAlumniSrvImpl(@Qualifier(value = "baseAlumniDao") CommonDao<BaseAlumni, String> commonDao) {
+		super(commonDao);
+	}
+
+	private void fillName(List<BaseAlumni> list) {
+		for (BaseAlumni inst : list) {
+			fillName(inst);
+		}
+	}
+
+	private void fillName(BaseAlumni entity) {
+		if (entity.getCollege() != null) {
+			entity.setCollegeName(dicCommonSrv.findById(DicCollege.class, entity.getCollege()).getCnName());
+		}
+		if (entity.getIdentity() != null) {
+			entity.setIdentityName(IdentityEnum.valueByIndex(entity.getIdentity()).getName());
+		}
+		if (entity.getGender() != null) {
+			entity.setGenderName(GenderEnum.valueByIndex(entity.getGender()).getName());
+		}
+		if (entity.getPoliticalStatus() != null) {
+			entity.setPoliticalStatusName(PoliticalStatusEnum.valueByIndex(entity.getPoliticalStatus()).getName());
+		}
+		if (entity.getMajor() != null) {
+			entity.setMagorName(dicCommonSrv.findById(DicSpecialty.class, entity.getMajor()).getCnName());
+		}
+		if (entity.getHighestEducation() != null) {
+			entity.setHighestEducationName(
+					dicCommonSrv.findById(DicDegree.class, entity.getHighestEducation()).getCnName());
+		}
+		if (entity.getIndustry() != null) {
+			entity.setIndustryName(dicCommonSrv.findById(DicIndustry.class, entity.getIndustry()).getValue());
+		}
+	}
+
+	private void fillName(BaseAlumni entity, BaseIdentityRelation relationEntity) {
+		if (relationEntity.getAlumniClubIdentityId() != null) {
+			String val = "";
+			String[] strs = relationEntity.getAlumniClubIdentityId().split(",");
+			for (String str : strs) {
+				val = val + dicCommonSrv.findById(DicAlumniClubIdentity.class, str).getValue() + ";";
+			}
+			entity.setAlumniClubIdentityName(val);
+		}
+		if (relationEntity.getBranchClubIdentityId() != null) {
+			String val = "";
+			String[] strs = relationEntity.getBranchClubIdentityId().split(",");
+			for (String str : strs) {
+				val = val + dicCommonSrv.findById(DicAlumniBranchIdentity.class, str).getValue() + ";";
+			}
+			entity.setBranchClubIdentityName(val);
+		}
+		if (relationEntity.getAlumniIdentityId() != null) {
+			String val = "";
+			String[] strs = relationEntity.getAlumniIdentityId().split(",");
+			for (String str : strs) {
+				val = val + dicCommonSrv.findById(DicAlumniIdentity.class, str).getValue() + ";";
+			}
+			entity.setAlumniIdentityName(val);
+		}
+	}
+
+	@Override
+	public void page(PageEntity<BaseAlumni> pageEntity, Map<String, Param> params, List<Order> orders) {
+		super.page(pageEntity, params, orders);
+		List<BaseAlumni> list = pageEntity.getResults();
+		this.fillName(list);
+	}
+
+	@Override
+	public BaseAlumni find(String id) {
+		BaseAlumni entity = super.find(id);
+		this.fillName(entity);
+		List<BaseIdentityRelation> relationEntity = identityRelationSrv.findBy("alumniId", id);
+		if (relationEntity != null && relationEntity.size() > 0) {
+			this.fillName(entity, relationEntity.get(0));
+		}
+		return entity;
+	}
+
+	private BaseIdentityRelation data2Entity(BaseAlumni entity) {
+		BaseIdentityRelation relation = new BaseIdentityRelation();
+		if (StringUtils.isNotBlank(entity.getId())) {
+			relation.setAlumniId(entity.getId());
+		}
+		if (StringUtils.isNotBlank(entity.getAlumniClubIdentityName())) {
+			relation.setAlumniClubIdentityId(entity.getAlumniClubIdentityName());
+		}
+		if (StringUtils.isNotBlank(entity.getAlumniIdentityName())) {
+			relation.setAlumniIdentityId(entity.getAlumniIdentityName());
+		}
+		if (StringUtils.isNotBlank(entity.getBranchClubIdentityName())) {
+			relation.setBranchClubIdentityId(entity.getBranchClubIdentityName());
+		}
+		return relation;
+	}
+
+	@Override
+	public String save(BaseAlumni entity) {
+		String str = super.save(entity);
+		if (StringUtils.isNotBlank(entity.getId())) {
+			BaseIdentityRelation relation = this.data2Entity(entity);
+			relation.setCreateTime(new Date());
+			relation.setLastUpdate(new Date());
+			str = identityRelationSrv.save(relation);
+		}
+		return str;
+	}
+
+	@Override
+	public void update(BaseAlumni entity) {
+		super.update(entity);
+		if (StringUtils.isNotBlank(entity.getId())) {
+			BaseIdentityRelation relation = this.data2Entity(entity);
+			relation.setLastUpdate(new Date());
+			identityRelationSrv.update(relation);
+		}
+	}
+
+	@Override
+	public void deleteByIds(String ids) {
+		super.deleteByIds(ids);
+		String[] strs = ids.split(",");
+		for (int i = 0; i < strs.length; i++) {
+			if (StringUtils.isNotBlank(strs[i])) {
+				identityRelationSrv.deleteBy("alumniId", strs[i]);
+			}
+		}
+	}
+
+}

@@ -1,0 +1,8 @@
+package com.wisdombud.alumni.dao.system;
+
+import com.wisdombud.alumni.pojo.system.SecRole;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+public interface SecRoleDao extends CommonDao<SecRole, String> {
+
+}

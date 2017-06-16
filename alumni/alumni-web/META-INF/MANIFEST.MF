@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: alumni-web
+Bundle-SymbolicName: alumni-web
+Bundle-Version: 1.0.0.qualifier
+Export-Package: cache,
+ com.wisdombud.alumni.actions.base,
+ com.wisdombud.alumni.actions.common,
+ com.wisdombud.alumni.actions.information,
+ com.wisdombud.alumni.interceptor
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+

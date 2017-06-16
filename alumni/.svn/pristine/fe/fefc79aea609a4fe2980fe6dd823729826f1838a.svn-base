@@ -1,0 +1,84 @@
+package com.wisdombud.alumni.system.impl;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.enums.UserDesignationEnum;
+import com.wisdombud.alumni.pojo.system.PublicUser;
+import com.wisdombud.alumni.pojo.system.SecUser;
+import com.wisdombud.alumni.system.PublicUserSrv;
+import com.wisdombud.alumni.system.SecUserSrv;
+import com.wisdombud.alumni.util.GenerateSalt;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+import common.toolkit.java.util.StringUtil;
+
+@Service(value = "secUserSrv")
+public class SecUserSrvImpl extends BaseSrvImpl<SecUser> implements SecUserSrv {
+
+	@Autowired
+	private PublicUserSrv publicUserSrv;
+	
+	public SecUserSrvImpl(){}
+	
+	@Autowired
+	public SecUserSrvImpl(@Qualifier(value = "secUserDao") CommonDao<SecUser, String> commonDao) {
+		super(commonDao);
+	}
+	
+	
+	@Override
+	public SecUser find(String id) {
+		SecUser user = super.find(id);
+		PublicUser pu = publicUserSrv.find(id);
+		if (pu!=null) {
+			user.setLoginName(pu.getLoginName());
+		}
+		return user;
+	}
+
+	@Override
+	public void page(PageEntity<SecUser> pageEntity, Map<String, Param> params, List<Order> orders) {
+		super.page(pageEntity, params, orders);
+		List<SecUser> users = pageEntity.getResults();
+		if (users != null && users.size() > 0) {
+			for (SecUser u : users) {
+				PublicUser pu = publicUserSrv.find(u.getId());
+				if (pu!=null) {
+					u.setLoginName(pu.getLoginName());					
+				}
+			}
+		}
+	}
+	
+	@Override
+	public String save(SecUser entity) {
+		final String salt = GenerateSalt.generateSalt();
+		PublicUser publicUser = new PublicUser();
+		publicUser.setLoginName(entity.getLoginName());
+		publicUser.setPwdHash(StringUtil.encrypt(entity.getPwd() + salt));
+		publicUser.setSalt(salt);
+		publicUser.setDesignation(UserDesignationEnum.TEACHER.getValue());
+		publicUser.setLastUpdate(new Date());
+		publicUser.setCreateTime(new Date());
+		publicUserSrv.save(publicUser);
+		entity.setId(publicUser.getId());
+		return super.save(entity);
+	}
+
+	@Override
+	public void deleteByIds(String ids) {
+		super.deleteByIds(ids);
+		publicUserSrv.deleteByIds(ids);
+	}
+	
+}

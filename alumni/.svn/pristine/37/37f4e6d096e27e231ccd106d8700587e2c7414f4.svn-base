@@ -1,0 +1,94 @@
+
+
+var actionPath = contextPath + "/college-key-alumni";
+
+var clubIds = "";
+var ids = "";
+var branchIds = "";
+$(function () {
+    var a = alumniClubIdentityId.split(',');
+    var b = alumniIdentityId.split(',');
+    var c = branchClubIdentityId.split(',');
+    for (i in a) {
+        if (a[i]) {
+            $("#usertype1 option[value=" + a[i] + "]").attr("selected", true);
+        }
+    }
+    for (i in b) {
+        if (b[i]) {
+            $("#usertype2 option[value=" + b[i] + "]").attr("selected", true);
+        }
+    }
+    for (i in c) {
+        if (c[i]) {
+            $("#usertype3 option[value=" + c[i] + "]").attr("selected", true);
+        }
+    }
+
+    $("#btn1").click(function () {
+        $("#div1").toggle();
+    });
+
+    $("#btn2").click(function () {
+        $("#div2").toggle();
+    });
+
+    $("#btn3").click(function () {
+        $("#div3").toggle();
+    });
+
+    $("#usertype1").bind("change", function () {
+        var txt = "";
+        clubIds = "";
+        $("#usertype1 option:selected").each(function () {
+            clubIds += $(this).val() + ",";
+            txt += $(this).text() + ",";
+        });
+
+        $("#btn1").val(txt);
+    });
+
+    $("#usertype2").bind("change", function () {
+        var txt = "";
+        ids = "";
+        $("#usertype2 option:selected").each(function () {
+            ids += $(this).val() + ",";
+            txt += $(this).text() + ",";
+        });
+
+        $("#btn2").val(txt);
+    });
+
+    $("#usertype3").bind("change", function () {
+        var txt = "";
+        branchIds = "";
+        $("#usertype3 option:selected").each(function () {
+            branchIds += $(this).val() + ",";
+            txt += $(this).text() + ",";
+        });
+
+        $("#btn3").val(txt);
+    });
+
+
+});
+
+function validator() {
+    $baseInfoForm = $('#form-all');
+    $baseInfoForm.bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+            "entity.name": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+
+        }
+
+    });
+}

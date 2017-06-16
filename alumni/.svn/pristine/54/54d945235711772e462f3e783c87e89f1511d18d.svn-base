@@ -1,0 +1,178 @@
+package com.wisdombud.alumni.pojo.system;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.hibernate.annotations.GenericGenerator;
+
+import com.google.gson.annotations.Expose;
+
+@Entity
+@Table(name = "SEC_USER")
+public class SecUser implements Serializable {
+    private static final long   serialVersionUID     = 1L;
+
+    public static final Integer IS_ADMINISTRATOR_NO  = 0;
+    public static final Integer IS_ADMINISTRATOR_YES = 1;
+    public static final String  DEFAULT_PASSWORD     = "000000";
+
+    @Expose
+    @Id
+    @GenericGenerator(name = "generator", strategy = "assign")
+    public String               id;
+
+    @Expose
+    @Column(name = "NAME")
+    private String              name;
+
+    @Expose
+    @Transient
+    private String              loginName;
+
+    @Expose
+    @Transient
+    private String              pwd;
+
+    @Expose
+    @Column(name = "GENDER")
+    private int                 gender;
+
+    @Expose
+    @Column(name = "TEL")
+    private String              tel;
+
+    @Expose
+    @Column(name = "MOBILE")
+    private String              mobile;
+
+    @Expose
+    @Column(name = "EMAIL")
+    private String              email;
+
+    @Expose
+    @Column(name = "IS_ADMIN")
+    private Integer             isAdmin;
+
+    @Expose
+    @Column(name = "CREATE_TIME")
+    private Date                createTime;
+
+    @Expose
+    @Column(name = "LAST_UPDATE")
+    private Date                lastUpdate;
+
+    // 多对多定义
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.LAZY)
+    // 中间表定义,表名采用默认命名规则
+    @JoinTable(name = "SEC_USER_ROLE", joinColumns = { @JoinColumn(name = "USER_ID") }, inverseJoinColumns = { @JoinColumn(name = "ROLE_ID") })
+    private List<SecRole>       secRoles;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
+
+    public int getGender() {
+        return gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
+    public String getTel() {
+        return tel;
+    }
+
+    public void setTel(String tel) {
+        this.tel = tel;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Integer getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(Integer isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public void setLastUpdate(Date lastUpdate) {
+        this.lastUpdate = lastUpdate;
+    }
+
+    public List<SecRole> getSecRoles() {
+        return secRoles;
+    }
+
+    public void setSecRoles(List<SecRole> secRoles) {
+        this.secRoles = secRoles;
+    }
+
+}

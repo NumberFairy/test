@@ -1,0 +1,114 @@
+package com.wisdombud.alumni.actions.manage;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.struts2.convention.annotation.Namespace;
+import org.apache.struts2.convention.annotation.ParentPackage;
+import org.apache.struts2.convention.annotation.Result;
+import org.apache.struts2.convention.annotation.Results;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+
+import com.wisdombud.alumni.actions.base.AbstractCrudAction;
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.manage.BaseMemoSrv;
+import com.wisdombud.alumni.pojo.manage.BaseMemo;
+import com.wisdombud.alumni.vo.Param;
+
+/**
+ * 功能: 备忘录<br/>
+ * date: 2017-3-28 19:28:27 <br/>
+ * 
+ * @author zhangyan
+ * @version
+ * @since JDK 1.8
+ */
+@Scope("basememo")
+@ParentPackage(value = "portal-default")
+@Namespace(value = "/")
+@Results({ @Result(name = "toAddOrUpdate", location = "/WEB-INF/jsp/memo/create.jsp"),
+		   @Result(name = "toDetail", location = "/WEB-INF/jsp/memo/detail.jsp"),
+		   @Result(name = "toPage", location = "/WEB-INF/jsp/memo/page.jsp") })
+public class MemoAction extends AbstractCrudAction<BaseMemo> {
+	private static final long serialVersionUID = 1L;
+	@Autowired
+	private BaseMemoSrv		  memoSrv;
+	private BaseMemo		  memoEntity;
+
+	public MemoAction(@Qualifier(value = "baseMemoSrv") IBaseSrv<BaseMemo> baseSrv) {
+		super(baseSrv);
+	}
+
+	public void changeStatus() {
+		String ids = request.getParameter("ids");
+		String[] idArray = ids.split(",");
+		for (String id : idArray) {
+			memoEntity = memoSrv.find(id);
+			memoEntity.setStatus("1");
+			memoSrv.update(memoEntity);;
+		}
+		sendSuccessMsg();
+	}
+
+	public void deleteByIds() {
+		String ids = request.getParameter("ids");
+		memoSrv.deleteByIds(ids);
+		sendSuccessMsg();
+	}
+
+	@Override
+	public void detail() {
+		String id = request.getParameter("ids");
+		super.detail();
+	}
+
+	@Override
+	public String hrefDetail() {
+		String id = request.getParameter("id");
+		return super.hrefDetail();
+	}
+
+	@Override
+	public void addOrUpdate() {
+		entity.setStatus("0");
+		super.addOrUpdate();
+		sendSuccessMsg();
+	}
+
+	@Override
+	protected List<Order> buildOrder() {
+		ArrayList<Order> orders = new ArrayList<>();
+		orders.add(Order.desc("createTime"));
+		return super.buildOrder();
+	}
+
+	@Override
+	protected Map<String, Param> buildParams() {
+		return super.buildParams();
+	}
+
+	/**
+	 * memoEntity.
+	 * 
+	 * @return the memoEntity
+	 * @since JDK 1.7
+	 */
+	public BaseMemo getMemoEntity() {
+		return memoEntity;
+	}
+
+	/**
+	 * memoEntity.
+	 * 
+	 * @param memoEntity the memoEntity to set
+	 * @since JDK 1.7
+	 */
+	public void setMemoEntity(BaseMemo memoEntity) {
+		this.memoEntity = memoEntity;
+	}
+
+}

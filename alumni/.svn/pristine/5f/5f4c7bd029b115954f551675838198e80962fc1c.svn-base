@@ -1,0 +1,65 @@
+// main:main.less
+.martb{
+    margin:15px;
+}
+.mart{
+    margin-top:15px;
+}
+.marb{
+    margin-bottom:15px!important;
+}
+.marl{
+    margin-right:15px;
+}
+.marr{
+    margin-left:15px;
+}
+.mar0{
+    margin-bottom:0!important;
+}
+.text-l{
+    text-align:left!important;
+}
+.lable-l{
+    float:left!important;
+}
+.bs-checkbox{
+    text-align:center;
+}
+.pagination{
+    margin:0;
+}
+.star{
+    color: red;
+    padding: 0 10px;
+    vertical-align: middle;
+}
+/*menu样式reset*/
+.nav-header{
+    padding:8px;
+}
+.admin-logo{
+    max-width:100%;
+}
+/*查询form 样式reset*/
+@media screen and (min-width: 768px) {
+    .form-inline .label-reset{
+         text-align:right;
+    }
+}
+.form-inline .label-reset{
+    min-width:82px;
+}
+.form-inline .select-reset,
+.form-inline .input-reset
+    {
+    min-width:194px;
+}
+
+/*溢出显示省略号*/
+.ellipsis{
+    max-width:300px;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+}

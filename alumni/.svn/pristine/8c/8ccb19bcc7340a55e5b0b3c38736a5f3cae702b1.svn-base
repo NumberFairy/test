@@ -1,0 +1,130 @@
+/**
+ * 校友管理中心--校友信息库
+ * zxguan@wisdombud.com
+ * 20170328
+ * */
+
+var actionPath = contextPath + "/product-in-apply";
+var $baseInfoForm;
+var $productInListForm;
+var cList = [];
+$(function() {
+    var id = $("input[name='entity.id']").val();
+    $.ajax({
+        type: "GET",
+        url: "/product-in-apply!findBaseAllProduceListById",
+        dataType: "json",
+        async: false,
+        data: { "id": id },
+        success: function(data) {
+            cList = data;
+            var html = template("gridTpl", { 'results': data });
+            $("#gridBody").html(html);
+        }
+    });
+    validator();
+
+    $("#create-btn").click(function() {
+        addOrUpdate();
+    });
+    $('#addList').click(function() {
+        var bv = $productInListForm.data('bootstrapValidator');
+        bv.validate();
+        if (bv.isValid()) {
+            var chObject = $("#productInListForm").serializeObject();
+            cList.push(chObject);
+            if (chObject.index != "") {
+                cList.splice(chObject.index, 1);
+            }
+            loadTable(cList);
+            $("#newModal").modal("hide");
+        }
+    });
+    //
+    $("#update-btn").click(function() {
+        if (judgeCheckedOneId()) {
+            var index = getCheckedFirstIndex();
+            var obj = cList[index];
+            obj.index = index;
+            addOrUpdate(obj);
+        }
+    });
+    $("#del-btn").click(function() {
+        if (judgeCheckedIds()) {
+            var indexArray = getCheckedIndexs();
+            for (var i = indexArray.length - 1; i >= 0; i--) {
+                cList.splice(indexArray[i], 1);
+            }
+        }
+        loadTable(cList);
+    });
+
+    $("#submit").click(function() {
+        var bv = $baseInfoForm.data('bootstrapValidator');
+        bv.validate();
+        if (bv.isValid()) {
+            var entity = $("#baseInfoForm").serialize() + "&jsonListEntity=" + JSON.stringify(cList);
+            $.post(actionPath + "!addOrUpdate", entity, function(data) {
+                if (data.success) {
+                    location.href = actionPath + "!hrefPage";
+                }
+            }, "json");
+        }
+    });
+})
+
+function loadTable(cList) {
+    var html = template("gridTpl", { 'results': cList });
+    $("#gridBody").html(html);
+}
+
+function validator() {
+    $baseInfoForm = $('#baseInfoForm');
+    $baseInfoForm.bootstrapValidator({
+        excluded: [':disabled', ':hidden', ':not(:visible)'],
+        live: 'enabled',
+        fields: {
+            "entity.contractCode": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.purchaseCheckPerson": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.technicalCheckPerson": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.purchaseCheckTime": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+            "entity.technicalCheckTime": {
+                trigger: "blur",
+                validators: {
+                    notEmpty: {
+                        message: '请填写'
+                    }
+                }
+            },
+        }
+
+    });
+}

@@ -1,0 +1,19 @@
+/**
+ * 校友管理中心--校友信息库--时光轴
+ *
+ * zxguan@wisdombud.com
+ * 20170303
+ * */
+
+var actionPath = contextPath + "/timeline";
+
+
+$(function () {
+
+    $("#btn-timeline").click(function () {
+        if (!judgeCheckedIds()) {
+            return;
+        }
+        location.href = actionPath + "!hrefDisplayTimeline?entity.id=" + getCheckedFirstId();
+    });
+});

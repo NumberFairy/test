@@ -1,0 +1,14 @@
+package com.wisdombud.alumni.manage;
+
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.pojo.manage.BaseActivitySignUp;
+
+/**
+ * 报名情况表 ISrv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+public interface BaseActivitySignUpSrv extends IBaseSrv<BaseActivitySignUp> {
+
+}

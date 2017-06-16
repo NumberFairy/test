@@ -1,0 +1,12 @@
+#分会信息关联表,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,BASE_BRANCH_RELATION,;,,,,,,,
+CREATE TABLE ,BASE_BRANCH_RELATION,(,,,,,,,
+,ID,VARCHAR(36) ,NOT NULL,primary key,,,,,","
+,ALUMNI_ID,VARCHAR(36) ,,,,,COMMENT ,校友信息,","
+,CHAPTERS_ID,VARCHAR(36) ,,,,,COMMENT ,地方分会,","
+,OVERSEAS_ID,VARCHAR(36) ,,,,,COMMENT ,海外分会,","
+,INDUSTRY_ID,VARCHAR(36) ,,,,,COMMENT ,行业分会,","
+,COLLEGE_BRANCH_ID,VARCHAR(36) ,,,,,COMMENT ,院系分会,","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,分会信息关联表,;,,,,,,,

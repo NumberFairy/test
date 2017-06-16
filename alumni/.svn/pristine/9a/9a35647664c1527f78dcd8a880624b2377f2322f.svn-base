@@ -1,0 +1,14 @@
+package com.wisdombud.alumni.manage;
+
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.pojo.dic.DicChapterBranch;
+
+/**
+ * 地方分会字典表 ISrv. <br/>
+ *
+ * @author zxguan
+ *
+ */
+public interface DicChapterBranchSrv extends IBaseSrv<DicChapterBranch> {
+
+}

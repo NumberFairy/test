@@ -1,0 +1,36 @@
+package com.wisdombud.alumni.system.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.pojo.system.PublicUser;
+import com.wisdombud.alumni.pojo.system.SecUser;
+import com.wisdombud.alumni.system.PublicUserSrv;
+
+import common.toolkit.java.orm.hibernate.CommonDao;
+import common.toolkit.java.util.StringUtil;
+
+@Service(value = "publicUserSrv")
+public class PublicUserSrvImpl extends BaseSrvImpl<PublicUser> implements PublicUserSrv {
+
+	public PublicUserSrvImpl() {
+	}
+
+	@Autowired
+	public PublicUserSrvImpl(@Qualifier(value = "publicUserDao") CommonDao<PublicUser, String> commonDao) {
+		super(commonDao);
+	}
+
+	@Override
+	public void updatePwd(String ids) {
+		String[] idList = ids.split(",");
+		for (String id : idList) {
+			PublicUser user = super.find(id);
+			user.setPwdHash(StringUtil.encrypt(SecUser.DEFAULT_PASSWORD + user.getSalt()));
+			super.update(user);
+		}
+	}
+
+}

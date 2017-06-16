@@ -1,0 +1,78 @@
+package com.wisdombud.alumni.manage.impl;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.hibernate.criterion.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.wisdombud.alumni.common.BaseSrvImpl;
+import com.wisdombud.alumni.common.DicCommonSrv;
+import com.wisdombud.alumni.enums.GenderEnum;
+import com.wisdombud.alumni.enums.IdentityEnum;
+import com.wisdombud.alumni.manage.BaseActivitySignUpSrv;
+import com.wisdombud.alumni.pojo.dic.DicCollege;
+import com.wisdombud.alumni.pojo.manage.BaseActivitySignUp;
+import com.wisdombud.alumni.vo.Param;
+
+import common.toolkit.java.entity.PageEntity;
+import common.toolkit.java.orm.hibernate.CommonDao;
+
+/**
+ * 报名情况表Srv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+@Service(value = "baseActivitySignUpSrv")
+public class BaseActivitySignUpSrvImpl extends BaseSrvImpl<BaseActivitySignUp> implements BaseActivitySignUpSrv {
+
+	private static final Logger LOGGER = Logger.getLogger(BaseActivitySignUpSrvImpl.class);
+	@Autowired
+	public DicCommonSrv	dicCommonSrv;
+	
+	public BaseActivitySignUpSrvImpl() {
+	}
+
+	@Autowired
+	public BaseActivitySignUpSrvImpl(
+			@Qualifier(value = "baseActivitySignUpDao") CommonDao<BaseActivitySignUp, String> commonDao) {
+		super(commonDao);
+	}
+	
+	private void fillName(List<BaseActivitySignUp> list) {
+		for (BaseActivitySignUp inst : list) {
+			fillName(inst);
+		}
+	}
+
+	private void fillName(BaseActivitySignUp entity) {
+		if(entity.getCollege()!=null){
+			entity.setCollegeName(dicCommonSrv.findById(DicCollege.class,entity.getCollege()).getCnName());
+		}
+		if(entity.getIdentity()!=null){
+			entity.setIdentityName(IdentityEnum.valueByIndex(entity.getIdentity()).getName());
+		}
+		if(entity.getGender()!=null){
+			entity.setGenderName(GenderEnum.valueByIndex(entity.getGender()).getName());
+		}
+	}
+	
+	 @Override
+	public void page(PageEntity<BaseActivitySignUp> pageEntity, Map<String, Param> params, List<Order> orders) {
+		 super.page(pageEntity, params, orders);
+		 List<BaseActivitySignUp> list = pageEntity.getResults();
+			this.fillName(list);
+	}
+
+	@Override
+	public BaseActivitySignUp find(String id) {
+		BaseActivitySignUp entity=super.find(id);
+		this.fillName(entity);
+		return entity;
+	}
+	
+}

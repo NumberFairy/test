@@ -1,0 +1,21 @@
+package com.wisdombud.alumni.manage;
+
+import java.util.List;
+
+import com.wisdombud.alumni.common.IBaseSrv;
+import com.wisdombud.alumni.pojo.manage.BaseAlumniActivityApply;
+
+/**
+ * 校友活动申请表 ISrv. <br/>
+ * 
+ * @author Administrator
+ * 
+ */
+public interface BaseAlumniActivityApplySrv extends IBaseSrv<BaseAlumniActivityApply> {
+
+	List<BaseAlumniActivityApply> findAllByDesc(List<String> orderPropertyList);
+
+	void updateAudit(String id, String auditStatus,String auditPerson);
+
+
+}

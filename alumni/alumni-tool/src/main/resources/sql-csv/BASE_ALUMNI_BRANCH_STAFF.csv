@@ -1,0 +1,11 @@
+#校友分会人员职务表,字段,类型,"约束
+(NOT NULL)",键,,"默认值
+(DEFAULT NULL/'123')",说明命令,说明内容,
+DROP TABLE IF EXISTS ,ALUMNI_BRANCH_STAFF,;,,,,,,,
+CREATE TABLE ,ALUMNI_BRANCH_STAFF,(,,,,,,,
+,ID,VARCHAR(100) ,NOT NULL,primary key,,,,,","
+,NAME,VARCHAR(100) ,,,,,COMMENT ,校友姓名',","
+,STAFF,VARCHAR(100),,,,,COMMENT ,任职身份',","
+,PHONE,VARCHAR(100),,,,,COMMENT ,联系电话',","
+,EMAIL,VARCHAR(100),,,,,COMMENT ,邮箱',","
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT=,校友分会人员职务表',;,,,,,,,
